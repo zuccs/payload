@@ -9,6 +9,7 @@ import { useDocumentInfo } from '../../../utilities/DocumentInfo';
 import FieldDescription from '../../FieldDescription';
 import { RowLabel } from '../../RowLabel';
 import { createNestedFieldPath } from '../../Form/createNestedFieldPath';
+import { useChildErrorPaths } from '../../ChildErrorProvider';
 
 import './index.scss';
 
@@ -33,6 +34,7 @@ const CollapsibleField: React.FC<Props> = (props) => {
   const { getPreference, setPreference } = usePreferences();
   const { preferencesKey } = useDocumentInfo();
   const [collapsedOnMount, setCollapsedOnMount] = useState<boolean>();
+  const childErrorPaths = useChildErrorPaths();
   const fieldPreferencesKey = `collapsible-${indexPath.replace(/\./gi, '__')}`;
 
   const onToggle = useCallback(async (newCollapsedState: boolean) => {
@@ -78,6 +80,11 @@ const CollapsibleField: React.FC<Props> = (props) => {
 
   return (
     <div id={`field-${fieldPreferencesKey}${path ? `-${path.replace(/\./gi, '__')}` : ''}`}>
+      {[...childErrorPaths].map((childErrorPath) => {
+        return (
+          <span key={childErrorPath}>{childErrorPath}</span>
+        );
+      })}
       <Collapsible
         initCollapsed={collapsedOnMount}
         className={[

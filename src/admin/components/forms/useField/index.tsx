@@ -7,13 +7,14 @@ import { useDocumentInfo } from '../../utilities/DocumentInfo';
 import { useOperation } from '../../utilities/OperationProvider';
 import useThrottledEffect from '../../../hooks/useThrottledEffect';
 import { UPDATE } from '../Form/types';
+import { useSetChildErrorPaths } from '../ChildErrorProvider';
 
 /**
  * Get and set the value of a form field.
  *
  * @see https://payloadcms.com/docs/admin/hooks#usefield
  */
-const useField = <T, >(options: Options): FieldType<T> => {
+const useField = <T,>(options: Options): FieldType<T> => {
   const {
     path,
     validate,
@@ -29,6 +30,7 @@ const useField = <T, >(options: Options): FieldType<T> => {
   const { id } = useDocumentInfo();
   const operation = useOperation();
   const field = useFormFields(([fields]) => fields[path]);
+  const setChildErrorPaths = useSetChildErrorPaths();
 
   const dispatchField = useFormFields(([_, dispatch]) => dispatch);
   const { t } = useTranslation();
@@ -118,6 +120,13 @@ const useField = <T, >(options: Options): FieldType<T> => {
       }
 
       if (typeof dispatchField === 'function') {
+        if ('addPath' in setChildErrorPaths && 'removePath' in setChildErrorPaths) {
+          if (action.valid) {
+            setChildErrorPaths.removePath(path);
+          } else {
+            setChildErrorPaths.addPath(path);
+          }
+        }
         dispatchField(action);
       }
     };

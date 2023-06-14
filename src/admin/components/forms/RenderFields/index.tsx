@@ -6,6 +6,7 @@ import { Props } from './types';
 import { fieldAffectsData, fieldIsPresentationalOnly } from '../../../../fields/config/types';
 import { useOperation } from '../../utilities/OperationProvider';
 import { getTranslation } from '../../../../utilities/getTranslation';
+import { ChildErrorProvider } from '../ChildErrorProvider';
 
 const baseClass = 'render-fields';
 
@@ -84,24 +85,27 @@ const RenderFields: React.FC<Props> = (props) => {
                     readOnly = true;
                   }
 
+                  const ChildErrorContextProvider = ['tabs', 'array', 'blocks', 'group', 'collapsible'].includes(field.type) ? ChildErrorProvider : React.Fragment;
+
                   if (FieldComponent) {
                     return (
-                      <RenderCustomComponent
-                        key={fieldIndex}
-                        CustomComponent={field?.admin?.components?.Field}
-                        DefaultComponent={FieldComponent}
-                        componentProps={{
-                          ...field,
-                          path: field.path || (isFieldAffectingData ? field.name : ''),
-                          fieldTypes,
-                          indexPath: incomingIndexPath ? `${incomingIndexPath}.${fieldIndex}` : `${fieldIndex}`,
-                          admin: {
-                            ...(field.admin || {}),
-                            readOnly,
-                          },
-                          permissions: fieldPermissions,
-                        }}
-                      />
+                      <ChildErrorContextProvider key={fieldIndex}>
+                        <RenderCustomComponent
+                          CustomComponent={field?.admin?.components?.Field}
+                          DefaultComponent={FieldComponent}
+                          componentProps={{
+                            ...field,
+                            path: field.path || (isFieldAffectingData ? field.name : ''),
+                            fieldTypes,
+                            indexPath: incomingIndexPath ? `${incomingIndexPath}.${fieldIndex}` : `${fieldIndex}`,
+                            admin: {
+                              ...(field.admin || {}),
+                              readOnly,
+                            },
+                            permissions: fieldPermissions,
+                          }}
+                        />
+                      </ChildErrorContextProvider>
                     );
                   }
 
