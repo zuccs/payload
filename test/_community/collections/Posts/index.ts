@@ -1,5 +1,6 @@
 import type { CollectionConfig } from '../../../../src/collections/config/types';
-import { mediaSlug } from '../Media';
+import { UIField } from './UIField';
+import { UIField2 } from './UIField2';
 
 export const postsSlug = 'posts';
 
@@ -9,15 +10,21 @@ export const PostsCollection: CollectionConfig = {
     {
       name: 'text',
       type: 'text',
+      admin: {
+        components: {
+          Field: UIField
+        },
+      }
     },
     {
-      name: 'associatedMedia',
-      type: 'upload',
-      relationTo: mediaSlug,
-      access: {
-        create: () => true,
-        update: () => false,
-      },
-    },
+      name: 'uifield',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: UIField2
+        },
+        position: 'sidebar',
+      }
+    }
   ],
 };

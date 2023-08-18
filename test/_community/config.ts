@@ -18,6 +18,24 @@ export default buildConfigWithDefaults({
   graphQL: {
     schemaOutputFile: './test/_community/schema.graphql',
   },
+  i18n: {
+    fallbackLng: 'en',
+    debug: true, //FIXME
+
+    //see https://payloadcms.com/docs/configuration/i18n#configuration-options
+    resources: {
+        en: {
+            custom: {
+                loading: 'loading...'
+            }
+        },
+        de: {
+            custom: {
+                loading: 'Lade...'
+            }
+        }
+    }
+},
 
   onInit: async (payload) => {
     await payload.create({

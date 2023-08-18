@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "paths": {
       "payload/generated-types": [
         "./payload-types.ts"
