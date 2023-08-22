@@ -10,6 +10,7 @@ export interface Config {
     posts: Post;
     media: Media;
     users: User;
+    foo: any;
   };
   globals: {
     menu: Menu;
