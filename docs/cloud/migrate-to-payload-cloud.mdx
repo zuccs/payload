@@ -1,0 +1,53 @@
+---
+title: Migrate to Payload Cloud
+label: Migrate to Payload Cloud
+order: 50
+desc: Migrate to Payload Cloud from your existing Payload project.
+keywords: migrate, migrating, cloud, payload cloud, projects, project, overview, database, file storage, build settings, environment variables, custom domains, email, developing locally
+---
+
+### Overview
+
+If you currently have a Payload project, you can migrate it to Payload Cloud.
+
+There are 3 things that you will need to migrate:
+
+1. Add Payload Cloud plugin to your project
+1. Database
+1. File Storage
+
+#### Cloud Plugin
+
+Projects generated from a template will come pre-configured with the official Cloud Plugin, but if you are using your own repository you will need to add this into your project. To do so, add the plugin to your Payload config:
+
+`yarn add @payloadcms/plugin-cloud`
+
+```js
+import { payloadCloud } from "@payloadcms/plugin-cloud";
+import { buildConfig } from "payload/config";
+
+export default buildConfig({
+  // rest of config
+  plugins: [payloadCloud()],
+});
+```
+
+#### Database
+
+Payload Cloud issues a new database for each project. You will need to migrate your data from your existing database to the new one.
+
+1. Perform `mongodump` of your database. This will create a `dump/database-name` directory. Adjust the uri accordingly.
+
+  `mongodump --uri=mongodb://localhost/database-name`
+
+2. Retrieve the Payloud Cloud database connection string from the Payload Cloud dashboard. This is under your project's Database tab. Click the eye to reveal the value.
+
+3. Perform `mongorestore` to the Payload Cloud database using the connection string from the dashboard.
+
+  `mongorestore --uri=mongodb+srv://my-secret-connection-string dump/database-name`
+
+4. Delete the `dump` directory
+
+#### File storage
+
+_File storage migration details coming soon_
