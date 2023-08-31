@@ -1,6 +1,7 @@
 import path from 'path'
 
 import type { CollectionConfig } from '../../../../src/collections/config/types.js'
+const __dirname = path.dirname(new URL(import.meta.url).pathname)
 
 const Uploads: CollectionConfig = {
   slug: 'uploads',
