@@ -13,7 +13,7 @@ type Args = {
 }
 export const deleteUserPreferences = ({ collectionConfig, ids, payload, req }: Args) => {
   if (collectionConfig.auth) {
-    payload.db.deleteMany({
+    void payload.db.deleteMany({
       collection: 'payload-preferences',
       req,
       where: {
@@ -24,7 +24,7 @@ export const deleteUserPreferences = ({ collectionConfig, ids, payload, req }: A
       },
     })
   }
-  payload.db.deleteMany({
+  void payload.db.deleteMany({
     collection: 'payload-preferences',
     req,
     where: {

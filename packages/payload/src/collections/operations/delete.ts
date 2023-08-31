@@ -177,7 +177,7 @@ async function deleteOperation<TSlug extends keyof GeneratedTypes['collections']
         // /////////////////////////////////////
 
         if (collectionConfig.versions) {
-          deleteCollectionVersions({
+          void deleteCollectionVersions({
             id,
             payload,
             req,
@@ -250,7 +250,7 @@ async function deleteOperation<TSlug extends keyof GeneratedTypes['collections']
     // Delete Preferences
     // /////////////////////////////////////
 
-    deleteUserPreferences({
+    void deleteUserPreferences({
       collectionConfig,
       ids: docs.map(({ id }) => id),
       payload,
