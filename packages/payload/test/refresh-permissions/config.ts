@@ -1,3 +1,5 @@
+import type { Setting } from './payload-types.js'
+
 import { buildConfigWithDefaults } from '../buildConfigWithDefaults.js'
 import { devUser } from '../credentials.js'
 import GlobalViewWithRefresh from './GlobalViewWithRefresh.js'
@@ -28,7 +30,7 @@ export default buildConfigWithDefaults({
       fields: [],
       access: {
         read: async ({ req: { payload } }) => {
-          const access = await payload.findGlobal({ slug: 'settings' })
+          const access: Setting = (await payload.findGlobal({ slug: 'settings' })) as Setting
           return access.test
         },
       },
