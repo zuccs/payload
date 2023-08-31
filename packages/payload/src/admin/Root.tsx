@@ -1,7 +1,9 @@
 'use client'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { ModalContainer, ModalProvider } = facelessui
+
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
 // @ts-expect-error - need to do this because this file doesn't actually exist

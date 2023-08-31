@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
 import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import { useCallback, useEffect } from 'react'
 
 import { setsAreEqual } from '../utilities/setsAreEqual.js'
@@ -66,8 +67,6 @@ const useHotkey = (
   func: (e: KeyboardEvent) => void,
 ): void => {
   const { cmdCtrlKey, editDepth, keyCodes } = options
-
-  const { useModal } = facelessui
 
   const { modalState } = useModal()
 

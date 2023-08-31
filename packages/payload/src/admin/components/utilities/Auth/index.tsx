@@ -1,4 +1,5 @@
 import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import jwtDecodeImp from 'jwt-decode'
 const jwtDecode = 'default' in jwtDecodeImp ? jwtDecodeImp.default : jwtDecodeImp
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
@@ -34,7 +35,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const exp = user?.exp
 
   const [permissions, setPermissions] = useState<Permissions>()
-  const { useModal } = facelessui
 
   const { i18n } = useTranslation()
   const { closeAllModals, openModal } = useModal()

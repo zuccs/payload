@@ -1,4 +1,5 @@
-import { Modal, useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { Modal, useModal } = facelessui
 import * as pkg from '@faceless-ui/window-info'
 const { useWindowInfo } = pkg
 import React, { useCallback, useEffect, useState } from 'react'

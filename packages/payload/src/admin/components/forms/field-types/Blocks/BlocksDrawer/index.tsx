@@ -1,6 +1,7 @@
 import type { i18n } from 'i18next'
 
-import { useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 

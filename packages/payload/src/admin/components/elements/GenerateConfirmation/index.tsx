@@ -1,4 +1,5 @@
-import { Modal, useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { Modal, useModal } = facelessui
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'

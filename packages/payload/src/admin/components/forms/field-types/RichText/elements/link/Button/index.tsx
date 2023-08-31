@@ -1,4 +1,5 @@
-import { useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import React, { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Editor, Range, Transforms } from 'slate'

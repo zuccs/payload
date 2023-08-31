@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react'
 
-import { useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import React, { useCallback, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Editor, Node, Transforms } from 'slate'

@@ -1,4 +1,5 @@
-import { useModal } from '@faceless-ui/modal'
+import * as facelessui from '@faceless-ui/modal'
+const { useModal } = facelessui
 import React from 'react'
 
 import type { Block, Labels } from '../../../../../fields/config/types.js'

@@ -1,4 +1,5 @@
-import { unflatten } from 'flatley'
+import flatley from 'flatley'
+const { unflatten } = flatley
 
 import type { Fields } from './types.js'
 

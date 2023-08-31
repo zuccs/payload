@@ -1,10 +1,8 @@
 import flatley from 'flatley'
-
+const { unflatten } = flatley
 import type { Data, Fields } from './types.js'
 
 import reduceFieldsToValues from './reduceFieldsToValues.js'
-
-const { unflatten } = flatley
 
 const getSiblingData = (fields: Fields, path: string): Data => {
   if (path.indexOf('.') === -1) {
