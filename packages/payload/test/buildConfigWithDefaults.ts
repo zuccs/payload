@@ -1,8 +1,8 @@
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import path from 'path'
 
 import type { Config, SanitizedConfig } from '../src/config/types.js'
 
-import { mongooseAdapter } from '../../db-mongodb/src/index.js'
 import { buildConfig as buildPayloadConfig } from '../src/config/build.js'
 //import { postgresAdapter } from '../../db-postgres/src/index.js';
 const __dirname = path.dirname(new URL(import.meta.url).pathname)
@@ -53,32 +53,8 @@ export function buildConfigWithDefaults(testConfig?: Partial<Config>): Promise<S
           ...existingConfig.resolve,
           alias: {
             ...existingConfig.resolve?.alias,
-            [path.resolve(__dirname, '../../db-postgres/src/index')]: path.resolve(
-              __dirname,
-              '../../db-postgres/src/mock',
-            ),
-            [path.resolve(__dirname, '../../db-mongodb/src/index')]: path.resolve(
-              __dirname,
-              '../../db-mongodb/src/mock',
-            ),
-            [path.resolve(__dirname, '../../db-mongodb/src/index.js')]: path.resolve(
-              __dirname,
-              '../../db-mongodb/src/mock.js',
-            ),
-            [path.resolve(__dirname, '../../db-postgres/src/index.js')]: path.resolve(
-              __dirname,
-              '../../db-postgres/src/mock.js',
-            ),
-            [path.resolve(__dirname, '../../db-mongodb/src/index.ts')]: path.resolve(
-              __dirname,
-              '../../db-mongodb/src/mock.js',
-            ),
-            [path.resolve(__dirname, '../../db-postgres/src/index.ts')]: path.resolve(
-              __dirname,
-              '../../db-postgres/src/mock.js',
-            ),
-            //'@payloadcms/db-mongodb': path.resolve(__dirname, '../../../packages/db-mongodb/src/mock'),
-            //'@payloadcms/db-postgres': path.resolve(__dirname, '../../../packages/db-postgres/src/mock'),
+            '@payloadcms/db-mongodb': path.resolve(__dirname, '../../db-mongodb/src/mock'),
+            // '@payloadcms/db-postgres': path.resolve(__dirname, '../../../packages/db-postgres/src/mock'),
           },
         },
       }
