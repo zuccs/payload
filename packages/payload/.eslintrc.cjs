@@ -11,6 +11,8 @@ module.exports = {
         'playwright.bail.config.ts',
         'bin-cks.cjs',
         'bin-esm.mjs',
+        'esm-loader.mjs',
+        'esm-loader-playwright.mjs',
       ],
     },
     {
