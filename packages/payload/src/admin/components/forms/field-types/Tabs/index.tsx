@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import type { Tab as TabType } from '../../../../../fields/config/types.js'
 import type { DocumentPreferences } from '../../../../../preferences/types.js'
 import type { Props } from './types.js'
 
 import { tabHasName } from '../../../../../fields/config/types.js'
-import { Tab } from '../../../../../fields/config/types.js'
 import { getTranslation } from '../../../../../utilities/getTranslation.js'
 import toKebabCase from '../../../../../utilities/toKebabCase.js'
 import { useCollapsible } from '../../../elements/Collapsible/provider.js'
@@ -27,7 +27,7 @@ type TabProps = {
   isActive?: boolean
   parentPath: string
   setIsActive: () => void
-  tab: Tab
+  tab: TabType
 }
 const Tab: React.FC<TabProps> = ({ isActive, parentPath, setIsActive, tab }) => {
   const { i18n } = useTranslation()
