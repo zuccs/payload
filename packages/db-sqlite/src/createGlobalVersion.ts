@@ -6,12 +6,12 @@ import { type CreateGlobalVersionArgs } from 'payload/database'
 import { buildVersionGlobalFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { upsertRow } from './upsertRow'
 
 export async function createGlobalVersion<T extends TypeWithID> (
-  this: PostgresAdapter,
+  this: SQLiteAdapter,
   { autosave, globalSlug, req = {} as PayloadRequest, versionData }: CreateGlobalVersionArgs,
 ) {
   const db = this.sessions[req.transactionID]?.db || this.db
@@ -36,9 +36,9 @@ export async function createGlobalVersion<T extends TypeWithID> (
 
   if (global.versions.drafts) {
     await db.execute(sql`
-      UPDATE ${table}
-      SET latest = false
-      WHERE ${table.id} != ${result.id};
+        UPDATE ${table}
+        SET latest = false
+        WHERE ${table.id} != ${result.id};
     `)
   }
 

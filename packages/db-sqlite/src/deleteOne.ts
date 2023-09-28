@@ -3,14 +3,14 @@ import type { PayloadRequest } from 'payload/types'
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { buildFindManyArgs } from './find/buildFindManyArgs'
 import buildQuery from './queries/buildQuery'
 import { transform } from './transform/read'
 
-export const deleteOne: DeleteOne = async function deleteOne(
-  this: PostgresAdapter,
+export const deleteOne: DeleteOne = async function deleteOne (
+  this: SQLiteAdapter,
   { collection, req = {} as PayloadRequest, where: incomingWhere },
 ) {
   const db = this.sessions[req.transactionID]?.db || this.db

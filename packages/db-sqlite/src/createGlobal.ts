@@ -3,12 +3,12 @@ import type { PayloadRequest, TypeWithID } from 'payload/types'
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { upsertRow } from './upsertRow'
 
-export async function createGlobal<T extends TypeWithID>(
-  this: PostgresAdapter,
+export async function createGlobal<T extends TypeWithID> (
+  this: SQLiteAdapter,
   { data, req = {} as PayloadRequest, slug }: CreateGlobalArgs,
 ): Promise<T> {
   const db = this.sessions[req.transactionID]?.db || this.db

@@ -3,7 +3,7 @@ import type { Payload } from 'payload'
 import path from 'path'
 import { createDatabaseAdapter } from 'payload/database'
 
-import type { Args, PostgresAdapter, PostgresAdapterResult } from './types'
+import type { Args, SQLiteAdapter, SQLiteAdapterResult } from './types'
 
 import { connect } from './connect'
 import { create } from './create'
@@ -33,17 +33,17 @@ import { updateGlobalVersion } from './updateGlobalVersion'
 import { updateVersion } from './updateVersion'
 import { webpack } from './webpack'
 
-export function postgresAdapter(args: Args): PostgresAdapterResult {
-  function adapter({ payload }: { payload: Payload }) {
+export function sqliteAdapter (args: Args): SQLiteAdapterResult {
+  function adapter ({ payload }: { payload: Payload }) {
     const migrationDir = args.migrationDir || path.resolve(__dirname, '../../../migrations')
-    return createDatabaseAdapter<PostgresAdapter>({
+    return createDatabaseAdapter<SQLiteAdapter>({
       ...args,
-      name: 'postgres',
+      name: 'sqlite',
 
-      // Postgres-specific
+      // adapter-specific
+      database: args.database || 'sqlite.db',
       db: undefined,
       enums: {},
-      pool: undefined,
       relations: {},
       schema: {},
       sessions: {},

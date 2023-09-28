@@ -5,7 +5,7 @@ import type { CreateMigration } from 'payload/database'
 import { generateDrizzleJson, generateMigration } from 'drizzle-kit/utils'
 import fs from 'fs'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { migrationTableExists } from './utilities/migrationTableExists'
 
@@ -53,8 +53,8 @@ const getDefaultDrizzleSnapshot = (): DrizzleSnapshotJSON => ({
   version: '5',
 })
 
-export const createMigration: CreateMigration = async function createMigration(
-  this: PostgresAdapter,
+export const createMigration: CreateMigration = async function createMigration (
+  this: SQLiteAdapter,
   payload,
   migrationName,
 ) {

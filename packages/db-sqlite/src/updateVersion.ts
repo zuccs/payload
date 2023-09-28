@@ -4,13 +4,13 @@ import type { PayloadRequest, SanitizedCollectionConfig, TypeWithID } from 'payl
 import { buildVersionCollectionFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import buildQuery from './queries/buildQuery'
 import { upsertRow } from './upsertRow'
 
-export async function updateVersion<T extends TypeWithID>(
-  this: PostgresAdapter,
+export async function updateVersion<T extends TypeWithID> (
+  this: SQLiteAdapter,
   {
     id,
     collection,

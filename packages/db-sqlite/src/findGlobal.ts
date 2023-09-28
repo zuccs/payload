@@ -2,12 +2,12 @@ import type { FindGlobal } from 'payload/database'
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { findMany } from './find/findMany'
 
-export const findGlobal: FindGlobal = async function findGlobal(
-  this: PostgresAdapter,
+export const findGlobal: FindGlobal = async function findGlobal (
+  this: SQLiteAdapter,
   { locale, req, slug, where },
 ) {
   const globalConfig = this.payload.globals.config.find((config) => config.slug === slug)

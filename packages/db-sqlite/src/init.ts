@@ -2,24 +2,18 @@
 import type { Init } from 'payload/database'
 import type { SanitizedCollectionConfig } from 'payload/types'
 
-import { pgEnum } from 'drizzle-orm/pg-core'
 import { buildVersionCollectionFields, buildVersionGlobalFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { buildTable } from './schema/build'
 
-export const init: Init = async function init(this: PostgresAdapter) {
+export const init: Init = async function init (this: SQLiteAdapter) {
   if (this.payload.config.localization) {
-    this.enums.enum__locales = pgEnum(
-      '_locales',
-      // TODO: types out of sync with core, monorepo please
-      // this.payload.config.localization.localeCodes,
-      (this.payload.config.localization.locales as unknown as { code: string }[]).map(
-        ({ code }) => code,
-      ) as [string, ...string[]],
-    )
+    this.enums.enum__locales = (this.payload.config.localization.locales.map(
+      ({ code }) => code,
+    )) as [string, ...string[]]
   }
 
   this.payload.config.collections.forEach((collection: SanitizedCollectionConfig) => {

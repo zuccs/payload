@@ -1,17 +1,16 @@
-import type { TypeWithVersion } from 'payload/database'
-import type { UpdateGlobalVersionArgs } from 'payload/database'
+import type { TypeWithVersion, UpdateGlobalVersionArgs } from 'payload/database'
 import type { PayloadRequest, SanitizedGlobalConfig, TypeWithID } from 'payload/types'
 
 import { buildVersionGlobalFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import buildQuery from './queries/buildQuery'
 import { upsertRow } from './upsertRow'
 
-export async function updateGlobalVersion<T extends TypeWithID>(
-  this: PostgresAdapter,
+export async function updateGlobalVersion<T extends TypeWithID> (
+  this: SQLiteAdapter,
   {
     id,
     global,

@@ -1,28 +1,15 @@
 /* eslint-disable no-param-reassign */
 import type { Relation } from 'drizzle-orm'
-import type { IndexBuilder, PgColumnBuilder, UniqueConstraintBuilder } from 'drizzle-orm/pg-core'
+import type { IndexBuilder, SQLiteColumnBuilder, UniqueConstraintBuilder } from 'drizzle-orm/sqlite-core'
 import type { Field, TabAsField } from 'payload/types'
 
 import { relations } from 'drizzle-orm'
-import {
-  PgNumericBuilder,
-  PgVarcharBuilder,
-  boolean,
-  index,
-  integer,
-  jsonb,
-  numeric,
-  pgEnum,
-  text,
-  timestamp,
-  unique,
-  varchar,
-} from 'drizzle-orm/pg-core'
+import { SQLiteNumericBuilder, SQLiteTextBuilder, index, integer, numeric, text, unique } from 'drizzle-orm/sqlite-core'
 import { InvalidConfiguration } from 'payload/errors'
 import { fieldAffectsData, optionIsObject } from 'payload/types'
 import toSnakeCase from 'to-snake-case'
 
-import type { GenericColumns, PostgresAdapter } from '../types'
+import type { GenericColumns, SQLiteAdapter } from '../types'
 
 import { hasLocalesTable } from '../utilities/hasLocalesTable'
 import { buildTable } from './build'
@@ -31,16 +18,16 @@ import { parentIDColumnMap } from './parentIDColumnMap'
 import { validateExistingBlockIsIdentical } from './validateExistingBlockIsIdentical'
 
 type Args = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   buildRelationships: boolean
   columnPrefix?: string
-  columns: Record<string, PgColumnBuilder>
+  columns: Record<string, SQLiteColumnBuilder>
   disableUnique?: boolean
   fieldPrefix?: string
   fields: (Field | TabAsField)[]
   forceLocalized?: boolean
   indexes: Record<string, (cols: GenericColumns) => IndexBuilder>
-  localesColumns: Record<string, PgColumnBuilder>
+  localesColumns: Record<string, SQLiteColumnBuilder>
   localesIndexes: Record<string, (cols: GenericColumns) => IndexBuilder>
   newTableName: string
   parentTableName: string
@@ -84,8 +71,8 @@ export const traverseFields = ({
   let hasLocalizedManyNumberField = false
 
   let parentIDColType = 'integer'
-  if (columns.id instanceof PgNumericBuilder) parentIDColType = 'numeric'
-  if (columns.id instanceof PgVarcharBuilder) parentIDColType = 'varchar'
+  if (columns.id instanceof SQLiteNumericBuilder) parentIDColType = 'numeric'
+  if (columns.id instanceof SQLiteTextBuilder) parentIDColType = 'text'
 
   fields.forEach((field) => {
     if ('name' in field && field.name === 'id') return
@@ -127,7 +114,7 @@ export const traverseFields = ({
       case 'email':
       case 'code':
       case 'textarea': {
-        targetTable[fieldName] = varchar(columnName)
+        targetTable[fieldName] = text(columnName)
         break
       }
 
@@ -156,16 +143,12 @@ export const traverseFields = ({
 
       case 'richText':
       case 'json': {
-        targetTable[fieldName] = jsonb(columnName)
+        targetTable[fieldName] = text(columnName, { mode: 'json' })
         break
       }
 
       case 'date': {
-        targetTable[fieldName] = timestamp(columnName, {
-          mode: 'string',
-          precision: 3,
-          withTimezone: true,
-        })
+        targetTable[fieldName] = text(columnName)
         break
       }
 
@@ -177,24 +160,22 @@ export const traverseFields = ({
       case 'select': {
         const enumName = `enum_${newTableName}_${columnPrefix || ''}${toSnakeCase(field.name)}`
 
-        adapter.enums[enumName] = pgEnum(
-          enumName,
+        adapter.enums[enumName] =
           field.options.map((option) => {
             if (optionIsObject(option)) {
               return option.value
             }
 
             return option
-          }) as [string, ...string[]],
-        )
+          }) as [string, ...string[]]
 
         if (field.type === 'select' && field.hasMany) {
-          const baseColumns: Record<string, PgColumnBuilder> = {
+          const baseColumns: Record<string, SQLiteColumnBuilder> = {
             order: integer('order').notNull(),
             parent: parentIDColumnMap[parentIDColType]('parent_id')
               .references(() => adapter.tables[parentTableName].id, { onDelete: 'cascade' })
               .notNull(),
-            value: adapter.enums[enumName]('value'),
+            value: text('value', { enum: adapter.enums[enumName] })
           }
 
           const baseExtraConfig: Record<
@@ -203,7 +184,7 @@ export const traverseFields = ({
           > = {}
 
           if (field.localized) {
-            baseColumns.locale = adapter.enums.enum__locales('locale').notNull()
+            baseColumns.locale = text('locale', { enum: adapter.enums.enum__locales }).notNull()
             baseExtraConfig.parentOrderLocale = (cols) =>
               unique().on(cols.parent, cols.order, cols.locale)
           } else {
@@ -241,18 +222,18 @@ export const traverseFields = ({
 
           adapter.relations[`relation_${selectTableName}`] = selectTableRelations
         } else {
-          targetTable[fieldName] = adapter.enums[enumName](fieldName)
+          targetTable[fieldName] = text(fieldName, { enum: adapter.enums[enumName] })
         }
         break
       }
 
       case 'checkbox': {
-        targetTable[fieldName] = boolean(columnName)
+        targetTable[fieldName] = integer(columnName, { mode: 'boolean' })
         break
       }
 
       case 'array': {
-        const baseColumns: Record<string, PgColumnBuilder> = {
+        const baseColumns: Record<string, SQLiteColumnBuilder> = {
           _order: integer('_order').notNull(),
           _parentID: parentIDColumnMap[parentIDColType]('_parent_id')
             .references(() => adapter.tables[parentTableName].id, { onDelete: 'cascade' })
@@ -265,7 +246,7 @@ export const traverseFields = ({
         > = {}
 
         if (field.localized && adapter.payload.config.localization) {
-          baseColumns._locale = adapter.enums.enum__locales('_locale').notNull()
+          baseColumns._locale = text('locale', { enum: adapter.enums.enum__locales }).notNull()
           baseExtraConfig._parentOrderLocale = (cols) =>
             unique().on(cols._parentID, cols._order, cols._locale)
         } else {
@@ -316,7 +297,7 @@ export const traverseFields = ({
         field.blocks.forEach((block) => {
           const blockTableName = `${rootTableName}_blocks_${toSnakeCase(block.slug)}`
           if (!adapter.tables[blockTableName]) {
-            const baseColumns: Record<string, PgColumnBuilder> = {
+            const baseColumns: Record<string, SQLiteColumnBuilder> = {
               _order: integer('_order').notNull(),
               _parentID: parentIDColumnMap[rootTableIDColType]('_parent_id')
                 .references(() => adapter.tables[rootTableName].id, { onDelete: 'cascade' })
@@ -330,7 +311,7 @@ export const traverseFields = ({
             > = {}
 
             if (field.localized && adapter.payload.config.localization) {
-              baseColumns._locale = adapter.enums.enum__locales('_locale').notNull()
+              baseColumns._locale = text('locale', { enum: adapter.enums.enum__locales }).notNull()
               baseExtraConfig._parentPathOrderLocale = (cols) =>
                 unique().on(cols._parentID, cols._path, cols._order, cols._locale)
             } else {

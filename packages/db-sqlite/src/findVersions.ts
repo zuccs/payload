@@ -4,12 +4,12 @@ import type { PayloadRequest, SanitizedCollectionConfig } from 'payload/types'
 import { buildVersionCollectionFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { findMany } from './find/findMany'
 
-export const findVersions: FindVersions = async function findVersions(
-  this: PostgresAdapter,
+export const findVersions: FindVersions = async function findVersions (
+  this: SQLiteAdapter,
   {
     collection,
     limit,

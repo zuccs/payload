@@ -3,14 +3,14 @@ import type { SQL } from 'drizzle-orm'
 import type { Field, FieldAffectingData, TabAsField } from 'payload/types'
 
 import { and, eq, sql } from 'drizzle-orm'
-import { alias } from 'drizzle-orm/pg-core'
+import { alias } from 'drizzle-orm/sqlite-core'
 import { APIError } from 'payload/errors'
 import { fieldAffectsData, tabHasName } from 'payload/types'
 import { flattenTopLevelFields } from 'payload/utilities'
 import toSnakeCase from 'to-snake-case'
 import { v4 as uuid } from 'uuid'
 
-import type { GenericColumn, GenericTable, PostgresAdapter } from '../types'
+import type { GenericColumn, GenericTable, SQLiteAdapter } from '../types'
 import type { BuildQueryJoinAliases, BuildQueryJoins } from './buildQuery'
 
 type Constraint = {
@@ -30,7 +30,7 @@ type TableColumn = {
 }
 
 type Args = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   aliasTable?: GenericTable
   collectionPath: string
   columnPrefix?: string

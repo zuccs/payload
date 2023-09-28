@@ -5,12 +5,12 @@ import { sql } from 'drizzle-orm'
 import { buildVersionCollectionFields } from 'payload/versions'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { upsertRow } from './upsertRow'
 
-export async function createVersion<T extends TypeWithID>(
-  this: PostgresAdapter,
+export async function createVersion<T extends TypeWithID> (
+  this: SQLiteAdapter,
   {
     autosave,
     collectionSlug,
@@ -43,14 +43,14 @@ export async function createVersion<T extends TypeWithID>(
 
   if (collection.versions.drafts) {
     await db.execute(sql`
-      UPDATE ${table}
-      SET latest = false
-      FROM ${relationshipsTable}
-      WHERE ${table.id} = ${relationshipsTable.parent}
-        AND ${relationshipsTable.path} = ${'parent'}
-        AND ${relationshipsTable[`${collectionSlug}ID`]} = ${parent}
-        AND ${table.id} != ${result.id};
-  `)
+        UPDATE ${table}
+        SET latest = false
+            FROM ${relationshipsTable}
+        WHERE ${table.id} = ${relationshipsTable.parent}
+          AND ${relationshipsTable.path} = ${'parent'}
+          AND ${relationshipsTable[`${collectionSlug}ID`]} = ${parent}
+          AND ${table.id} != ${result.id};
+    `)
   }
 
   return result

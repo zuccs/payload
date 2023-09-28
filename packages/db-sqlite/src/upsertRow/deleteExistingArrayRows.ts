@@ -1,9 +1,9 @@
 import { and, eq } from 'drizzle-orm'
 
-import type { DrizzleDB, PostgresAdapter } from '../types'
+import type { DrizzleDB, SQLiteAdapter } from '../types'
 
 type Args = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   db: DrizzleDB
   parentID: unknown
   tableName: string

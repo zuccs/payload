@@ -3,12 +3,12 @@ import type { PayloadRequest, SanitizedCollectionConfig } from 'payload/types'
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { findMany } from './find/findMany'
 
-export const find: Find = async function find(
-  this: PostgresAdapter,
+export const find: Find = async function find (
+  this: SQLiteAdapter,
   {
     collection,
     limit: limitArg,

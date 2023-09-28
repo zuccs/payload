@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 import type { ArrayRowToInsert } from '../transform/write/types'
-import type { DrizzleDB, PostgresAdapter } from '../types'
+import type { DrizzleDB, SQLiteAdapter } from '../types'
 
 type Args = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   arrays: {
     [tableName: string]: ArrayRowToInsert[]
   }[]

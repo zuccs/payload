@@ -2,12 +2,12 @@
 import { generateDrizzleJson } from 'drizzle-kit/utils'
 import { readMigrationFiles } from 'payload/database'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { createMigrationTable } from './utilities/createMigrationTable'
 import { migrationTableExists } from './utilities/migrationTableExists'
 
-export async function migrate(this: PostgresAdapter): Promise<void> {
+export async function migrate (this: SQLiteAdapter): Promise<void> {
   const { payload } = this
   const migrationFiles = await readMigrationFiles({ payload })
 
@@ -46,7 +46,7 @@ export async function migrate(this: PostgresAdapter): Promise<void> {
 
     payload.logger.info({ msg: `Migrating: ${migration.name}` })
 
-    const pgAdapter = payload.db as PostgresAdapter // TODO: Fix this typing
+    const pgAdapter = payload.db  // TODO: Fix this typing
     const drizzleJSON = generateDrizzleJson(pgAdapter.schema)
 
     try {

@@ -3,14 +3,14 @@ import type { PayloadRequest, SanitizedCollectionConfig, TypeWithID } from 'payl
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { buildFindManyArgs } from './find/buildFindManyArgs'
 import buildQuery from './queries/buildQuery'
 import { transform } from './transform/read'
 
-export async function findOne<T extends TypeWithID>(
-  this: PostgresAdapter,
+export async function findOne<T extends TypeWithID> (
+  this: SQLiteAdapter,
   { collection, locale, req = {} as PayloadRequest, where: incomingWhere }: FindOneArgs,
 ): Promise<T> {
   const db = this.sessions[req.transactionID]?.db || this.db

@@ -1,67 +1,59 @@
-import type {
-  ColumnBaseConfig,
-  ColumnDataType,
-  ExtractTablesWithRelations,
-  Relation,
-  Relations,
-} from 'drizzle-orm'
-import type { NodePgDatabase, NodePgQueryResultHKT } from 'drizzle-orm/node-postgres'
-import type { PgColumn, PgEnum, PgTableWithColumns, PgTransaction } from 'drizzle-orm/pg-core'
+import type { ColumnBaseConfig, ColumnDataType, ExtractTablesWithRelations, Relation, Relations, } from 'drizzle-orm'
+import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import type { SQLiteColumn, SQLiteTable, SQLiteTableWithColumns, SQLiteTransaction } from 'drizzle-orm/sqlite-core'
 import type { DatabaseAdapter, Payload } from 'payload'
-import type { Pool, PoolConfig } from 'pg'
 
-export type DrizzleDB = NodePgDatabase<Record<string, unknown>>
+export type DrizzleDB = BetterSQLite3Database<Record<string, unknown>>
 
 export type Args = {
-  client: PoolConfig
+  /**
+   * The .db file path to read and write from
+   */
+  database?: string
   migrationDir?: string
   migrationName?: string
 }
 
-export type GenericColumn = PgColumn<
+export type GenericColumn = SQLiteColumn<
   ColumnBaseConfig<ColumnDataType, string>,
-  Record<string, unknown>
+  object
 >
 
 export type GenericColumns = {
   [x: string]: GenericColumn
 }
 
-export type GenericTable = PgTableWithColumns<{
+export type GenericTable = SQLiteTableWithColumns<{
   columns: GenericColumns
-  dialect: string
+  dialect: 'sqlite'
+  // dialect: string
   name: string
   schema: undefined
 }>
 
-export type GenericEnum = PgEnum<[string, ...string[]]>
+// enums are not enforced by the database
 
 export type GenericRelation = Relations<string, Record<string, Relation<string>>>
 
-export type DrizzleTransaction = PgTransaction<
-  NodePgQueryResultHKT,
-  Record<string, unknown>,
-  ExtractTablesWithRelations<Record<string, unknown>>
->
+export type DrizzleTransaction = SQLiteTransaction<'sync', Record<string, unknown>, ExtractTablesWithRelations<Record<string, unknown>>, ExtractTablesWithRelations<Record<string, unknown>>>
 
-export type PostgresAdapter = DatabaseAdapter &
+export type SQLiteAdapter = DatabaseAdapter &
   Args & {
-    db: DrizzleDB
-    enums: Record<string, GenericEnum>
-    pool: Pool
-    relations: Record<string, GenericRelation>
-    schema: Record<string, GenericEnum | GenericRelation | GenericTable>
-    sessions: {
-      [id: string]: {
-        db: DrizzleTransaction
-        reject: () => void
-        resolve: () => void
-      }
+  db: DrizzleDB
+  enums: Record<string, [string, ...string[]]>
+  relations: Record<string, GenericRelation>
+  schema: Record<string, GenericRelation | SQLiteTable>
+  sessions: {
+    [id: string]: {
+      db: DrizzleTransaction
+      reject: () => void
+      resolve: () => void
     }
-    tables: Record<string, GenericTable>
   }
+  tables: Record<string, GenericTable>
+}
 
-export type PostgresAdapterResult = (args: { payload: Payload }) => PostgresAdapter
+export type SQLiteAdapterResult = (args: { payload: Payload }) => SQLiteAdapter
 
 export type MigrateUpArgs = { payload: Payload }
 export type MigrateDownArgs = { payload: Payload }

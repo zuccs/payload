@@ -10,7 +10,7 @@ import type { PostgresAdapter } from './types'
 
 import { buildTable } from './schema/build'
 
-export const init: Init = async function init(this: PostgresAdapter) {
+export const init: Init = async function init (this: PostgresAdapter) {
   if (this.payload.config.localization) {
     this.enums.enum__locales = pgEnum(
       '_locales',

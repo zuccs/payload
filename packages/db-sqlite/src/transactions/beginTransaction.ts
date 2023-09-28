@@ -2,10 +2,10 @@ import type { BeginTransaction } from 'payload/database'
 
 import { v4 as uuid } from 'uuid'
 
-import type { DrizzleTransaction, PostgresAdapter } from '../types'
+import type { DrizzleTransaction, SQLiteAdapter } from '../types'
 
-export const beginTransaction: BeginTransaction = async function beginTransaction(
-  this: PostgresAdapter,
+export const beginTransaction: BeginTransaction = async function beginTransaction (
+  this: SQLiteAdapter,
 ) {
   let id
   try {

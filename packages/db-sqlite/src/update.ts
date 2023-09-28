@@ -2,13 +2,13 @@ import type { UpdateOne } from 'payload/database'
 
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import buildQuery from './queries/buildQuery'
 import { upsertRow } from './upsertRow'
 
 export const updateOne: UpdateOne = async function updateOne (
-  this: PostgresAdapter,
+  this: SQLiteAdapter,
   { id, collection: collectionSlug, data, draft, locale, req, where: whereArg },
 ) {
   const db = this.sessions[req.transactionID]?.db || this.db

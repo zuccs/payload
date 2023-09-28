@@ -3,7 +3,7 @@ import type { Field, PayloadRequest, TypeWithID } from 'payload/types'
 
 import { inArray, sql } from 'drizzle-orm'
 
-import type { PostgresAdapter } from '../types'
+import type { SQLiteAdapter } from '../types'
 import type { ChainedMethods } from './chainMethods'
 
 import buildQuery from '../queries/buildQuery'
@@ -12,12 +12,12 @@ import { buildFindManyArgs } from './buildFindManyArgs'
 import { chainMethods } from './chainMethods'
 
 type Args = Omit<FindArgs, 'collection'> & {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   fields: Field[]
   tableName: string
 }
 
-export const findMany = async function find({
+export const findMany = async function find ({
   adapter,
   fields,
   limit: limitArg,

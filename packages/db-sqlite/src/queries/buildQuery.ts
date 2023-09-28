@@ -3,7 +3,7 @@ import type { Field, Where } from 'payload/types'
 
 import { asc, desc } from 'drizzle-orm'
 
-import type { GenericColumn, GenericTable, PostgresAdapter } from '../types'
+import type { GenericColumn, GenericTable, SQLiteAdapter } from '../types'
 
 import { getTableColumnFromPath } from './getTableColumnFromPath'
 import { parseParams } from './parseParams'
@@ -16,7 +16,7 @@ export type BuildQueryJoinAliases = {
 }[]
 
 type BuildQueryArgs = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   fields: Field[]
   locale?: string
   sort?: string
@@ -29,12 +29,12 @@ type Result = {
   joins: BuildQueryJoins
   orderBy: {
     column: GenericColumn
-    order: typeof asc | typeof desc
+    order: typeof asc
   }
   selectFields: Record<string, GenericColumn>
   where: SQL
 }
-const buildQuery = async function buildQuery({
+const buildQuery = async function buildQuery ({
   adapter,
   fields,
   locale,

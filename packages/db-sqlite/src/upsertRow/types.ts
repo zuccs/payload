@@ -1,10 +1,10 @@
 import type { SQL } from 'drizzle-orm'
 import type { Field } from 'payload/types'
 
-import type { DrizzleDB, GenericColumn, PostgresAdapter } from '../types'
+import type { DrizzleDB, GenericColumn, SQLiteAdapter } from '../types'
 
 type BaseArgs = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   data: Record<string, unknown>
   db: DrizzleDB
   fields: Field[]

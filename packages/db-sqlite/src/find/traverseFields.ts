@@ -4,12 +4,12 @@ import type { Field } from 'payload/types'
 import { fieldAffectsData } from 'payload/types'
 import toSnakeCase from 'to-snake-case'
 
-import type { PostgresAdapter } from '../types'
+import type { SQLiteAdapter } from '../types'
 import type { Result } from './buildFindManyArgs'
 
 type TraverseFieldArgs = {
   _locales: Record<string, unknown>
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   currentArgs: Record<string, unknown>
   currentTableName: string
   depth?: number

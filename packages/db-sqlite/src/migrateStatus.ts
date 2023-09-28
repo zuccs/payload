@@ -1,11 +1,11 @@
 import { Table } from 'console-table-printer'
 import { getMigrations, readMigrationFiles } from 'payload/database'
 
-import type { PostgresAdapter } from './types'
+import type { SQLiteAdapter } from './types'
 
 import { migrationTableExists } from './utilities/migrationTableExists'
 
-export async function migrateStatus(this: PostgresAdapter): Promise<void> {
+export async function migrateStatus (this: SQLiteAdapter): Promise<void> {
   const { payload } = this
   const migrationFiles = await readMigrationFiles({ payload })
 

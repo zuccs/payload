@@ -1,7 +1,7 @@
-import { integer, numeric, varchar } from 'drizzle-orm/pg-core'
+import { integer, numeric, text } from 'drizzle-orm/sqlite-core'
 
 export const parentIDColumnMap = {
   integer,
   numeric,
-  varchar,
+  text,
 }

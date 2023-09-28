@@ -6,7 +6,7 @@ import { and, ilike, isNotNull, isNull, ne, or, sql } from 'drizzle-orm'
 import { QueryError } from 'payload/errors'
 import { validOperators } from 'payload/types'
 
-import type { GenericColumn, PostgresAdapter } from '../types'
+import type { GenericColumn, SQLiteAdapter } from '../types'
 import type { BuildQueryJoinAliases, BuildQueryJoins } from './buildQuery'
 
 import { buildAndOrConditions } from './buildAndOrConditions'
@@ -17,7 +17,7 @@ import { operatorMap } from './operatorMap'
 import { sanitizeQueryValue } from './sanitizeQueryValue'
 
 type Args = {
-  adapter: PostgresAdapter
+  adapter: SQLiteAdapter
   fields: Field[]
   joinAliases: BuildQueryJoinAliases
   joins: BuildQueryJoins
