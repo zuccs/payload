@@ -8,7 +8,6 @@ import { formatDate } from '../../../utilities/formatDate'
 import { useConfig } from '../../utilities/Config'
 import { useDocumentInfo } from '../../utilities/DocumentInfo'
 import Autosave from '../Autosave'
-import Button from '../Button'
 import DeleteDocument from '../DeleteDocument'
 import DuplicateDocument from '../DuplicateDocument'
 import { Gutter } from '../Gutter'
@@ -20,6 +19,7 @@ import { Save } from '../Save'
 import { SaveDraft } from '../SaveDraft'
 import Status from '../Status'
 import './index.scss'
+import { ControlsButton } from './ControlsButton'
 
 const baseClass = 'doc-controls'
 
@@ -190,51 +190,45 @@ export const DocumentControls: React.FC<{
               </React.Fragment>
             )}
           </div>
-          {showDotMenu && (
-            <Popup
-              button={
-                <div className={`${baseClass}__dots`}>
-                  <div />
-                  <div />
-                  <div />
-                </div>
-              }
-              className={`${baseClass}__popup`}
-              horizontalAlign="right"
-              size="large"
-              verticalAlign="bottom"
-            >
-              <PopupList.ButtonGroup>
-                {'create' in permissions && permissions?.create?.permission && (
-                  <React.Fragment>
-                    <PopupList.Button
-                      id="action-create"
-                      to={`${adminRoute}/collections/${collection?.slug}/create`}
-                    >
-                      {t('createNew')}
-                    </PopupList.Button>
-
-                    {!collection?.admin?.disableDuplicate && isEditing && (
-                      <PopupList.Button>
-                        <DuplicateDocument
-                          collection={collection}
-                          id={id}
-                          slug={collection?.slug}
-                        />
-                      </PopupList.Button>
-                    )}
-                  </React.Fragment>
-                )}
-                {'delete' in permissions && permissions?.delete?.permission && id && (
-                  <PopupList.Button>
-                    <DeleteDocument buttonId="action-delete" collection={collection} id={id} />
-                  </PopupList.Button>
-                )}
-              </PopupList.ButtonGroup>
-            </Popup>
-          )}
+          <ControlsButton
+            ariaLabel="invisible"
+            className={`${baseClass}__controls-button-spacing`}
+          />
         </div>
       </div>
+      {showDotMenu && (
+        <Popup
+          button={<ControlsButton />}
+          className={`${baseClass}__popup`}
+          horizontalAlign="right"
+          size="large"
+          verticalAlign="bottom"
+        >
+          <PopupList.ButtonGroup>
+            {'create' in permissions && permissions?.create?.permission && (
+              <React.Fragment>
+                <PopupList.Button
+                  id="action-create"
+                  to={`${adminRoute}/collections/${collection?.slug}/create`}
+                >
+                  {t('createNew')}
+                </PopupList.Button>
+
+                {!collection?.admin?.disableDuplicate && isEditing && (
+                  <PopupList.Button>
+                    <DuplicateDocument collection={collection} id={id} slug={collection?.slug} />
+                  </PopupList.Button>
+                )}
+              </React.Fragment>
+            )}
+            {'delete' in permissions && permissions?.delete?.permission && id && (
+              <PopupList.Button>
+                <DeleteDocument buttonId="action-delete" collection={collection} id={id} />
+              </PopupList.Button>
+            )}
+          </PopupList.ButtonGroup>
+        </Popup>
+      )}
     </Gutter>
   )
 }

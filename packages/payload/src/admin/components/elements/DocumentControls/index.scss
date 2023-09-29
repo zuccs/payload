@@ -20,6 +20,16 @@
     top: 100%;
   }
 
+  // place the popup button outside the `overflow: hidden` container so that the button is visible despite the expected clipping
+  // replace the absolutely positioned button with a placeholder of the exact same size so that its space is retained in the DOM
+  &__popup {
+    position: absolute;
+    right: var(--gutter-h);
+    top: 50%;
+    transform: translate3d(0, -50%, 0);
+    z-index: var(--z-modal);
+  }
+
   &__wrapper {
     position: relative;
     width: 100%;
@@ -28,6 +38,7 @@
     gap: var(--base);
     padding-bottom: 1px;
     z-index: 1;
+    overflow: hidden;
   }
 
   &__content {
@@ -85,6 +96,7 @@
   &__controls {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     margin: 0;
     gap: calc(var(--base) / 2);
 
@@ -92,6 +104,10 @@
       margin: 0;
       white-space: nowrap;
     }
+  }
+
+  &__controls-button-spacing {
+    visibility: hidden;
   }
 
   &__dots {
@@ -119,10 +135,6 @@
     }
   }
 
-  &__popup {
-    position: relative;
-  }
-
   .popup--active {
     .doc-controls {
       &__dots {
@@ -134,59 +146,5 @@
 
   .popup__trigger-wrap {
     display: flex;
-  }
-
-  @include mid-break {
-    // On mobile, only stick the controls to the top
-    // The timestamps and meta can scroll past
-    // The same container needs to the sticky, though
-    // So we use a static height with a negative top
-    top: calc(var(--doc-controls-height) * -1);
-    padding-right: 0;
-    padding-left: 0;
-
-    &__wrapper {
-      flex-direction: column;
-      gap: 0;
-    }
-
-    &__content {
-      width: 100%;
-      align-items: flex-start;
-      padding-top: calc(var(--base) / 2);
-      overflow: auto;
-
-      // this container has a fixed height
-      // this means the scrollbar (when present) overlaps the content
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    &__meta {
-      width: auto;
-      gap: calc(var(--base) / 2);
-      margin-left: var(--gutter-h);
-      margin-right: var(--gutter-h);
-    }
-
-    &__controls-wrapper {
-      width: 100%;
-      transform: translate3d(0, 0, 0);
-      padding: calc(var(--base) / 2) 0;
-      overflow: auto;
-    }
-
-    &__controls {
-      margin-left: var(--gutter-h);
-      margin-right: var(--gutter-h);
-    }
-
-    &__popup {
-      // TODO: the container needs to overflow on mobile
-      // But the popup interferes with this because it requires overflow in order to be visible
-      // So we likely need to outright show the controls nested within the popup on mobile
-      display: none;
-    }
   }
 }

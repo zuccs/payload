@@ -19,6 +19,7 @@ a.btn {
   color: inherit;
 
   .btn__icon {
+    flex-shrink: 0;
     border: 1px solid;
     border-radius: 100%;
     @include color-svg(currentColor);
@@ -141,6 +142,7 @@ a.btn {
     span {
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
     &.btn--style-primary {

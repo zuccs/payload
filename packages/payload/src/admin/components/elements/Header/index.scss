@@ -10,8 +10,8 @@
     display: none;
   }
 
-  // place the localizer outside the `overflow: hidden` container so that the popup is visible
-  // this means we need to use a placeholder div so that the space is retained in the DOM
+  // place the localizer button outside the `overflow: hidden` container so that the button is visible despite the expected clipping
+  // replace the absolutely positioned button with a placeholder of the exact same size so that its space is retained in the DOM
   &__localizer {
     position: absolute;
     top: 50%;
