@@ -35,7 +35,7 @@ export async function createGlobalVersion<T extends TypeWithID> (
   const table = this.tables[tableName]
 
   if (global.versions.drafts) {
-    await db.execute(sql`
+    await db.run(sql`
         UPDATE ${table}
         SET latest = false
         WHERE ${table.id} != ${result.id};

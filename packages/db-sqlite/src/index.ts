@@ -9,7 +9,6 @@ import { connect } from './connect'
 import { create } from './create'
 import { createGlobal } from './createGlobal'
 import { createGlobalVersion } from './createGlobalVersion'
-import { createMigration } from './createMigration'
 import { createVersion } from './createVersion'
 import { deleteMany } from './deleteMany'
 import { deleteOne } from './deleteOne'
@@ -21,8 +20,6 @@ import { findGlobalVersions } from './findGlobalVersions'
 import { findOne } from './findOne'
 import { findVersions } from './findVersions'
 import { init } from './init'
-import { migrate } from './migrate'
-import { migrateStatus } from './migrateStatus'
 import { queryDrafts } from './queryDrafts'
 import { beginTransaction } from './transactions/beginTransaction'
 import { commitTransaction } from './transactions/commitTransaction'
@@ -56,7 +53,6 @@ export function sqliteAdapter (args: Args): SQLiteAdapterResult {
       create,
       createGlobal,
       createGlobalVersion,
-      createMigration,
       createVersion,
       defaultIDType: 'number',
       deleteMany,
@@ -69,8 +65,6 @@ export function sqliteAdapter (args: Args): SQLiteAdapterResult {
       findOne,
       findVersions,
       init,
-      migrate,
-      migrateStatus,
       migrationDir,
       payload,
       queryDrafts,

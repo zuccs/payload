@@ -6,10 +6,13 @@ import type { Config, SanitizedConfig } from '../packages/payload/src/config/typ
 import { webpackBundler } from '../packages/bundler-webpack/src'
 import { mongooseAdapter } from '../packages/db-mongodb/src/index'
 import { postgresAdapter } from '../packages/db-postgres/src/index'
+import { sqliteAdapter } from '../packages/db-sqlite'
 import { buildConfig as buildPayloadConfig } from '../packages/payload/src/config/build'
 import { createSlate } from '../packages/richtext-slate/src'
 
+process.env.PAYLOAD_DATABASE = 'sqlite'
 // process.env.PAYLOAD_DATABASE = 'postgres'
+process.env.PAYLOAD_DROP_DATABASE = 'true'
 
 const databaseAdapters = {
   mongoose: mongooseAdapter({
@@ -21,18 +24,22 @@ const databaseAdapters = {
     },
     migrationDir: path.resolve(__dirname, '../packages/db-postgres/migrations'),
   }),
+  sqlite: sqliteAdapter({
+    database: 'sqlite.db',
+    // migrationDir: path.resolve(__dirname, '../packages/db-sqlite/migrations'),
+  }),
 }
 
-export function buildConfigWithDefaults(testConfig?: Partial<Config>): Promise<SanitizedConfig> {
+export function buildConfigWithDefaults (testConfig?: Partial<Config>): Promise<SanitizedConfig> {
   const [name] = process.argv.slice(2)
 
   const config: Config = {
     editor: createSlate({}),
-    telemetry: false,
     rateLimit: {
-      window: 15 * 60 * 100, // 15min default,
       max: 9999999999,
+      window: 15 * 60 * 100, // 15min default,
     },
+    telemetry: false,
     ...testConfig,
     db: databaseAdapters[process.env.PAYLOAD_DATABASE || 'mongoose'],
   }
@@ -42,9 +49,9 @@ export function buildConfigWithDefaults(testConfig?: Partial<Config>): Promise<S
       process.env.PAYLOAD_PUBLIC_DISABLE_AUTO_LOGIN === 'true'
         ? false
         : {
-            email: 'dev@payloadcms.com',
-            password: 'test',
-          },
+          email: 'dev@payloadcms.com',
+          password: 'test',
+        },
     ...(config.admin || {}),
     // bundler: viteBundler(),
     bundler: webpackBundler(),
@@ -55,6 +62,8 @@ export function buildConfigWithDefaults(testConfig?: Partial<Config>): Promise<S
           : webpackConfig
       return {
         ...existingConfig,
+        name,
+        cache: process.env.NODE_ENV === 'test' ? { type: 'memory' } : existingConfig.cache,
         entry: {
           main: [
             `webpack-hot-middleware/client?path=${
@@ -63,26 +72,29 @@ export function buildConfigWithDefaults(testConfig?: Partial<Config>): Promise<S
             path.resolve(__dirname, '../packages/payload/src/admin'),
           ],
         },
-        name,
-        cache: process.env.NODE_ENV === 'test' ? { type: 'memory' } : existingConfig.cache,
         resolve: {
           ...existingConfig.resolve,
           alias: {
             ...existingConfig.resolve?.alias,
-            [path.resolve(__dirname, '../packages/db-postgres/src/index')]: path.resolve(
+            '@payloadcms/db-mongodb': path.resolve(__dirname, '../packages/db-mongodb/src/mock'),
+            '@payloadcms/db-postgres': path.resolve(__dirname, '../packages/db-postgres/src/mock'),
+            '@payloadcms/db-sqlite': path.resolve(__dirname, '../packages/db-sqlite/src/mock'),
+            [path.resolve(__dirname, '../packages/bundler-webpack/src/index')]: path.resolve(
               __dirname,
-              '../packages/db-postgres/src/mock.js',
+              '../packages/bundler-webpack/src/mocks/emptyModule.js',
             ),
             [path.resolve(__dirname, '../packages/db-mongodb/src/index')]: path.resolve(
               __dirname,
               '../packages/db-mongodb/src/mock.js',
             ),
-            [path.resolve(__dirname, '../packages/bundler-webpack/src/index')]: path.resolve(
+            [path.resolve(__dirname, '../packages/db-postgres/src/index')]: path.resolve(
               __dirname,
-              '../packages/bundler-webpack/src/mocks/emptyModule.js',
+              '../packages/db-postgres/src/mock.js',
             ),
-            '@payloadcms/db-mongodb': path.resolve(__dirname, '../packages/db-mongodb/src/mock'),
-            '@payloadcms/db-postgres': path.resolve(__dirname, '../packages/db-postgres/src/mock'),
+            [path.resolve(__dirname, '../packages/db-sqlite/src/index')]: path.resolve(
+              __dirname,
+              '../packages/db-sqlite/src/mock.js',
+            ),
             react: path.resolve(__dirname, '../packages/payload/node_modules/react'),
           },
         },

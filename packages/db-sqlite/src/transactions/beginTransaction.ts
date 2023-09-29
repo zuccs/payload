@@ -15,7 +15,7 @@ export const beginTransaction: BeginTransaction = async function beginTransactio
     let resolve: (value?: unknown) => void
     let transaction: DrizzleTransaction
 
-    let transactionReady: (value?: unknown) => void
+    // let transactionReady: (value?: unknown) => void
 
     // Drizzle only exposes a transactions API that is sufficient if you
     // can directly pass around the `tx` argument. But our operations are spread
@@ -28,18 +28,20 @@ export const beginTransaction: BeginTransaction = async function beginTransactio
       .transaction(async (tx) => {
         transaction = tx
         await new Promise((res, rej) => {
-          transactionReady()
+          // transactionReady()
           resolve = res
           reject = rej
         })
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e)
+        reject(e)
         // swallow
       })
 
     // Need to wait until the transaction is ready
     // before binding its `resolve` and `reject` methods below
-    await new Promise((resolve) => (transactionReady = resolve))
+    // await new Promise((resolve) => (transactionReady = resolve))
 
     this.sessions[id] = {
       db: transaction,
