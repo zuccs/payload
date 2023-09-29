@@ -87,6 +87,12 @@
     gap: calc(var(--base) / 2);
   }
 
+  @include mid-break {
+    &__localizer {
+      right: base(3.5);
+    }
+  }
+
   @include small-break {
     &__localizer {
       right: base(2);
