@@ -1,6 +1,17 @@
-import type { ColumnBaseConfig, ColumnDataType, ExtractTablesWithRelations, Relation, Relations, } from 'drizzle-orm'
+import type {
+  ColumnBaseConfig,
+  ColumnDataType,
+  ExtractTablesWithRelations,
+  Relation,
+  Relations,
+} from 'drizzle-orm'
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
-import type { SQLiteColumn, SQLiteTable, SQLiteTableWithColumns, SQLiteTransaction } from 'drizzle-orm/sqlite-core'
+import type {
+  SQLiteColumn,
+  SQLiteTable,
+  SQLiteTableWithColumns,
+  SQLiteTransaction,
+} from 'drizzle-orm/sqlite-core'
 import type { DatabaseAdapter, Payload } from 'payload'
 
 export type DrizzleDB = BetterSQLite3Database<Record<string, unknown>>
@@ -14,10 +25,7 @@ export type Args = {
   migrationName?: string
 }
 
-export type GenericColumn = SQLiteColumn<
-  ColumnBaseConfig<ColumnDataType, string>,
-  object
->
+export type GenericColumn = SQLiteColumn<ColumnBaseConfig<ColumnDataType, string>, object>
 
 export type GenericColumns = {
   [x: string]: GenericColumn
@@ -35,23 +43,26 @@ export type GenericTable = SQLiteTableWithColumns<{
 
 export type GenericRelation = Relations<string, Record<string, Relation<string>>>
 
-export type DrizzleTransaction = SQLiteTransaction<'sync', Record<string, unknown>, ExtractTablesWithRelations<Record<string, unknown>>, ExtractTablesWithRelations<Record<string, unknown>>>
+export type DrizzleTransaction = SQLiteTransaction<
+  'sync',
+  Record<string, unknown>,
+  ExtractTablesWithRelations<Record<string, unknown>>,
+  ExtractTablesWithRelations<Record<string, unknown>>
+>
 
 export type SQLiteAdapter = DatabaseAdapter &
   Args & {
-  db: DrizzleDB
-  enums: Record<string, [string, ...string[]]>
-  relations: Record<string, GenericRelation>
-  schema: Record<string, GenericRelation | SQLiteTable>
-  sessions: {
-    [id: string]: {
-      db: DrizzleTransaction
-      reject: () => void
-      resolve: () => void
+    db: DrizzleDB
+    enums: Record<string, [string, ...string[]]>
+    relations: Record<string, GenericRelation>
+    schema: Record<string, GenericRelation | SQLiteTable>
+    sessions: {
+      [id: string]: {
+        db: DrizzleTransaction
+      }
     }
+    tables: Record<string, GenericTable>
   }
-  tables: Record<string, GenericTable>
-}
 
 export type SQLiteAdapterResult = (args: { payload: Payload }) => SQLiteAdapter
 

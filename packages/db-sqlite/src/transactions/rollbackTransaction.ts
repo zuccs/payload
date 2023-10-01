@@ -8,7 +8,7 @@ export const rollbackTransaction: RollbackTransaction = async function rollbackT
     return
   }
 
-  await this.sessions[id].reject()
+  // await this.sessions[id].reject()
 
   delete this.sessions[id]
 }

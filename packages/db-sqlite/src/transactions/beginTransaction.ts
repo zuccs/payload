@@ -4,15 +4,13 @@ import { v4 as uuid } from 'uuid'
 
 import type { DrizzleTransaction, SQLiteAdapter } from '../types'
 
-export const beginTransaction: BeginTransaction = async function beginTransaction (
+export const beginTransaction: BeginTransaction = async function beginTransaction(
   this: SQLiteAdapter,
 ) {
   let id
   try {
     id = uuid()
 
-    let reject: (value?: unknown) => void
-    let resolve: (value?: unknown) => void
     let transaction: DrizzleTransaction
 
     // let transactionReady: (value?: unknown) => void
@@ -23,21 +21,9 @@ export const beginTransaction: BeginTransaction = async function beginTransactio
     // so instead, we "lift" up the `resolve` and `reject` methods
     // and will call them in our respective transaction methods
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.db
-      .transaction(async (tx) => {
-        transaction = tx
-        await new Promise((res, rej) => {
-          // transactionReady()
-          resolve = res
-          reject = rej
-        })
-      })
-      .catch((e) => {
-        console.log(e)
-        reject(e)
-        // swallow
-      })
+    this.db.transaction((tx) => {
+      transaction = tx
+    })
 
     // Need to wait until the transaction is ready
     // before binding its `resolve` and `reject` methods below
@@ -45,8 +31,6 @@ export const beginTransaction: BeginTransaction = async function beginTransactio
 
     this.sessions[id] = {
       db: transaction,
-      reject,
-      resolve,
     }
   } catch (err) {
     this.payload.logger.error(`Error: cannot begin transaction: ${err.message}`, err)
