@@ -2,9 +2,40 @@
 title: Overview
 label: Rich Text Field
 order: 10
-desc: NEED TO WRITE 
-keywords: NEED TO WRITE
+desc: Rich Text overview
+keywords: rte, rich text, editor, richtext, lexical, slate
 ---
+
+Since 2.0, Payload can support multiple rich text editors through the adapter pattern - similar to how database and bundler adapters work.
+
+This means that, by default, payload does not come installed with a rich text editor. Instead, you can install the one you want to use, and pass it to the config.
+
+Currently, there are two officially supported rich text editors: @payloadcms/richtext-slate and @payloadcms/richtext-lexical. Here's how you can pass it into the config:
+
+```js
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
+// import { slateEditor } from '@payloadcms/richtext-slate'
+
+const config: Config = {
+    editor: lexicalEditor({}),
+    // editor: slateEditor({}),
+}
+````
+
+This sets the default editor for all rich text fields, unless the rich text field has an `editor` property. This will override the èditor` property set in the payload config:
+
+
+
+```js
+{
+  name: 'richTextField',
+  type: 'richText',
+  editor: lexicalEditor(),
+},
+```
+
+The respective lexicalEditor or slateEditor functions accept an object which you can use to configure the editor. Those editor-specific are explained in their respective documentation pages.
+
 
 TODO:
 
