@@ -577,6 +577,15 @@ describe('Fields', () => {
       expect(docWithIDs.group.subGroup.arrayWithinGroup[0].id).toBeDefined()
     })
 
+    it('should group in array not unnecessarily hoist up group field value', async () => {
+      const newPost = await payload.find({
+        collection: arrayFieldsSlug,
+      })
+
+      expect(newPost.docs[0].arrayOfGroups[0].group.textInGroup).toEqual('example text')
+      expect(newPost.docs[0].arrayOfGroups[0].group_textInGroup).toBeUndefined()
+    })
+
     it('should create with defaultValue', async () => {
       expect(doc.items).toMatchObject(arrayDefaultValue)
       expect(doc.localized).toMatchObject(arrayDefaultValue)

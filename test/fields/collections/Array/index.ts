@@ -12,6 +12,29 @@ const ArrayFields: CollectionConfig = {
   },
   fields: [
     {
+      name: 'arrayOfGroups',
+      type: 'array',
+      defaultValue: [
+        {
+          group: {
+            textInGroup: 'example text',
+          },
+        },
+      ],
+      fields: [
+        {
+          name: 'group',
+          fields: [
+            {
+              name: 'textInGroup',
+              type: 'text',
+            },
+          ],
+          type: 'group',
+        },
+      ],
+    },
+    {
       name: 'items',
       type: 'array',
       required: true,
