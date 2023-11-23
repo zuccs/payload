@@ -1,15 +1,16 @@
-import { ParagraphNode } from 'lexical'
+import { ParagraphNode, TextNode } from 'lexical'
 
 import type { FeatureProvider } from '../../features/types'
 
 import { CustomParagraphNode } from './CustomParagraphNode'
+import { CustomTextNode } from './CustomTextNode'
 
 export const CustomParagraphFeature = (): FeatureProvider => {
   return {
     feature: () => {
       return {
         nodes: [
-          {
+          /*{
             node: CustomParagraphNode,
             type: CustomParagraphNode.getType(),
           },
@@ -21,8 +22,8 @@ export const CustomParagraphFeature = (): FeatureProvider => {
               },
             },
             type: CustomParagraphNode.getType(),
-          },
-          /*{
+          },*/
+          {
             node: CustomTextNode,
             type: CustomTextNode.getType(),
           },
@@ -30,11 +31,11 @@ export const CustomParagraphFeature = (): FeatureProvider => {
             node: {
               replace: TextNode,
               with: (node: TextNode) => {
-                return new CustomTextNode(node?.__text, node?.__key)
+                return new CustomTextNode(node?.__text)
               },
             },
             type: CustomTextNode.getType(),
-          },*/
+          },
         ],
         props: null,
       }

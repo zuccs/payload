@@ -22,6 +22,7 @@ import { CheckListFeature } from '../../features/lists/CheckList'
 import { OrderedListFeature } from '../../features/lists/OrderedList'
 import { UnoderedListFeature } from '../../features/lists/UnorderedList'
 import { LexicalEditorTheme } from '../theme/EditorTheme'
+import { CustomParagraphFeature } from './CustomParagraphFeature'
 import { sanitizeEditorConfig } from './sanitize'
 
 export const defaultEditorFeatures: FeatureProvider[] = [
@@ -43,6 +44,7 @@ export const defaultEditorFeatures: FeatureProvider[] = [
   RelationshipFeature(),
   BlockQuoteFeature(),
   UploadFeature(),
+  CustomParagraphFeature(),
   //BlocksFeature(), // Adding this by default makes no sense if no blocks are defined
 ]
 

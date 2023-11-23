@@ -1,3 +1,5 @@
+import type { SerializedParagraphNode } from 'lexical'
+
 import { ParagraphNode } from 'lexical'
 
 export class CustomParagraphNode extends ParagraphNode {
@@ -13,8 +15,8 @@ export class CustomParagraphNode extends ParagraphNode {
     return 'customParagraphNode'
   }
 
-  static importJSON(serializedNode: any): any {
-    const node = new CustomParagraphNode(serializedNode?.__key)
+  static importJSON(serializedNode: SerializedParagraphNode): any {
+    const node = new CustomParagraphNode()
 
     return node
   }
