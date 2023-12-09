@@ -7,6 +7,7 @@ import {
   UploadFeature,
   lexicalEditor,
 } from '../../../../packages/richtext-lexical/src'
+import { FootnoteFeature } from '../../plugins/footnotes'
 import { lexicalFieldsSlug } from '../../slugs'
 import {
   ConditionalLayoutBlock,
@@ -30,6 +31,13 @@ export const LexicalFields: CollectionConfig = {
     read: () => true,
   },
   fields: [
+    {
+      name: 'richTextddd',
+      type: 'richText',
+      editor: lexicalEditor({
+        features: [FootnoteFeature({}), UploadFeature()],
+      }),
+    },
     {
       name: 'title',
       type: 'text',

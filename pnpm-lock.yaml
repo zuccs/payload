@@ -8,6 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@faceless-ui/modal':
+        specifier: 2.0.1
+        version: 2.0.1(react-dom@18.2.0)(react@18.2.0)
+      '@lexical/react':
+        specifier: 0.12.5
+        version: 0.12.5(lexical@0.12.5)(react-dom@18.2.0)(react@18.2.0)(yjs@13.6.8)
+      '@lexical/utils':
+        specifier: 0.12.5
+        version: 0.12.5(lexical@0.12.5)
       '@sentry/react':
         specifier: ^7.77.0
         version: 7.77.0(react@18.2.0)
@@ -154,8 +163,8 @@ importers:
         specifier: 3.1.2
         version: 3.1.2
       lexical:
-        specifier: 0.12.2
-        version: 0.12.2
+        specifier: 0.12.5
+        version: 0.12.5
       lint-staged:
         specifier: ^14.0.1
         version: 14.0.1
@@ -12758,13 +12767,8 @@ packages:
       type-check: 0.4.0
     dev: false
 
-  /lexical@0.12.2:
-    resolution: {integrity: sha512-Kxavd+ETjxtVwG/hvPd6WZfXD44sLOKe9Vlkwxy7lBQ1qZArS+rZfs+u5iXwXe6tX9f2PIM0u3RHsrCEDDE0fw==}
-    dev: true
-
   /lexical@0.12.5:
     resolution: {integrity: sha512-ZMqisIxNe+JBqaUa1Qmz7ghpvnmARHxgYz+F0rcXRtSPZtgEL8OT2c9xk8CJ4ccVpf+qRQlONzCEIZfQQHd/RA==}
-    dev: false
 
   /lib0@0.2.85:
     resolution: {integrity: sha512-vtAhVttLXCu3ps2OIsTz8CdKYKdcMo7ds1MNBIcSXz6vrY8sxASqpTi4vmsAIn7xjWvyT7haKcWW6woP6jebjQ==}
