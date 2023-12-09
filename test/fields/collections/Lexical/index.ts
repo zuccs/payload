@@ -2,6 +2,8 @@ import type { CollectionConfig } from '../../../../packages/payload/src/collecti
 
 import {
   BlocksFeature,
+  BoldTextFeature,
+  ItalicTextFeature,
   LinkFeature,
   TreeviewFeature,
   UploadFeature,
@@ -35,7 +37,26 @@ export const LexicalFields: CollectionConfig = {
       name: 'richTextddd',
       type: 'richText',
       editor: lexicalEditor({
-        features: [FootnoteFeature({}), UploadFeature()],
+        features: [
+          FootnoteFeature({}),
+          UploadFeature(),
+          LinkFeature({
+            fields: [
+              {
+                name: 'footnote',
+                editor: lexicalEditor({
+                  features: [
+                    LinkFeature({}),
+                    ItalicTextFeature(),
+                    BoldTextFeature(),
+                    UploadFeature(),
+                  ],
+                }),
+                type: 'richText',
+              },
+            ],
+          }),
+        ],
       }),
     },
     {

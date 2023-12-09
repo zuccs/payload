@@ -1,9 +1,10 @@
+import { useModal } from '@faceless-ui/modal'
 import { Drawer } from 'payload/components/elements'
 import { Form } from 'payload/components/forms'
 import { RenderFields } from 'payload/components/forms'
 import { FormSubmit } from 'payload/components/forms'
 import { fieldTypes } from 'payload/components/forms'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import './index.scss'
@@ -18,6 +19,14 @@ export const LinkDrawer: React.FC<Props> = ({
   initialState,
 }) => {
   const { t } = useTranslation('fields')
+
+  const { modalState, toggleModal } = useModal()
+
+  // useffect modalState+
+
+  useEffect(() => {
+    console.log('modalState for', drawerSlug, ':', modalState)
+  }, [modalState, drawerSlug])
 
   return (
     <Drawer className={baseClass} slug={drawerSlug} title={t('editLink') ?? ''}>

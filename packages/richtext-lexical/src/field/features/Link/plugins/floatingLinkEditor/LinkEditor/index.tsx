@@ -89,6 +89,7 @@ export function LinkEditor({
     depth: editDepth,
     slug: `lexical-rich-text-link-` + uuid,
   })
+  console.log('Rerendering and Link drawerSlug', drawerSlug)
 
   const updateLinkEditor = useCallback(async () => {
     const selection = $getSelection()
