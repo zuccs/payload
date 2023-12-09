@@ -293,7 +293,9 @@ export function LinkEditor({
                 aria-label="Edit link"
                 className="link-edit"
                 onClick={() => {
+                  console.log('toggle modal', drawerSlug, toggleModal)
                   toggleModal(drawerSlug)
+                  console.log('toggled modal')
                 }}
                 onMouseDown={(event) => {
                   event.preventDefault()

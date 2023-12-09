@@ -4,7 +4,7 @@ import type {
   FloatingToolbarSectionEntry,
 } from '../../../../packages/richtext-lexical/src'
 
-import { ModalMode, TOGGLE_FOOTNOTE_MODAL_COMMAND } from './plugins'
+import { TOGGLE_FOOTNOTE_MODAL_COMMAND } from './plugins'
 
 export const SectionWithEntries = (
   entries: FloatingToolbarSectionEntry[],
@@ -36,10 +36,7 @@ export const FootnoteFeature = (props: any): FeatureProvider => {
                 key: 'footnote',
                 label: `Insert Footnote`,
                 onClick: ({ editor }) => {
-                  editor.dispatchCommand(TOGGLE_FOOTNOTE_MODAL_COMMAND, {
-                    open: true,
-                    mode: ModalMode.INSERT,
-                  })
+                  editor.dispatchCommand(TOGGLE_FOOTNOTE_MODAL_COMMAND, {})
                 },
               },
             ]),
