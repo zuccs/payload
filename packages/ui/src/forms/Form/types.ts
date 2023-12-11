@@ -2,7 +2,13 @@ import type React from 'react'
 import type { Dispatch } from 'react'
 
 import type { User } from 'payload/auth'
-import type { Condition, Field, Field as FieldConfig, Validate } from 'payload/types'
+import type {
+  Condition,
+  Field,
+  Field as FieldConfig,
+  SanitizedConfig,
+  Validate,
+} from 'payload/types'
 
 export type Row = {
   blockType?: string
@@ -36,7 +42,7 @@ export type Preferences = {
 }
 
 export type Props = {
-  action?: string | ((formData: FormData) => Promise<void>)
+  action?: string
   children?: React.ReactNode
   className?: string
   disableSuccessStatus?: boolean
@@ -56,6 +62,7 @@ export type Props = {
   onSuccess?: (json: unknown) => void
   redirect?: string
   submitted?: boolean
+  validate?: Omit<ValidateForm, 'config'> | string
   validationOperation?: 'create' | 'update'
   waitForAutocomplete?: boolean
 }
@@ -72,7 +79,15 @@ export type Submit = (
   options?: SubmitOptions,
   e?: React.FormEvent<HTMLFormElement>,
 ) => Promise<void>
-export type ValidateForm = () => Promise<boolean>
+export type ValidateForm = (args: {
+  fields: Fields
+  data: Data
+  t: any
+  config: SanitizedConfig
+  user: User
+  id: string | number
+  operation: 'create' | 'update'
+}) => Promise<boolean>
 export type CreateFormData = (overrides?: any) => FormData
 export type GetFields = () => Fields
 export type GetField = (path: string) => FormField
@@ -215,5 +230,5 @@ export type Context = {
   setProcessing: SetProcessing
   setSubmitted: SetSubmitted
   submit: Submit
-  validateForm: ValidateForm
+  validateForm: string | Omit<ValidateForm, 'config'>
 }

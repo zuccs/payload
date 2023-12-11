@@ -11,7 +11,6 @@ import i18n from 'i18next'
 import { meta } from '../../utilities/meta'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { login } from './action'
 
 const baseClass = 'login'
 
@@ -34,7 +33,8 @@ export const Login: React.FC<{
 
   const {
     admin: { components: { afterLogin, beforeLogin } = {}, logoutRoute, user: userSlug },
-    routes: { admin },
+    routes: { admin, api },
+    serverURL,
     collections,
   } = config
 
@@ -64,7 +64,12 @@ export const Login: React.FC<{
             <Logo config={config} />
           </div>
           {Array.isArray(beforeLogin) && beforeLogin.map((Component, i) => <Component key={i} />)}
-          {!collection?.auth?.disableLocalStrategy && <LoginForm action={login} />}
+          {!collection?.auth?.disableLocalStrategy && (
+            <LoginForm
+              action={`${serverURL || 'http://localhost:3000'}${api}/${userSlug}/login`}
+              validate={`${serverURL || 'http://localhost:3000'}${api}/validate`}
+            />
+          )}
           {Array.isArray(afterLogin) && afterLogin.map((Component, i) => <Component key={i} />)}
         </Fragment>
       )}

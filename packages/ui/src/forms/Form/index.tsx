@@ -1,6 +1,5 @@
 'use client'
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import isDeepEqual from 'deep-equal'
 import { serialize } from 'object-to-formdata'
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -16,6 +15,7 @@ import type {
   Props,
   Row,
   SubmitOptions,
+  ValidateForm,
 } from './types'
 
 import { splitPathByArrayFields } from 'payload/dist/utilities/splitPathByArrayFields' // TODO: replace with top-level payload export once available
@@ -68,6 +68,7 @@ const Form: React.FC<Props> = (props) => {
     onSuccess,
     redirect,
     submitted: submittedFromProps,
+    validate,
     waitForAutocomplete,
   } = props
 
@@ -101,6 +102,7 @@ const Form: React.FC<Props> = (props) => {
 
   contextRef.current.fields = fields
   contextRef.current.dispatchFields = dispatchFields
+  contextRef.current.validateForm = validate
 
   // Build a current set of child errors for all rows in form state
   const buildRowErrors = useCallback(() => {
@@ -158,59 +160,6 @@ const Form: React.FC<Props> = (props) => {
     })
   }, [fields, dispatchFields])
 
-  const validateForm = useCallback(async () => {
-    const validatedFieldState = {}
-    let isValid = true
-    const data = contextRef.current.getData()
-
-    const validationPromises = Object.entries(contextRef.current.fields).map(
-      async ([path, field]) => {
-        const validatedField = {
-          ...field,
-          valid: true,
-        }
-
-        if (field.passesCondition !== false) {
-          let validationResult: boolean | string = true
-
-          if (typeof field.validate === 'function') {
-            let valueToValidate = field.value
-
-            if (field?.rows && Array.isArray(field.rows)) {
-              valueToValidate = contextRef.current.getDataByPath(path)
-            }
-
-            validationResult = await field.validate(valueToValidate, {
-              id,
-              config,
-              data,
-              operation,
-              siblingData: contextRef.current.getSiblingData(path),
-              t,
-              user,
-            })
-          }
-
-          if (typeof validationResult === 'string') {
-            validatedField.errorMessage = validationResult
-            validatedField.valid = false
-            isValid = false
-          }
-        }
-
-        validatedFieldState[path] = validatedField
-      },
-    )
-
-    await Promise.all(validationPromises)
-
-    if (!isDeepEqual(contextRef.current.fields, validatedFieldState)) {
-      dispatchFields({ state: validatedFieldState, type: 'REPLACE_STATE' })
-    }
-
-    return isValid
-  }, [contextRef, id, user, operation, t, dispatchFields, config])
-
   const submit = useCallback(
     async (options: SubmitOptions = {}, e): Promise<void> => {
       const {
@@ -236,7 +185,34 @@ const Form: React.FC<Props> = (props) => {
 
       if (waitForAutocomplete) await wait(100)
 
-      const isValid = skipValidation ? true : await contextRef.current.validateForm()
+      const data = {
+        ...reduceFieldsToValues(fields, true),
+        ...overrides,
+      }
+
+      const validationArgs: Omit<Parameters<ValidateForm>[0], 'config'> = {
+        data,
+        fields,
+        operation,
+        user,
+        id,
+        t,
+      }
+
+      const isValid = skipValidation
+        ? true
+        : typeof validate === 'function'
+        ? await validate(validationArgs)
+        : typeof validate === 'string'
+        ? await fetch(validate, {
+            body: JSON.stringify(validationArgs),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'POST',
+          }).then((res) => res.json())
+        : false
+
       contextRef.current.buildRowErrors()
 
       if (!skipValidation) setSubmitted(true)
@@ -245,17 +221,11 @@ const Form: React.FC<Props> = (props) => {
       if (!isValid) {
         toast.error(t('error:correctInvalidFields'))
         setProcessing(false)
-
         return
       }
 
       // If submit handler comes through via props, run that
       if (onSubmit) {
-        const data = {
-          ...reduceFieldsToValues(fields, true),
-          ...overrides,
-        }
-
         onSubmit(fields, data)
       }
 
@@ -610,7 +580,6 @@ const Form: React.FC<Props> = (props) => {
   contextRef.current.getData = getData
   contextRef.current.getSiblingData = getSiblingData
   contextRef.current.getDataByPath = getDataByPath
-  contextRef.current.validateForm = validateForm
   contextRef.current.createFormData = createFormData
   contextRef.current.setModified = setModified
   contextRef.current.setProcessing = setProcessing

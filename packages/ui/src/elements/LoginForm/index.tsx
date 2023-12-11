@@ -12,12 +12,14 @@ import { useConfig } from '../../providers/Config'
 import { useRouter, useSearchParams } from 'next/navigation'
 import './index.scss'
 import Link from 'next/link'
+import { ValidateForm } from '../../exports/forms'
 
 const baseClass = 'login-form'
 
 export const LoginForm: React.FC<{
-  action: (formData: FormData) => Promise<void>
-}> = ({ action }) => {
+  action: string
+  validate: string | ValidateForm
+}> = ({ action, validate }) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
   const { t } = useTranslation('authentication')
@@ -58,6 +60,7 @@ export const LoginForm: React.FC<{
       method="POST"
       onSuccess={onSuccess}
       waitForAutocomplete
+      validate={validate}
     >
       <FormLoadingOverlayToggle action="loading" name="login-form" />
       <div className={`${baseClass}__inputWrap`}>

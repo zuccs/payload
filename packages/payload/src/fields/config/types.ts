@@ -170,7 +170,7 @@ export interface FieldBase {
   required?: boolean
   saveToJWT?: boolean | string
   unique?: boolean
-  validate?: Validate
+  validate?: Validate | string
 }
 
 export type NumberField = FieldBase & {

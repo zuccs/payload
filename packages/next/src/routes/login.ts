@@ -4,8 +4,25 @@ import { SanitizedConfig } from 'payload/types'
 
 export const login = ({ config }: { config: Promise<SanitizedConfig> }) =>
   async function (request: Request, { params }: { params: { collection: string } }) {
-    const data = await request.json()
+    let data: {
+      email: string
+      password: string
+    } = undefined
+
+    try {
+      try {
+        data = await request.json()
+      } catch {
+        const formData = await request.formData()
+        const dataFromForm = formData.get('_payload')
+        data = JSON.parse(typeof dataFromForm === 'string' ? dataFromForm : '{}')
+      }
+    } catch (e) {
+      return Response.error()
+    }
+
     const req = await createPayloadRequest({ request, config })
+
     const collection = req.payload.collections[params.collection]
 
     const result = await loginOperation({
