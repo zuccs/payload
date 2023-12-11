@@ -1,7 +1,7 @@
 import payload from '../../packages/payload/src'
 import { devUser } from '../credentials'
 import { initPayloadTest } from '../helpers/configHelpers'
-import { postsSlug } from './collections/Posts'
+import { postsSlug } from './collections/Stores'
 
 require('isomorphic-fetch')
 

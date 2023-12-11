@@ -1,14 +1,16 @@
 import { buildConfigWithDefaults } from '../buildConfigWithDefaults'
 import { devUser } from '../credentials'
+import { FoodsCollection, foodsSlug } from './collections/Foods'
 import { MediaCollection } from './collections/Media'
-import { PostsCollection, postsSlug } from './collections/Posts'
+import { StoresCollection, storesSlug } from './collections/Stores'
 import { MenuGlobal } from './globals/Menu'
 
 export default buildConfigWithDefaults({
   // ...extend config here
   collections: [
-    PostsCollection,
+    StoresCollection,
     MediaCollection,
+    FoodsCollection,
     // ...add more collections here
   ],
   globals: [
@@ -18,7 +20,6 @@ export default buildConfigWithDefaults({
   graphQL: {
     schemaOutputFile: './test/_community/schema.graphql',
   },
-
   onInit: async (payload) => {
     await payload.create({
       collection: 'users',
@@ -28,10 +29,18 @@ export default buildConfigWithDefaults({
       },
     })
 
-    await payload.create({
-      collection: postsSlug,
+    const store1 = await payload.create({
+      collection: storesSlug,
       data: {
-        text: 'example post',
+        title: 'Store 1',
+      },
+    })
+
+    await payload.create({
+      collection: foodsSlug,
+      data: {
+        title: 'Food 1',
+        store: store1.id,
       },
     })
   },
