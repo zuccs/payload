@@ -4,14 +4,17 @@ import { lazy } from 'react'
 import { getCustomViewByKey } from './getCustomViewByKey.tsx'
 import { CollectionPermission, GlobalPermission, Permissions } from 'payload/auth'
 import { getCustomViewByPath } from './getCustomViewByPath.tsx'
+import { DocumentView } from './index.tsx'
 
 export const getViewsFromConfig = async ({
+  view,
   routeSegments,
   docPermissions,
   config,
   collectionConfig,
   globalConfig,
 }: {
+  view?: DocumentView
   routeSegments: string[]
   config: SanitizedConfig
   collectionConfig?: SanitizedCollectionConfig
@@ -35,152 +38,73 @@ export const getViewsFromConfig = async ({
     (globalConfig && globalConfig?.admin?.livePreview) ||
     config?.admin?.livePreview?.globals?.includes(globalConfig?.slug)
 
-  console.log('getViewsFromConfig', {
-    routeSegments,
-  })
-
-  if (collectionConfig) {
-    // `../:id`, or `../create`
-    if (routeSegments?.length === 1) {
-      switch (routeSegments[0]) {
-        case 'create': {
-          if ('create' in docPermissions && docPermissions?.create?.permission) {
-            CustomView = getCustomViewByKey(views, 'Default')
-            DefaultView = lazy(() =>
-              import('@payloadcms/ui').then((module) => ({ default: module.DefaultEditView })),
-            )
-          }
-          break
-        }
-
-        default: {
-          if (docPermissions?.read?.permission) {
-            CustomView = getCustomViewByKey(views, 'Default')
-            DefaultView = lazy(() =>
-              import('@payloadcms/ui').then((module) => ({ default: module.DefaultEditView })),
-            )
-          }
-        }
-      }
-    }
-
-    // `../:id/api`, `../:id/preview`, `../:id/versions`, etc
-    if (routeSegments?.length === 2) {
-      switch (routeSegments[1]) {
-        case 'api': {
-          if (collectionConfig?.admin?.hideAPIURL !== true) {
-            CustomView = getCustomViewByKey(views, 'API')
-            DefaultView = lazy(() =>
-              import('../API/index.tsx').then((module) => ({ default: module.APIView })),
-            )
-          }
-          break
-        }
-
-        case 'preview': {
-          if (livePreviewEnabled) {
-            // DefaultView = lazy(() =>
-            //   import('../LivePreview/index.tsx').then((module) => ({
-            //     default: module.LivePreviewView,
-            //   })),
-            // )
-          }
-          break
-        }
-
-        case 'versions': {
-          if (docPermissions?.readVersions?.permission) {
-            CustomView = getCustomViewByKey(views, 'Versions')
-            DefaultView = lazy(() =>
-              import('../Versions/index.tsx').then((module) => ({ default: module.VersionsView })),
-            )
-          }
-          break
-        }
-
-        default: {
-          const path = `/${routeSegments[1]}`
-          CustomView = getCustomViewByPath(views, path)
-          break
-        }
-      }
-    }
-
-    // `../:id/versions/:version`, etc
-    if (routeSegments?.length === 3) {
-      if (routeSegments[1] === 'versions') {
-        if (docPermissions?.readVersions?.permission) {
-          CustomView = getCustomViewByKey(views, 'Version')
-          DefaultView = lazy(() =>
-            import('../Version/index.tsx').then((module) => ({ default: module.VersionView })),
-          )
-        }
-      }
-    }
-  }
-
-  if (globalConfig) {
-    if (!routeSegments?.length) {
-      if (docPermissions?.read?.permission) {
+  switch (view) {
+    case 'Create': {
+      if (collectionConfig && 'create' in docPermissions && docPermissions?.create?.permission) {
         CustomView = getCustomViewByKey(views, 'Default')
         DefaultView = lazy(() =>
           import('@payloadcms/ui').then((module) => ({ default: module.DefaultEditView })),
         )
       }
-    } else if (routeSegments?.length === 1) {
-      // `../:slug/api`, `../:slug/preview`, `../:slug/versions`, etc
-      switch (routeSegments[0]) {
-        case 'api': {
-          if (globalConfig?.admin?.hideAPIURL !== true) {
-            CustomView = getCustomViewByKey(views, 'API')
-            DefaultView = lazy(() =>
-              import('../API/index.tsx').then((module) => ({ default: module.APIView })),
-            )
-          }
-          break
-        }
+      break
+    }
 
-        case 'preview': {
-          if (livePreviewEnabled) {
-            // DefaultView = lazy(() =>
-            //   import('../LivePreview/index.tsx').then((module) => ({
-            //     default: module.LivePreviewView,
-            //   })),
-            // )
-          }
-          break
-        }
-
-        case 'versions': {
-          if (docPermissions?.readVersions?.permission) {
-            CustomView = getCustomViewByKey(views, 'Versions')
-            DefaultView = lazy(() =>
-              import('../Versions/index.tsx').then((module) => ({ default: module.VersionsView })),
-            )
-          }
-          break
-        }
-
-        default: {
-          if (docPermissions?.read?.permission) {
-            CustomView = getCustomViewByKey(views, 'Default')
-            DefaultView = lazy(() =>
-              import('@payloadcms/ui').then((module) => ({ default: module.DefaultEditView })),
-            )
-          }
-          break
-        }
+    case 'Edit': {
+      if ('read' in docPermissions && docPermissions?.read?.permission) {
+        CustomView = getCustomViewByKey(views, 'Default')
+        DefaultView = lazy(() =>
+          import('@payloadcms/ui').then((module) => ({ default: module.DefaultEditView })),
+        )
       }
-    } else if (routeSegments?.length === 2) {
-      // `../:slug/versions/:version`, etc
-      if (routeSegments[1] === 'versions') {
-        if (docPermissions?.readVersions?.permission) {
-          CustomView = getCustomViewByKey(views, 'Version')
-          DefaultView = lazy(() =>
-            import('../Version/index.tsx').then((module) => ({ default: module.VersionView })),
-          )
-        }
+      break
+    }
+
+    case 'API': {
+      if (collectionConfig?.admin?.hideAPIURL !== true) {
+        CustomView = getCustomViewByKey(views, view)
+        DefaultView = lazy(() =>
+          import('../API/index.tsx').then((module) => ({ default: module.APIView })),
+        )
       }
+      break
+    }
+
+    case 'LivePreview': {
+      if (livePreviewEnabled) {
+        // DefaultView = lazy(() =>
+        //   import('../LivePreview/index.tsx').then((module) => ({
+        //     default: module.LivePreviewView,
+        //   })),
+        // )
+      }
+      break
+    }
+
+    case 'Versions': {
+      if (docPermissions?.readVersions?.permission) {
+        CustomView = getCustomViewByKey(views, view)
+        DefaultView = lazy(() =>
+          import('../Versions/index.tsx').then((module) => ({ default: module.VersionsView })),
+        )
+      }
+      break
+    }
+
+    case 'Version': {
+      if (docPermissions?.readVersions?.permission) {
+        CustomView = getCustomViewByKey(views, view)
+        DefaultView = lazy(() =>
+          import('../Version/index.tsx').then((module) => ({ default: module.VersionView })),
+        )
+      }
+      break
+    }
+
+    default: {
+      const path = `/${routeSegments.join('/')}`
+      CustomView = getCustomViewByPath(views, path)
+      DefaultView = null
+      break
     }
   }
 

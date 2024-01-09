@@ -17,13 +17,16 @@ import type { EditViewProps } from '@payloadcms/ui'
 import queryString from 'qs'
 import { notFound } from 'next/navigation'
 import { TFunction } from 'i18next'
-import { AdminViewComponent } from 'payload/config'
 import { getViewsFromConfig } from './getViewsFromConfig'
+import { AdminViewComponent } from 'payload/config'
+
+export type DocumentView = 'Create' | 'Edit' | 'API' | 'Versions' | 'Version' | 'LivePreview'
 
 export const Document = async ({
   params,
   config: configPromise,
   searchParams,
+  view,
 }: {
   params: {
     segments: string[]
@@ -32,11 +35,12 @@ export const Document = async ({
   }
   config: Promise<SanitizedConfig>
   searchParams: { [key: string]: string | string[] | undefined }
+  view?: DocumentView
 }) => {
   const collectionSlug = params.collection
   const globalSlug = params.global
   const isCreating = params.segments?.length === 1 && params.segments?.[0] === 'create'
-  const id = (collectionSlug && !isCreating && params.segments[0]) || undefined
+  const id = (collectionSlug && !isCreating && params.segments?.[0]) || undefined
   const isEditing = Boolean(globalSlug || (collectionSlug && !!id))
 
   const { config, payload, permissions, user, collectionConfig, globalConfig, locale, i18n } =
@@ -56,8 +60,9 @@ export const Document = async ({
     serverURL,
   } = config
 
-  let CustomView: SanitizedConfig['admin']['components']['views'][0]
   let DefaultView: AdminViewComponent
+  let CustomView: AdminViewComponent
+
   let data: DocumentType
   let docPermissions: DocumentPermissions
   let preferencesKey: string
@@ -80,9 +85,10 @@ export const Document = async ({
     }`
 
     const collectionViews = await getViewsFromConfig({
+      view,
       routeSegments: params.segments,
-      collectionConfig,
       config,
+      collectionConfig,
       docPermissions,
     })
 
@@ -115,9 +121,10 @@ export const Document = async ({
     }`
 
     const globalViews = await getViewsFromConfig({
+      view,
       routeSegments: params.segments,
-      globalConfig,
       config,
+      globalConfig,
       docPermissions,
     })
 

@@ -5,18 +5,18 @@ export const getCustomViewByKey = (
   views:
     | SanitizedCollectionConfig['admin']['components']['views']
     | SanitizedGlobalConfig['admin']['components']['views'],
-  customViewKey: string,
+  key: string,
 ): AdminViewComponent => {
   return typeof views?.Edit === 'function'
     ? views?.Edit
     : typeof views?.Edit === 'object' &&
-      views?.Edit?.[customViewKey] &&
-      typeof views?.Edit?.[customViewKey] === 'function'
-    ? views?.Edit?.[customViewKey]
-    : views?.Edit?.[customViewKey]
-    ? typeof views?.Edit?.[customViewKey] === 'object' &&
-      'Component' in views?.Edit?.[customViewKey] &&
-      typeof views?.Edit?.[customViewKey].Component === 'function' &&
-      views?.Edit?.[customViewKey].Component
+      views?.Edit?.[key] &&
+      typeof views?.Edit?.[key] === 'function'
+    ? views?.Edit?.[key]
+    : views?.Edit?.[key]
+    ? typeof views?.Edit?.[key] === 'object' &&
+      'Component' in views?.Edit?.[key] &&
+      typeof views?.Edit?.[key].Component === 'function' &&
+      views?.Edit?.[key].Component
     : null
 }
