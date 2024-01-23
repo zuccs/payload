@@ -21,7 +21,7 @@ import { DefaultList } from '../../views/List'
 import formatFields from '../../views/List/formatFields'
 import { useDocumentDrawer } from '../DocumentDrawer'
 import Pill from '../Pill'
-import ReactSelect from '../ReactSelect'
+import { ReactSelect } from '../ReactSelect'
 import { TableColumnsProvider } from '../TableColumns'
 import ViewDescription from '../ViewDescription'
 

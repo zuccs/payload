@@ -7,9 +7,10 @@ import type { GetResults, Props, ValueWithRelation } from './types'
 
 import useDebounce from '../../../../hooks/useDebounce'
 import { useConfig } from '../../../../providers/Config'
-import ReactSelect from '../../../ReactSelect'
-import './index.scss'
+import { ReactSelect } from '../../../ReactSelect'
 import optionsReducer from './optionsReducer'
+
+import './index.scss'
 
 const baseClass = 'condition-value-relationship'
 

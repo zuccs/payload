@@ -133,6 +133,12 @@ export const Pages: CollectionConfig = {
       ],
     },
     {
+      name: 'relationship',
+      label: 'Relationship',
+      type: 'relationship',
+      relationTo: 'pages',
+    },
+    {
       name: 'group',
       label: 'Group',
       type: 'group',

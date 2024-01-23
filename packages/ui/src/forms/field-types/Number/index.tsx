@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { Props } from './types'
 import { isNumber } from 'payload/utilities'
-import ReactSelect from '../../../elements/ReactSelect'
+import { ReactSelect } from '../../../elements/ReactSelect'
 import DefaultError from '../../Error'
 import FieldDescription from '../../FieldDescription'
 import DefaultLabel from '../../Label'

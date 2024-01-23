@@ -7,6 +7,7 @@ import FieldDescription from '../../FieldDescription'
 import DefaultLabel from '../../Label'
 import { JSONInputWrapper } from './Wrapper'
 import { JSONInput } from './Input'
+import { withCondition } from '../../withCondition'
 
 const JSONField: React.FC<Props> = (props) => {
   const {
@@ -53,4 +54,4 @@ const JSONField: React.FC<Props> = (props) => {
   )
 }
 
-export default JSONField
+export default withCondition(JSONField)

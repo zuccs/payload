@@ -8,7 +8,8 @@ import { getTranslation } from '@payloadcms/translations'
 import { useForm } from '../../forms/Form/context'
 import { createNestedFieldPath } from '../../forms/Form/createNestedFieldPath'
 import Label from '../../forms/Label'
-import ReactSelect from '../ReactSelect'
+import { ReactSelect } from '../ReactSelect'
+
 import './index.scss'
 
 const baseClass = 'field-select'

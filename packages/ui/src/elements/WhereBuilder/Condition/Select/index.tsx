@@ -5,7 +5,7 @@ import type { Option, OptionObject } from 'payload/types'
 import type { Props } from './types'
 
 import { getTranslation } from '@payloadcms/translations'
-import ReactSelect from '../../../ReactSelect'
+import { ReactSelect } from '../../../ReactSelect'
 
 const formatOptions = (options: Option[]): OptionObject[] =>
   options.map((option) => {

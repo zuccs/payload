@@ -7,6 +7,7 @@ import FieldDescription from '../../FieldDescription'
 import DefaultLabel from '../../Label'
 import { CodeInputWrapper } from './Wrapper'
 import { CodeInput } from './Input'
+import { withCondition } from '../../withCondition'
 
 const Code: React.FC<Props> = (props) => {
   const {
@@ -56,4 +57,4 @@ const Code: React.FC<Props> = (props) => {
   )
 }
 
-export default Code
+export default withCondition(Code)

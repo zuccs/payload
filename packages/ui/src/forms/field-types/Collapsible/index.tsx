@@ -9,6 +9,7 @@ import { CollapsibleFieldWrapper } from './Wrapper'
 import { CollapsibleInput } from './Input'
 import { getNestedFieldState } from '../../WatchChildErrors/getNestedFieldState'
 import { RowLabel } from '../../RowLabel'
+import { withCondition } from '../../withCondition'
 
 import './index.scss'
 
@@ -82,4 +83,4 @@ const CollapsibleField: React.FC<Props> = (props) => {
   )
 }
 
-export default CollapsibleField
+export default withCondition(CollapsibleField)

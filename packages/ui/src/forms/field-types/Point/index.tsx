@@ -8,6 +8,7 @@ import FieldDescription from '../../FieldDescription'
 import DefaultLabel from '../../Label'
 import { NumberInputWrapper } from '../Number/Wrapper'
 import { PointInput } from './Input'
+import { withCondition } from '../../withCondition'
 
 import './index.scss'
 
@@ -94,4 +95,4 @@ const PointField: React.FC<Props> = (props) => {
   )
 }
 
-export default PointField
+export default withCondition(PointField)

@@ -3,10 +3,13 @@ import type { SanitizedCollectionConfig } from 'payload/types'
 import type { SanitizedConfig } from 'payload/types'
 import type { RelationshipField } from 'payload/types'
 import type { Where } from 'payload/types'
+import { FormFieldBase } from '../shared'
 
-export type Props = Omit<RelationshipField, 'type'> & {
-  path?: string
-}
+export type Props = FormFieldBase &
+  Omit<RelationshipField, 'type'> & {
+    path?: string
+    value: any
+  }
 
 export type Option = {
   label: string

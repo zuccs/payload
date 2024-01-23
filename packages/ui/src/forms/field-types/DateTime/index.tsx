@@ -3,11 +3,13 @@ import React from 'react'
 import type { Props } from './types'
 
 import { DateTimeInput } from './Input'
-import './index.scss'
 import FieldDescription from '../../FieldDescription'
 import { fieldBaseClass } from '../shared'
 import DefaultLabel from '../../Label'
 import DefaultError from '../../Error'
+import { withCondition } from '../../withCondition'
+
+import './index.scss'
 
 const baseClass = 'date-time-field'
 
@@ -27,6 +29,7 @@ const DateTime: React.FC<Props> = (props) => {
     label,
     path: pathFromProps,
     required,
+    i18n,
   } = props
 
   const path = pathFromProps || name
@@ -51,12 +54,9 @@ const DateTime: React.FC<Props> = (props) => {
       }}
     >
       <div className={`${baseClass}__error-wrap`}>
-        {/* <ErrorComp
-        message={errorMessage}
-        showError={showError}
-        /> */}
+        <ErrorComp path={path} />
       </div>
-      <LabelComp htmlFor={path} label={label} required={required} />
+      <LabelComp htmlFor={path} label={label} required={required} i18n={i18n} />
       <div className={`${baseClass}__input-wrapper`} id={`field-${path.replace(/\./g, '__')}`}>
         {Array.isArray(beforeInput) && beforeInput.map((Component, i) => <Component key={i} />)}
         <DateTimeInput
@@ -69,9 +69,9 @@ const DateTime: React.FC<Props> = (props) => {
         />
         {Array.isArray(afterInput) && afterInput.map((Component, i) => <Component key={i} />)}
       </div>
-      <FieldDescription description={description} path={path} />
+      <FieldDescription description={description} path={path} i18n={i18n} />
     </div>
   )
 }
 
-export default DateTime
+export default withCondition(DateTime)

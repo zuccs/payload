@@ -6,12 +6,13 @@ import type { Props } from './types'
 import useDebounce from '../../../hooks/useDebounce'
 import { RenderCustomComponent } from '../../../elements/RenderCustomComponent'
 import { Button } from '../../Button'
-import ReactSelect from '../../ReactSelect'
+import { ReactSelect } from '../../ReactSelect'
 import Date from './Date'
 import Number from './Number'
 import Relationship from './Relationship'
 import { Select } from './Select'
 import Text from './Text'
+
 import './index.scss'
 
 const valueFields = {

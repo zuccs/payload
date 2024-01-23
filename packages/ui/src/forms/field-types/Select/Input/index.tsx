@@ -6,7 +6,7 @@ import { useTranslation } from '../../../../providers/Translation'
 import type { OptionObject, Validate } from 'payload/types'
 import type { Option } from '../../../../elements/ReactSelect/types'
 import { getTranslation } from '@payloadcms/translations'
-import ReactSelect from '../../../../elements/ReactSelect'
+import { ReactSelect } from '../../../../elements/ReactSelect'
 import useField from '../../../useField'
 
 const SelectInput: React.FC<{
