@@ -1,21 +1,35 @@
-import { CellProps } from 'payload/types'
-import { useComponentMap } from '../../providers/ComponentMapProvider'
+import { CellProps, SanitizedCollectionConfig } from 'payload/types'
 import { Column } from '../../elements/Table/types'
+import { FieldMap } from '../../utilities/buildComponentMap/types'
+import { ListPreferences } from '../../views/List/types'
 
 export const buildColumns = (args: {
-  columns: Pick<Column, 'accessor' | 'active'>[]
-  getMappedFieldByPath: ReturnType<typeof useComponentMap>['getMappedFieldByPath']
-  collectionSlug: string
+  useAsTitle: SanitizedCollectionConfig['admin']['useAsTitle']
+  fieldMap: FieldMap
   cellProps: Partial<CellProps>[]
+  defaultColumns?: string[]
+  columnPreferences: ListPreferences['columns']
 }): Column[] => {
-  const { columns, getMappedFieldByPath, collectionSlug, cellProps } = args
+  const { fieldMap, cellProps, defaultColumns, columnPreferences, useAsTitle } = args
 
-  return columns.map(({ accessor, active }, index) => {
-    const field = getMappedFieldByPath({ path: accessor, collectionSlug })
-    if (!field) console.warn(`No field found for ${accessor} in ${collectionSlug}`)
+  console.log('columnPreferences', columnPreferences)
+
+  return fieldMap.map((field, index) => {
+    const columnPreference = columnPreferences?.find(
+      (preference) => preference.accessor === field.name,
+    )
+
+    let active = true
+
+    if (columnPreference) {
+      active = columnPreference.active
+    } else if (defaultColumns) {
+      active = !defaultColumns.includes(field.name)
+    }
+
     if (field) {
       const column: Column = {
-        accessor,
+        accessor: field.name,
         active,
         label: field.label,
         name: field.name,
