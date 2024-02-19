@@ -35,6 +35,7 @@
     "thisLanguage": "Deutsch",
     "updatedAt": "Aktualisiert am",
     "updatedCountSuccessfully": "{{count}} {{label}} erfolgreich aktualisiert.",
+    "updatedSuccessfully": "Erfolgreich aktualisiert.",
     "user": "Benutzer",
     "users": "Benutzer",
     "value": "Wert"

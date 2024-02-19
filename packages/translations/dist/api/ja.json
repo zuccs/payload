@@ -35,6 +35,7 @@
     "thisLanguage": "Japanese",
     "updatedAt": "更新日",
     "updatedCountSuccessfully": "{{count}}つの{{label}}を正常に更新しました。",
+    "updatedSuccessfully": "更新成功。",
     "user": "ユーザー",
     "users": "ユーザー",
     "value": "値"

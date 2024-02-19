@@ -35,6 +35,7 @@
     "thisLanguage": "Français",
     "updatedAt": "Modifié le",
     "updatedCountSuccessfully": "{{count}} {{label}} mis à jour avec succès.",
+    "updatedSuccessfully": "Mis à jour avec succés.",
     "user": "Utilisateur",
     "users": "Utilisateurs",
     "value": "Valeur"

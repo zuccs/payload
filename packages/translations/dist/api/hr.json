@@ -35,6 +35,7 @@
     "thisLanguage": "Hrvatski",
     "updatedAt": "Ažurirano u",
     "updatedCountSuccessfully": "Uspješno ažurirano {{count}} {{label}}.",
+    "updatedSuccessfully": "Uspješno ažurirano.",
     "user": "Korisnik",
     "users": "Korisnici",
     "value": "Attribute"

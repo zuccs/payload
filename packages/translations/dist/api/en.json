@@ -35,6 +35,7 @@
     "thisLanguage": "English",
     "updatedAt": "Updated At",
     "updatedCountSuccessfully": "Updated {{count}} {{label}} successfully.",
+    "updatedSuccessfully": "Updated successfully.",
     "user": "User",
     "users": "Users",
     "value": "Value"

@@ -35,6 +35,7 @@
     "thisLanguage": "Svenska",
     "updatedAt": "Uppdaterades Vid",
     "updatedCountSuccessfully": "Uppdaterade {{count}} {{label}} framgångsrikt.",
+    "updatedSuccessfully": "Uppdaterades framgångsrikt.",
     "user": "Användare",
     "users": "Användare",
     "value": "Värde"

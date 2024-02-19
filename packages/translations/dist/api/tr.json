@@ -35,6 +35,7 @@
     "thisLanguage": "Türkçe",
     "updatedAt": "Güncellenme tarihi",
     "updatedCountSuccessfully": "{{count}} {{label}} başarıyla güncellendi.",
+    "updatedSuccessfully": "Başarıyla güncellendi.",
     "user": "kullanıcı",
     "users": "kullanıcı",
     "value": "Değer"

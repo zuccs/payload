@@ -35,6 +35,7 @@
     "thisLanguage": "Български",
     "updatedAt": "Обновен на",
     "updatedCountSuccessfully": "Обновени {{count}} {{label}} успешно.",
+    "updatedSuccessfully": "Обновен успешно.",
     "user": "Потребител",
     "users": "Потребители",
     "value": "Стойност"

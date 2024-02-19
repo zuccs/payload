@@ -35,6 +35,7 @@
     "thisLanguage": "Русский",
     "updatedAt": "Дата правки",
     "updatedCountSuccessfully": "Обновлено {{count}} {{label}} успешно.",
+    "updatedSuccessfully": "Успешно Обновлено.",
     "user": "пользователь",
     "users": "пользователи",
     "value": "Значение"

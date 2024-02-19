@@ -35,6 +35,7 @@
     "thisLanguage": "Română",
     "updatedAt": "Actualizat la",
     "updatedCountSuccessfully": "Actualizate {{count}} {{label}} cu succes.",
+    "updatedSuccessfully": "Actualizat cu succes.",
     "user": "Utilizator",
     "users": "Utilizatori",
     "value": "Valoare"

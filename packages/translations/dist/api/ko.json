@@ -34,6 +34,7 @@
     "thisLanguage": "한국어",
     "updatedAt": "업데이트 일시",
     "updatedCountSuccessfully": "{{count}}개의 {{label}}을(를) 업데이트했습니다.",
+    "updatedSuccessfully": "성공적으로 업데이트되었습니다.",
     "user": "사용자",
     "users": "사용자",
     "value": "값"

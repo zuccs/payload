@@ -35,6 +35,7 @@
     "thisLanguage": "Norsk",
     "updatedAt": "Oppdatert",
     "updatedCountSuccessfully": "Oppdaterte {{count}} {{label}} vellykket.",
+    "updatedSuccessfully": "Oppdatert.",
     "user": "Bruker",
     "users": "Brukere",
     "value": "Verdi"

@@ -35,6 +35,7 @@
     "thisLanguage": "中文 (简体)",
     "updatedAt": "更新于",
     "updatedCountSuccessfully": "已成功更新 {{count}} {{label}}。",
+    "updatedSuccessfully": "更新成功。",
     "user": "用户",
     "users": "用户",
     "value": "值"

@@ -35,6 +35,7 @@
     "thisLanguage": "العربية",
     "updatedAt": "تم التحديث في",
     "updatedCountSuccessfully": "تم تحديث {{count}} {{label}} بنجاح.",
+    "updatedSuccessfully": "تم التحديث بنجاح.",
     "user": "المستخدم",
     "users": "المستخدمين",
     "value": "القيمة"
