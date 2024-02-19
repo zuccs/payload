@@ -26,6 +26,7 @@ const serverTranslationKeys = [
   'general:users',
   'general:updatedAt',
   'general:updatedCountSuccessfully',
+  'general:updatedSuccessfully',
   'general:value',
 
   'error:deletingFile',
