@@ -8,7 +8,7 @@
     "@payloadcms/next": "./dist/bin/index.js"
   },
   "scripts": {
-    "build": "pnpm copyfiles && pnpm build:swc && pnpm build:types && pnpm build:webpack && rm dist/prod/index.js",
+    "build": "pnpm copyfiles && pnpm build:swc && pnpm build:types && pnpm build:webpack && rm dist/prod/index.js && tsx ../../scripts/exportPointerFiles.ts ../packages/next dist/exports",
     "build:swc": "swc ./src -d ./dist --config-file .swcrc",
     "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "build:webpack": "webpack --config webpack.config.js",
@@ -20,29 +20,20 @@
     "prepublishOnly": "pnpm clean && pnpm turbo build"
   },
   "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
     "./*": {
-      "import": "./dist/exports/*.js",
-      "require": "./dist/exports/*.js",
-      "types": "./dist/exports/*.ts"
+      "import": "./src/exports/*.ts",
+      "require": "./src/exports/*.ts",
+      "types": "./src/exports/*.ts"
     },
-    "./utilities/*": {
-      "import": "./dist/utilities/*.js",
-      "require": "./dist/utilities/*.js",
-      "types": "./src/utilities/*.ts"
-    },
-    "./layouts/*": {
-      "import": "./dist/layouts/*.js",
-      "require": "./dist/layouts/*.js",
-      "types": "./src/layouts/*.ts"
-    },
-    "./views/*": {
-      "import": "./dist/views/*.js",
-      "require": "./dist/views/*.js",
-      "types": "./src/views/*.ts"
-    },
-    "./routes": {
-      "import": "./dist/routes/index.js",
-      "require": "./dist/routes/index.js"
+    "./dist/*": {
+      "import": "./src/*.ts",
+      "require": "./src/*.ts",
+      "types": "./src/*.ts"
     }
   },
   "devDependencies": {
@@ -91,45 +82,25 @@
     "main": "./dist/exports/index.js",
     "types": "./dist/exports/index.d.ts",
     "exports": {
-      "./css": {
-        "import": "./dist/prod/styles.css",
-        "require": "./dist/prod/styles.css",
-        "default": "./dist/prod/styles.css"
-      },
-      "./withPayload": {
-        "import": "./dist/withPayload.js",
-        "require": "./dist/withPayload.js",
-        "types": "./dist/withPayload.d.ts"
-      },
       ".": {
         "import": "./dist/index.js",
         "require": "./dist/index.js",
         "types": "./dist/index.d.ts"
       },
-      "./utilities/*": {
-        "import": "./dist/utilities/*.js",
-        "require": "./dist/utilities/*.js",
-        "types": "./dist/utilities/*.d.ts"
+      "./*": {
+        "import": "./dist/exports/*.js",
+        "require": "./dist/exports/*.js",
+        "types": "./dist/exports/*.d.ts"
       },
-      "./layouts/*": {
-        "import": "./dist/layouts/*.js",
-        "require": "./dist/layouts/*.js",
-        "types": "./dist/layouts/*.d.ts"
+      "./css": {
+        "import": "./dist/prod/styles.css",
+        "require": "./dist/prod/styles.css",
+        "default": "./dist/prod/styles.css"
       },
-      "./views/*": {
-        "import": "./dist/views/*.js",
-        "require": "./dist/views/*.js",
-        "types": "./dist/views/*.d.ts"
-      },
-      "./app/*": {
-        "import": "./dist/app/*.js",
-        "require": "./dist/app/*.js",
-        "types": "./dist/app/*.d.ts"
-      },
-      "./routes": {
-        "import": "./dist/routes/index.js",
-        "require": "./dist/routes/index.js",
-        "types": "./dist/routes/index.d.ts"
+      "./dist/*": {
+        "import": "./dist/*.js",
+        "require": "./dist/*.js",
+        "types": "./dist/*.d.ts"
       }
     },
     "registry": "https://registry.npmjs.org/"
