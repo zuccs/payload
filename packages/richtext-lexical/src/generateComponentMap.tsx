@@ -21,8 +21,6 @@ export const getGenerateComponentMap =
       (a, b) => a[1].order - b[1].order,
     )
 
-    console.log('starting component map generation', schemaPath)
-
     componentMap.set(
       `features`,
       resolvedFeatureMapArray
@@ -75,15 +73,10 @@ export const getGenerateComponentMap =
             for (const schemaKey in schemas) {
               const fields = schemas[schemaKey]
 
-              const sanitizedFields = sanitizeFields({
-                config,
-                fields,
-                validRelationships,
-              })
-
               const mappedFields = mapFields({
                 config,
-                fieldSchema: sanitizedFields,
+                fieldSchema: fields,
+                parentPath: schemaPath,
                 readOnly: false,
               })
 
@@ -119,8 +112,6 @@ export const getGenerateComponentMap =
         })
         .filter((feature) => feature !== null),
     )
-
-    console.log('Component MAP: ', componentMap, schemaPath)
 
     return componentMap
   }

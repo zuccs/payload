@@ -42,8 +42,6 @@ export const mapFields = (args: {
           field.path || (isFieldAffectingData && 'name' in field ? field.name : '')
         }`
 
-        console.log('new path', path)
-
         const labelProps: LabelProps = {
           // @ts-expect-error-next-line
           label: 'label' in field ? field.label : null,
@@ -103,16 +101,11 @@ export const mapFields = (args: {
           Array.isArray(field.blocks) &&
           field.blocks.map((block) => {
             // deduplicate fields with duplicate names from block.fields
-            const newFields = block.fields.reduce((acc, field) => {
-              if (!acc.find((f) => f.name === field.name)) {
-                acc.push(field)
-              }
-              return acc
-            }, [])
+            const newFields = block.fields
 
             if (path === 'subBlocks') {
               console.log('Mapping block fields', {
-                DefaultCell,
+                DefaultCell: DefaultCell || Component,
                 config,
                 fieldSchema: newFields,
                 filter,
@@ -120,9 +113,8 @@ export const mapFields = (args: {
                 readOnly: readOnlyOverride,
               })
             }
-
             const blockFieldMap = mapFields({
-              DefaultCell,
+              DefaultCell: DefaultCell || Component,
               config,
               fieldSchema: newFields,
               filter,
@@ -253,7 +245,6 @@ export const mapFields = (args: {
           let RichTextFieldComponent
           let RichTextCellComponent
 
-          console.log(field.name, field.editor)
           const isLazyField = 'LazyFieldComponent' in field.editor
           const isLazyCell = 'LazyCellComponent' in field.editor
 
@@ -262,7 +253,6 @@ export const mapFields = (args: {
               return 'LazyFieldComponent' in field.editor
                 ? field.editor.LazyFieldComponent().then((resolvedComponent) => {
                     if (field.name === 'subRichtext') {
-                      console.log('11Resolvec C', resolvedComponent)
                     }
                     return {
                       default: resolvedComponent,
@@ -270,10 +260,8 @@ export const mapFields = (args: {
                   })
                 : null
             })
-            console.log('fwef24fg', RichTextFieldComponent)
           } else if ('FieldComponent' in field.editor) {
             if (field.name === 'subRichtext') {
-              console.log('11FC', field.editor.FieldComponent)
             }
             RichTextFieldComponent = field.editor.FieldComponent
           }
@@ -293,7 +281,6 @@ export const mapFields = (args: {
           if (typeof field.editor.generateComponentMap === 'function') {
             const result = field.editor.generateComponentMap({ config, schemaPath: path })
             if (field.name === 'subRichtext') {
-              console.log('11richTextComponentMap', result)
             }
             // @ts-expect-error-next-line // TODO: the `richTextComponentMap` is not found on the union type
             fieldComponentProps.richTextComponentMap = result
@@ -302,21 +289,15 @@ export const mapFields = (args: {
 
           if (RichTextFieldComponent) {
             if (field.name === 'subRichtext') {
-              console.log('11fieldComponentProps', fieldComponentProps)
             }
             Field = <RichTextFieldComponent {...fieldComponentProps} />
             if (field.name === 'subRichtext') {
-              console.log('11field', Field)
             }
           }
 
           if (RichTextCellComponent) {
             cellComponentProps.CellComponentOverride = <RichTextCellComponent />
           }
-        }
-
-        if (field.name === 'subRichtext') {
-          console.log('fpwuifgh', Field)
         }
 
         const reducedField: MappedField = {

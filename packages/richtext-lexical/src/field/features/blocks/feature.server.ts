@@ -65,13 +65,7 @@ export const BlocksFeature: FeatureProviderProviderServer<
           for (const block of props.blocks) {
             const unSanitizedFormSchema = block.fields || []
 
-            const formSchema = sanitizeFields({
-              config,
-              fields: unSanitizedFormSchema,
-              validRelationships,
-            })
-
-            schemaMap[block.slug] = formSchema
+            schemaMap[block.slug] = unSanitizedFormSchema
           }
 
           return schemaMap
