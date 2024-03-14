@@ -44,6 +44,7 @@ describe('Fields', () => {
   beforeAll(async () => {
     const config = await startMemoryDB(configPromise)
     payload = await getPayload({ config })
+    console.log(payload.db.collections)
     restClient = new NextRESTClient(payload.config)
     await restClient.login({
       slug: 'users',

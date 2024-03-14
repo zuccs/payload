@@ -328,9 +328,9 @@ const BlockFields: CollectionConfig = {
       name: 'ui',
       type: 'ui',
       admin: {
-        components: {
-          Field: AddCustomBlocks,
-        },
+        // components: {
+        //   Field: AddCustomBlocks,
+        // },
       },
     },
   ],

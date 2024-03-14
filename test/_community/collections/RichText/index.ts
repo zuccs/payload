@@ -10,11 +10,10 @@ import {
   lexicalEditor,
 } from '../../../../packages/richtext-lexical/src/index.js'
 import { slateEditor } from '../../../../packages/richtext-slate/src/index.js'
-import { richTextFieldsSlug } from '../../slugs.js'
 import { RelationshipBlock, SelectFieldBlock, TextBlock, UploadAndRichTextBlock } from './blocks.js'
 
 const RichTextFields: CollectionConfig = {
-  slug: richTextFieldsSlug,
+  slug: 'richtext-slug',
   access: {
     read: () => true,
   },
@@ -52,7 +51,7 @@ const RichTextFields: CollectionConfig = {
           }),
           UploadFeature({
             collections: {
-              uploads: {
+              media: {
                 fields: [
                   {
                     name: 'caption',

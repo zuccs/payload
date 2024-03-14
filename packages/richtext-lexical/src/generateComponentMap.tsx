@@ -21,6 +21,8 @@ export const getGenerateComponentMap =
       (a, b) => a[1].order - b[1].order,
     )
 
+    console.log('starting component map generation', schemaPath)
+
     componentMap.set(
       `features`,
       resolvedFeatureMapArray
@@ -94,7 +96,7 @@ export const getGenerateComponentMap =
             return null
           }
 
-          return {
+          const blah = {
             ClientComponent:
               clientComponentProps && typeof clientComponentProps === 'object' ? (
                 <ClientComponent
@@ -113,9 +115,13 @@ export const getGenerateComponentMap =
             key: resolvedFeature.key,
             order: resolvedFeature.order,
           } as GeneratedFeatureProviderComponent
+
+          return blah
         })
         .filter((feature) => feature !== null),
     )
+
+    console.log('Component MAP: ', componentMap, schemaPath)
 
     return componentMap
   }

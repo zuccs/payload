@@ -77,6 +77,7 @@ const Content: React.FC<DocumentDrawerProps> = ({
   useEffect(() => {
     if (isOpen && !isLoadingDocument && isError) {
       closeModal(drawerSlug)
+      console.log('drawer')
       toast.error(data.errors?.[0].message || t('error:unspecific'))
     }
   }, [isError, t, isOpen, data, drawerSlug, closeModal, isLoadingDocument])

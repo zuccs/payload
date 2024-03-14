@@ -7,6 +7,7 @@ import CustomLabel from './CustomLabel.js'
 import { defaultText, textFieldsSlug } from './shared.js'
 
 const TextFields: CollectionConfig = {
+  slug: textFieldsSlug,
   admin: {
     useAsTitle: 'text',
   },
@@ -14,16 +15,17 @@ const TextFields: CollectionConfig = {
   fields: [
     {
       name: 'text',
-      required: true,
       type: 'text',
+      required: true,
     },
     {
       name: 'localizedText',
-      localized: true,
       type: 'text',
+      localized: true,
     },
     {
       name: 'i18nText',
+      type: 'text',
       admin: {
         description: {
           en: 'en description',
@@ -38,15 +40,15 @@ const TextFields: CollectionConfig = {
         en: 'Text en',
         es: 'Text es',
       },
-      type: 'text',
     },
     {
       name: 'defaultFunction',
-      defaultValue: () => defaultText,
       type: 'text',
+      defaultValue: () => defaultText,
     },
     {
       name: 'defaultAsync',
+      type: 'text',
       defaultValue: async (): Promise<string> => {
         return new Promise((resolve) =>
           setTimeout(() => {
@@ -54,25 +56,25 @@ const TextFields: CollectionConfig = {
           }, 1),
         )
       },
-      type: 'text',
     },
     {
       name: 'overrideLength',
+      type: 'text',
       label: 'Override the 40k text length default',
       maxLength: 50000,
-      type: 'text',
     },
     {
       name: 'fieldWithDefaultValue',
+      type: 'text',
       defaultValue: async () => {
         const defaultValue = new Promise((resolve) => setTimeout(() => resolve('some-value'), 1000))
 
         return defaultValue
       },
-      type: 'text',
     },
     {
       name: 'dependentOnFieldWithDefaultValue',
+      type: 'text',
       hooks: {
         beforeChange: [
           ({ data }) => {
@@ -80,36 +82,35 @@ const TextFields: CollectionConfig = {
           },
         ],
       },
-      type: 'text',
     },
     {
       name: 'customLabel',
-      admin: {
-        components: {
-          Label: CustomLabel,
-        },
-      },
       type: 'text',
+      admin: {
+        // components: {
+        //   Label: CustomLabel,
+        // },
+      },
     },
     {
       name: 'customError',
+      type: 'text',
       admin: {
-        components: {
-          Error: CustomError,
-        },
+        // components: {
+        //   Error: CustomError,
+        // },
       },
       minLength: 3,
-      type: 'text',
     },
     {
       name: 'beforeAndAfterInput',
-      admin: {
-        components: {
-          afterInput: [AfterInput],
-          beforeInput: [BeforeInput],
-        },
-      },
       type: 'text',
+      admin: {
+        // components: {
+        //   afterInput: [AfterInput],
+        //   beforeInput: [BeforeInput],
+        // },
+      },
     },
     {
       name: 'hasMany',
@@ -141,7 +142,6 @@ const TextFields: CollectionConfig = {
       maxRows: 4,
     },
   ],
-  slug: textFieldsSlug,
 }
 
 export default TextFields

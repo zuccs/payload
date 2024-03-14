@@ -7,24 +7,22 @@ export const groupDefaultChild = 'child takes priority'
 
 const GroupFields: CollectionConfig = {
   slug: groupFieldsSlug,
-  versions: true,
   fields: [
     {
-      label: 'Group Field',
       name: 'group',
       type: 'group',
-      defaultValue: {
-        defaultParent: groupDefaultValue,
-      },
       admin: {
         description: 'This is a group.',
+      },
+      defaultValue: {
+        defaultParent: groupDefaultValue,
       },
       fields: [
         {
           name: 'text',
           type: 'text',
-          required: true,
           defaultValue: groupDefaultValue,
+          required: true,
         },
         {
           name: 'defaultParent',
@@ -57,6 +55,7 @@ const GroupFields: CollectionConfig = {
           ],
         },
       ],
+      label: 'Group Field',
     },
     {
       name: 'arrayOfGroups',
@@ -135,7 +134,6 @@ const GroupFields: CollectionConfig = {
       tabs: [
         {
           name: 'groups',
-          label: 'Groups in tabs',
           fields: [
             {
               type: 'row',
@@ -181,10 +179,12 @@ const GroupFields: CollectionConfig = {
               ],
             },
           ],
+          label: 'Groups in tabs',
         },
       ],
     },
   ],
+  versions: true,
 }
 
 export default GroupFields

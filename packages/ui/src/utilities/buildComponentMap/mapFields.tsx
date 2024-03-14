@@ -15,6 +15,7 @@ import DefaultDescription from '../../forms/FieldDescription/index.js'
 import DefaultLabel from '../../forms/Label/index.js'
 import HiddenInput from '../../forms/fields/HiddenInput/index.js'
 import { fieldTypes } from '../../forms/fields/index.js'
+import { Component } from './Component.js'
 
 export const mapFields = (args: {
   DefaultCell?: React.FC<any>
@@ -246,18 +247,27 @@ export const mapFields = (args: {
           let RichTextFieldComponent
           let RichTextCellComponent
 
+          console.log(field.name, field.editor)
           const isLazyField = 'LazyFieldComponent' in field.editor
           const isLazyCell = 'LazyCellComponent' in field.editor
 
           if (isLazyField) {
             RichTextFieldComponent = React.lazy(() => {
               return 'LazyFieldComponent' in field.editor
-                ? field.editor.LazyFieldComponent().then((resolvedComponent) => ({
-                    default: resolvedComponent,
-                  }))
+                ? field.editor.LazyFieldComponent().then((resolvedComponent) => {
+                    if (field.name === 'subRichtext') {
+                      console.log('11Resolvec C', resolvedComponent)
+                    }
+                    return {
+                      default: resolvedComponent,
+                    }
+                  })
                 : null
             })
           } else if ('FieldComponent' in field.editor) {
+            if (field.name === 'subRichtext') {
+              console.log('11FC', field.editor.FieldComponent)
+            }
             RichTextFieldComponent = field.editor.FieldComponent
           }
 
@@ -274,14 +284,21 @@ export const mapFields = (args: {
           }
 
           if (typeof field.editor.generateComponentMap === 'function') {
-            const result = field.editor.generateComponentMap({ config, schemaPath: path })
+            let result = field.editor.generateComponentMap({ config, schemaPath: path })
+            if (field.name === 'subRichtext') {
+              result = {}
+              console.log('11richTextComponentMap', result)
+            }
             // @ts-expect-error-next-line // TODO: the `richTextComponentMap` is not found on the union type
             fieldComponentProps.richTextComponentMap = result
             cellComponentProps.richTextComponentMap = result
           }
 
           if (RichTextFieldComponent) {
-            Field = <RichTextFieldComponent {...fieldComponentProps} />
+            if (field.name === 'subRichtext') {
+              console.log('11fieldComponentProps', fieldComponentProps)
+            }
+            Field = <RichTextFieldComponent />
           }
 
           if (RichTextCellComponent) {
@@ -289,17 +306,24 @@ export const mapFields = (args: {
           }
         }
 
+        if (field.name === 'subRichtext') {
+          console.log('fpwuifgh', Field)
+        }
+
         const reducedField: MappedField = {
           name: 'name' in field ? field.name : '',
           type: field.type,
-          Cell: (
-            <RenderCustomComponent
-              CustomComponent={field.admin?.components?.Cell}
-              DefaultComponent={DefaultCell}
-              componentProps={cellComponentProps}
-            />
-          ),
-          Field,
+          Cell:
+            field.name === 'subRichdwqdtext' ? (
+              <Component />
+            ) : (
+              <RenderCustomComponent
+                CustomComponent={field.admin?.components?.Cell}
+                DefaultComponent={DefaultCell}
+                componentProps={cellComponentProps}
+              />
+            ),
+          Field: field.name === 'fwefewwef' ? <Component /> : Field,
           Heading: (
             <SortColumn
               disable={

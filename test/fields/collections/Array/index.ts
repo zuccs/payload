@@ -6,6 +6,7 @@ import { ArrayRowLabel } from './LabelComponent.js'
 export const arrayDefaultValue = [{ text: 'row one' }, { text: 'row two' }]
 
 const ArrayFields: CollectionConfig = {
+  slug: arrayFieldsSlug,
   admin: {
     enableRichTextLink: false,
   },
@@ -17,6 +18,7 @@ const ArrayFields: CollectionConfig = {
     },
     {
       name: 'items',
+      type: 'array',
       defaultValue: arrayDefaultValue,
       fields: [
         {
@@ -31,48 +33,48 @@ const ArrayFields: CollectionConfig = {
         },
         {
           name: 'subArray',
+          type: 'array',
           fields: [
             {
               name: 'text',
               type: 'text',
             },
           ],
-          type: 'array',
         },
       ],
       required: true,
-      type: 'array',
     },
     {
       name: 'collapsedArray',
+      type: 'array',
       admin: {
         initCollapsed: true,
       },
       fields: [
         {
           name: 'text',
-          required: true,
           type: 'text',
+          required: true,
         },
       ],
-      type: 'array',
     },
     {
       name: 'localized',
+      type: 'array',
       defaultValue: arrayDefaultValue,
       fields: [
         {
           name: 'text',
-          required: true,
           type: 'text',
+          required: true,
         },
       ],
       localized: true,
       required: true,
-      type: 'array',
     },
     {
       name: 'readOnly',
+      type: 'array',
       admin: {
         readOnly: true,
       },
@@ -90,10 +92,10 @@ const ArrayFields: CollectionConfig = {
           type: 'text',
         },
       ],
-      type: 'array',
     },
     {
       name: 'potentiallyEmptyArray',
+      type: 'array',
       fields: [
         {
           name: 'text',
@@ -101,19 +103,19 @@ const ArrayFields: CollectionConfig = {
         },
         {
           name: 'groupInRow',
+          type: 'group',
           fields: [
             {
               name: 'textInGroupInRow',
               type: 'text',
             },
           ],
-          type: 'group',
         },
       ],
-      type: 'array',
     },
     {
       name: 'rowLabelAsFunction',
+      type: 'array',
       admin: {
         components: {
           RowLabel: ({ data }) => data.title,
@@ -126,10 +128,10 @@ const ArrayFields: CollectionConfig = {
           type: 'text',
         },
       ],
-      type: 'array',
     },
     {
       name: 'rowLabelAsComponent',
+      type: 'array',
       admin: {
         components: {
           RowLabel: ArrayRowLabel,
@@ -142,10 +144,10 @@ const ArrayFields: CollectionConfig = {
           type: 'text',
         },
       ],
-      type: 'array',
     },
     {
       name: 'arrayWithMinRows',
+      type: 'array',
       fields: [
         {
           name: 'text',
@@ -153,10 +155,8 @@ const ArrayFields: CollectionConfig = {
         },
       ],
       minRows: 2,
-      type: 'array',
     },
   ],
-  slug: arrayFieldsSlug,
   versions: true,
 }
 

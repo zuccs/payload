@@ -1,14 +1,17 @@
 import type { CollectionConfig } from '../../../../packages/payload/src/collections/config/types.js'
 
 import { collapsibleFieldsSlug } from '../../slugs.js'
-import { CollapsibleLabelComponent } from './LabelComponent.js'
+import {
+  CustomLabelComponent,
+  InnerLabelComponent,
+  NestedLabelComponent,
+  UntitledLabelComponent,
+} from './LabelComponent.js'
 
 const CollapsibleFields: CollectionConfig = {
   slug: collapsibleFieldsSlug,
-  versions: true,
   fields: [
     {
-      label: 'Collapsible Field',
       type: 'collapsible',
       admin: {
         description: 'This is a collapsible field.',
@@ -41,9 +44,9 @@ const CollapsibleFields: CollectionConfig = {
           ],
         },
       ],
+      label: 'Collapsible Field',
     },
     {
-      label: 'Collapsible Field - Collapsed by Default',
       type: 'collapsible',
       admin: {
         description: 'This is a collapsible field.',
@@ -75,9 +78,9 @@ const CollapsibleFields: CollectionConfig = {
           ],
         },
       ],
+      label: 'Collapsible Field - Collapsed by Default',
     },
     {
-      label: ({ data }) => data.functionTitleField || 'Custom Collapsible Label',
       type: 'collapsible',
       admin: {
         description: 'Collapsible label rendered from a function.',
@@ -89,9 +92,10 @@ const CollapsibleFields: CollectionConfig = {
           type: 'text',
         },
       ],
+      // label: CustomLabelComponent,
+      label: 'custom-blah',
     },
     {
-      label: ({ data }) => data?.componentTitleField || 'Untitled',
       type: 'collapsible',
       admin: {
         description: 'Collapsible label rendered as a react component.',
@@ -103,22 +107,24 @@ const CollapsibleFields: CollectionConfig = {
         },
         {
           type: 'collapsible',
-          label: ({ data }) => data?.nestedTitle || 'Nested Collapsible',
           fields: [
             {
-              type: 'text',
               name: 'nestedTitle',
+              type: 'text',
             },
           ],
+          // label: NestedLabelComponent,
+          label: 'nested-blah',
         },
       ],
+      // label: UntitledLabelComponent,
+      label: 'untitled-blah',
     },
     {
       name: 'arrayWithCollapsibles',
       type: 'array',
       fields: [
         {
-          label: CollapsibleLabelComponent,
           type: 'collapsible',
           fields: [
             {
@@ -126,10 +132,13 @@ const CollapsibleFields: CollectionConfig = {
               type: 'text',
             },
           ],
+          // label: InnerLabelComponent,
+          label: 'inner-blah',
         },
       ],
     },
   ],
+  versions: true,
 }
 
 export default CollapsibleFields

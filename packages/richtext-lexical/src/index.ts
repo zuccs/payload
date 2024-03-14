@@ -9,6 +9,7 @@ import type { FeatureProviderServer, ResolvedServerFeatureMap } from './field/fe
 import type { SanitizedServerEditorConfig } from './field/lexical/config/types.js'
 import type { AdapterProps } from './types.js'
 
+import { RichTextField } from './field/index.js'
 import {
   defaultEditorConfig,
   defaultEditorFeatures,
@@ -86,12 +87,7 @@ export function lexicalEditor(props?: LexicalEditorProps): LexicalRichTextAdapte
     LazyFieldComponent: () =>
       import('./field/index.js').then((module) => {
         const RichTextField = module.RichTextField
-        return import('@payloadcms/ui').then((module2) =>
-          module2.withMergedProps({
-            Component: RichTextField,
-            toMergeIntoProps: { lexicalEditorConfig: finalSanitizedEditorConfig.lexical }, // lexicalEditorConfig is serializable
-          }),
-        )
+        return RichTextField
       }),
     afterReadPromise: ({ field, incomingEditorState, siblingDoc }) => {
       return new Promise<void>((resolve, reject) => {

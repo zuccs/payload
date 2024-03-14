@@ -1,7 +1,6 @@
 import type { ArrayField, Block } from '../../../../packages/payload/src/fields/config/types.js'
 
 import { lexicalEditor } from '../../../../packages/richtext-lexical/src/index.js'
-import { textFieldsSlug } from '../Text/shared.js'
 
 export const BlockColumns = ({ name }: { name: string }): ArrayField => ({
   name,
@@ -114,7 +113,7 @@ export const UploadAndRichTextBlock: Block = {
     {
       name: 'upload',
       type: 'upload',
-      relationTo: 'uploads',
+      relationTo: 'media',
       required: true,
     },
     {
@@ -132,7 +131,7 @@ export const RelationshipHasManyBlock: Block = {
       name: 'rel',
       type: 'relationship',
       hasMany: true,
-      relationTo: [textFieldsSlug, 'uploads'],
+      relationTo: ['media'],
       required: true,
     },
   ],
@@ -143,7 +142,7 @@ export const RelationshipBlock: Block = {
     {
       name: 'rel',
       type: 'relationship',
-      relationTo: 'uploads',
+      relationTo: 'media',
       required: true,
     },
   ],
@@ -192,24 +191,15 @@ export const SubBlockBlock: Block = {
           slug: 'contentBlock',
           fields: [
             {
-              name: 'richText',
+              name: 'subRichtext',
               type: 'richText',
-              editor: lexicalEditor(),
+              editor: lexicalEditor({
+                features: [],
+              }),
               required: true,
             },
           ],
         },
-        {
-          slug: 'textArea',
-          fields: [
-            {
-              name: 'content',
-              type: 'textarea',
-              required: true,
-            },
-          ],
-        },
-        SelectFieldBlock,
       ],
     },
   ],
