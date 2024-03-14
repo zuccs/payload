@@ -84,7 +84,6 @@ export const getGenerateComponentMap =
               const mappedFields = mapFields({
                 config,
                 fieldSchema: sanitizedFields,
-                permissions: {},
                 readOnly: false,
               })
 

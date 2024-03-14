@@ -1,4 +1,3 @@
-import type { CollectionPermission, FieldPermissions, GlobalPermission } from 'payload/auth'
 import type { CellProps, Field, FieldWithPath, LabelProps, SanitizedConfig } from 'payload/types'
 
 import { fieldAffectsData, fieldIsPresentationalOnly } from 'payload/types'
@@ -23,18 +22,9 @@ export const mapFields = (args: {
   fieldSchema: FieldWithPath[]
   filter?: (field: Field) => boolean
   parentPath?: string
-  permissions?: CollectionPermission['fields'] | GlobalPermission['fields']
   readOnly?: boolean
 }): FieldMap => {
-  const {
-    DefaultCell,
-    config,
-    fieldSchema,
-    filter,
-    parentPath,
-    permissions,
-    readOnly: readOnlyOverride,
-  } = args
+  const { DefaultCell, config, fieldSchema, filter, parentPath, readOnly: readOnlyOverride } = args
 
   const result: FieldMap = fieldSchema.reduce((acc, field): FieldMap => {
     const fieldIsPresentational = fieldIsPresentationalOnly(field)
@@ -51,8 +41,6 @@ export const mapFields = (args: {
         const path = `${parentPath ? `${parentPath}.` : ''}${
           field.path || (isFieldAffectingData && 'name' in field ? field.name : '')
         }`
-
-        const fieldPermissions = isFieldAffectingData ? permissions?.[field.name] : undefined
 
         const labelProps: LabelProps = {
           // @ts-expect-error-next-line
@@ -79,7 +67,6 @@ export const mapFields = (args: {
             fieldSchema: field.fields,
             filter,
             parentPath: path,
-            permissions,
             readOnly: readOnlyOverride,
           })
 
@@ -95,7 +82,6 @@ export const mapFields = (args: {
               fieldSchema: tab.fields,
               filter,
               parentPath: path,
-              permissions,
               readOnly: readOnlyOverride,
             })
 
@@ -120,7 +106,6 @@ export const mapFields = (args: {
               fieldSchema: block.fields,
               filter,
               parentPath: `${path}.${block.slug}`,
-              permissions,
               readOnly: readOnlyOverride,
             })
 
@@ -200,8 +185,8 @@ export const mapFields = (args: {
           className:
             'admin' in field && 'className' in field.admin ? field?.admin?.className : undefined,
           date: 'admin' in field && 'date' in field.admin ? field.admin.date : undefined,
+          disabled: field?.admin && 'disabled' in field.admin ? field.admin?.disabled : false,
           fieldMap: nestedFieldMap,
-          fieldPermissions,
           hasMany: 'hasMany' in field ? field.hasMany : undefined,
           label: 'label' in field && typeof field.label === 'string' ? field.label : undefined,
           max: 'max' in field ? field.max : undefined,
@@ -342,8 +327,8 @@ export const mapFields = (args: {
             />
           ),
           blocks,
+          disabled: field?.admin && 'disabled' in field.admin ? field.admin?.disabled : false,
           fieldIsPresentational,
-          fieldPermissions,
           hasMany: 'hasMany' in field ? field.hasMany : undefined,
           isFieldAffectingData,
           isSidebar: 'admin' in field && field.admin?.position === 'sidebar',
@@ -378,7 +363,6 @@ export const mapFields = (args: {
       Field: <HiddenInput name="id" />,
       Heading: <SortColumn label="ID" name="id" />,
       fieldIsPresentational: false,
-      fieldPermissions: {} as FieldPermissions,
       isFieldAffectingData: true,
       isSidebar: false,
       label: 'ID',
