@@ -257,14 +257,28 @@ export type CollectionAdminOptions = {
    * Custom description for collection
    */
   description?: EntityDescription
+  /**
+   * Controls if richText internal link fields can link to this collection.
+   * If `admin.hidden` is false and not a function, this will default to false.
+   *
+   * @default true
+   */
   enableRichTextLink?: boolean
+  /**
+   * Controls if any richText relationships can link to this collection.
+   * If `admin.hidden` is false and not a function, this will default to false.
+   *
+   * @default true
+   */
   enableRichTextRelationship?: boolean
   /**
    * Place collections into a navigational group
    * */
   group?: Record<string, string> | string
   /**
-   * Exclude the collection from the admin nav and routes
+   * Exclude the collection from the admin nav and routes.
+   *
+   * If this set to false and is not a function, `enableRichTextLink` and `enableRichTextRelationship` will be set to false by default.
    */
   hidden?: ((args: { user: ClientUser }) => boolean) | boolean
   /**

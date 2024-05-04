@@ -34,6 +34,17 @@ export const sanitizeCollection = async (
     isMergeableObject: isPlainObject,
   })
 
+  if (typeof sanitized?.admin?.hidden !== 'function' && sanitized?.admin?.hidden === false) {
+    // Need to check for collection here, as it's been sanitized to a default of true
+    if (collection?.admin?.enableRichTextLink === undefined) {
+      sanitized.admin.enableRichTextLink = false
+    }
+    // Need to check for collection here, as it's been sanitized to a default of true
+    if (collection?.admin?.enableRichTextRelationship === undefined) {
+      sanitized.admin.enableRichTextRelationship = false
+    }
+  }
+
   if (sanitized.timestamps !== false) {
     // add default timestamps fields only as needed
     let hasUpdatedAt = null
