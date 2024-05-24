@@ -8,7 +8,7 @@ import { serialize } from 'object-to-formdata'
 import { wait } from 'payload/utilities'
 import QueryString from 'qs'
 import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react'
-import { toast } from 'react-toastify'
+import { toast } from 'sonner'
 
 import type {
   Context as FormContextType,
@@ -175,6 +175,23 @@ export const Form: React.FC<FormProps> = (props) => {
         return
       }
 
+      // create new promise which i will resolve manually later
+      let resolvePromise, rejectPromise
+      const promise = new Promise((resolve, reject) => {
+        resolvePromise = resolve
+        rejectPromise = reject
+      })
+
+      toast.promise(promise, {
+        error: (data) => {
+          return data as string
+        },
+        loading: 'Submitting...',
+        success: (data) => {
+          return data as string
+        },
+      })
+
       if (e) {
         e.stopPropagation()
         e.preventDefault()
@@ -214,7 +231,8 @@ export const Form: React.FC<FormProps> = (props) => {
 
       // If not valid, prevent submission
       if (!isValid) {
-        toast.error(t('error:correctInvalidFields'))
+        // resolve promise
+        rejectPromise(t('error:correctInvalidFields'))
         setProcessing(false)
         setSubmitted(true)
         setDisabled(false)
@@ -276,7 +294,7 @@ export const Form: React.FC<FormProps> = (props) => {
           if (redirect) {
             router.push(redirect)
           } else if (!disableSuccessStatus) {
-            toast.success(json.message || t('general:submissionSuccessful'), { autoClose: 3000 })
+            resolvePromise(json.message || t('general:submissionSuccessful'))
           }
         } else {
           setProcessing(false)
@@ -284,7 +302,7 @@ export const Form: React.FC<FormProps> = (props) => {
 
           contextRef.current = { ...contextRef.current } // triggers rerender of all components that subscribe to form
           if (json.message) {
-            toast.error(json.message)
+            rejectPromise(json.message)
 
             return
           }
@@ -323,7 +341,7 @@ export const Form: React.FC<FormProps> = (props) => {
             })
 
             nonFieldErrors.forEach((err) => {
-              toast.error(err.message || t('error:unknown'))
+              rejectPromise(err.message || t('error:unknown'))
             })
 
             return
@@ -331,14 +349,13 @@ export const Form: React.FC<FormProps> = (props) => {
 
           const message = errorMessages?.[res.status] || res?.statusText || t('error:unknown')
 
-          toast.error(message)
+          rejectPromise(message)
         }
       } catch (err) {
         setProcessing(false)
         setSubmitted(true)
         setDisabled(false)
-
-        toast.error(err)
+        rejectPromise(err)
       }
     },
     [

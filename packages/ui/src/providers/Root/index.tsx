@@ -7,6 +7,7 @@ import * as facelessUIImport3 from '@faceless-ui/scroll-info'
 import * as facelessUIImport2 from '@faceless-ui/window-info'
 import React, { Fragment } from 'react'
 import { Slide, ToastContainer } from 'react-toastify'
+import { Toaster, toast } from 'sonner'
 
 import type { ComponentMap } from '../ComponentMap/buildComponentMap/types.js'
 import type { Theme } from '../Theme/index.js'
@@ -120,6 +121,7 @@ export const RootProvider: React.FC<Props> = ({
           </ComponentMapProvider>
         </ConfigProvider>
       </RouteCache>
+      <Toaster closeButton richColors toastOptions={{ closeButton: true }} />
       <ToastContainer icon={false} position="bottom-center" transition={Slide} />
     </Fragment>
   )
