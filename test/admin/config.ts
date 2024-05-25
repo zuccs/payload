@@ -42,6 +42,10 @@ import {
   customViewPath,
 } from './shared.js'
 
+type ComponentFn = <C>(C: C) => C | null
+
+const Component: ComponentFn = (c) => c
+
 export default buildConfigWithDefaults({
   admin: {
     components: {
@@ -70,7 +74,7 @@ export default buildConfigWithDefaults({
           path: customNestedViewPath,
         },
         CustomView: {
-          Component: CustomView,
+          Component: Component(CustomView),
           exact: true,
           path: customViewPath,
           strict: true,

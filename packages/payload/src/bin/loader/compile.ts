@@ -1,3 +1,4 @@
+import type { Options } from '@swc-node/core'
 import type * as ts from 'typescript'
 
 import { transform } from '@swc-node/core'
@@ -33,8 +34,24 @@ export async function compile(
   }
 
   const swcRegisterConfig = tsCompilerOptionsToSwcConfig(options, filename)
+  const modifiedConfig: Options = {
+    ...swcRegisterConfig,
+    swc: {
+      ...{ ...(swcRegisterConfig?.swc ?? {}) },
+      jsc: {
+        ...{ ...(swcRegisterConfig?.swc?.jsc ?? {}) },
+        experimental: {
+          ...{ ...(swcRegisterConfig?.swc?.jsc?.experimental ?? {}) },
+          plugins: [
+            ...(swcRegisterConfig?.swc?.jsc?.experimental?.plugins ?? []),
+            ['swc-plugin-strip-components', {}],
+          ],
+        },
+      },
+    },
+  }
 
-  return transform(sourcecode, filename, swcRegisterConfig).then(({ code, map }) => {
+  return transform(sourcecode, filename, modifiedConfig).then(({ code, map }) => {
     return injectInlineSourceMap({ code, filename, map })
   })
 }

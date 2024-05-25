@@ -49,6 +49,7 @@
     "dev:generate-graphql-schema": "cross-env NODE_OPTIONS=--no-deprecation tsx ./test/generateGraphQLSchema.ts",
     "dev:generate-types": "cross-env NODE_OPTIONS=--no-deprecation tsx ./test/generateTypes.ts",
     "dev:postgres": "cross-env NODE_OPTIONS=--no-deprecation PAYLOAD_DATABASE=postgres node ./test/dev.js",
+    "devLoader": "cross-env NODE_OPTIONS=--no-deprecation node ./test/devLoader.js",
     "devsafe": "rimraf .next && pnpm dev",
     "docker:restart": "pnpm docker:stop --remove-orphans && pnpm docker:start",
     "docker:start": "docker compose -f packages/plugin-cloud-storage/docker-compose.yml up -d",
@@ -82,6 +83,10 @@
       "eslint --cache --fix"
     ],
     "tsconfig.json": "node scripts/reset-tsconfig.js"
+  },
+  "dependencies": {
+    "swc-plugin-strip-components": "0.1.4",
+    "typed-file-system-path": "^0.12.0"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.525.0",

@@ -21,6 +21,8 @@ Webpack:  [ {}, [Function: ExampleServer] ]
 export function isReactServerComponentOrFunction<T extends any>(
   component: React.ComponentType | any,
 ): component is T {
+  if (!component) return false
+
   const isClassComponent =
     typeof component === 'function' &&
     component.prototype &&
@@ -38,6 +40,7 @@ export function isReactServerComponentOrFunction<T extends any>(
 export function isReactClientComponent<T extends any>(
   component: React.ComponentType | any,
 ): component is T {
+  if (!component) return false
   const isClientComponentWebpack = typeof component === 'object' && !isPlainObject(component) // In Webpack, client components are {}
   const isClientComponentTurbo = typeof component === 'function' && component.name === '' // Anonymous functions are Client Components in Turbopack
 
@@ -47,5 +50,7 @@ export function isReactClientComponent<T extends any>(
 export function isReactComponentOrFunction<T extends any>(
   component: React.ComponentType | any,
 ): component is T {
+  if (!component) return false
+
   return isReactServerComponentOrFunction(component) || isReactClientComponent(component)
 }
