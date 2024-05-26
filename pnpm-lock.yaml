@@ -27,8 +27,8 @@ importers:
   .:
     dependencies:
       swc-plugin-strip-components:
-        specifier: 0.3.0
-        version: 0.3.0
+        specifier: 0.3.1
+        version: 0.3.1
     devDependencies:
       '@aws-sdk/client-s3':
         specifier: ^3.525.0
@@ -15724,8 +15724,8 @@ packages:
       webpack: 5.91.0(@swc/core@1.4.13)(esbuild@0.19.12)(webpack-cli@5.1.4)
     dev: true
 
-  /swc-plugin-strip-components@0.3.0:
-    resolution: {integrity: sha512-pU3Og/POSW4sjWWPgVMHdTDZrdI6EryTkDNg9TkhIIPUx60x8nv7K1cC/XwEl21BweV6LpatuQQxVdQv6j4l5w==}
+  /swc-plugin-strip-components@0.3.1:
+    resolution: {integrity: sha512-gju0T9MlhchZTi7aPKywaMHcQBahu9ytlBSFyF/tgWnKXhudPb+n767EBx2Bw+hQAlMdOogfA2OveI8HFpwrwQ==}
     dev: false
 
   /swc-plugin-transform-remove-imports@1.12.1:
