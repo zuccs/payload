@@ -6,8 +6,14 @@ import type { Locale } from '../../config/types.js'
 import type { SanitizedGlobalConfig } from '../../globals/config/types.js'
 import type { PayloadRequestWithData } from '../../types/index.js'
 
+type ComponentFn = <C>(
+  C: C,
+) => (C & { use_Component_helper_exported_from_payload_utilities: string }) | null
+
+export const Component: ComponentFn = (c) => c as any
+
 export type AdminViewConfig = {
-  Component: AdminViewComponent
+  Component: AdminViewComponent //& { use_Component_helper_exported_from_payload_utilities: string }
   /** Whether the path should be matched exactly or as a prefix */
   exact?: boolean
   path: string

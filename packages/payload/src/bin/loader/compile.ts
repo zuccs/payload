@@ -44,7 +44,13 @@ export async function compile(
           ...{ ...(swcRegisterConfig?.swc?.jsc?.experimental ?? {}) },
           plugins: [
             ...(swcRegisterConfig?.swc?.jsc?.experimental?.plugins ?? []),
-            ['swc-plugin-strip-components', {}],
+            [
+              'swc-plugin-strip-components',
+              {
+                identifier: 'Component',
+                lobotomize_use_client_files: true,
+              },
+            ],
           ],
         },
       },

@@ -1,3 +1,5 @@
+import { Component } from 'payload/utilities'
+
 import { buildConfigWithDefaults } from '../buildConfigWithDefaults.js'
 import { CustomIdRow } from './collections/CustomIdRow.js'
 import { CustomIdTab } from './collections/CustomIdTab.js'
@@ -42,10 +44,6 @@ import {
   customViewPath,
 } from './shared.js'
 
-type ComponentFn = <C>(C: C) => C | null
-
-const Component: ComponentFn = (c) => c
-
 export default buildConfigWithDefaults({
   admin: {
     components: {
@@ -61,15 +59,15 @@ export default buildConfigWithDefaults({
         // Dashboard: CustomDashboardView,
         // Account: CustomAccountView,
         CustomDefaultView: {
-          Component: CustomDefaultView,
+          Component: Component(CustomDefaultView),
           path: '/custom-default-view',
         },
         CustomMinimalView: {
-          Component: CustomMinimalView,
+          Component: Component(CustomMinimalView),
           path: '/custom-minimal-view',
         },
         CustomNestedView: {
-          Component: CustomNestedView,
+          Component: Component(CustomNestedView),
           exact: true,
           path: customNestedViewPath,
         },

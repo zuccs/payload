@@ -164,6 +164,12 @@ export const load: LoadFn = async (url, context, nextLoad) => {
     const { source } = await nextLoad(url, context)
     const code = typeof source === 'string' ? source : Buffer.from(source).toString()
     const compiled = await compile(code, fileURLToPath(url), swcOptions)
+    if (url.includes('StepNav/index.tsx')) {
+      console.log('Compiled111 url', url, compiled)
+    }
+    if (url.includes('richtext-lexical/src/field/index.tsx')) {
+      console.log('Compiled222 url', url, compiled)
+    }
     return {
       format: 'module',
       shortCircuit: true,
