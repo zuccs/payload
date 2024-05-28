@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
 
-import { BlocksFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { BlocksFeature, TreeViewFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+
+import { Paragraph2Feature } from '../paragraph/feature.server.js'
 
 export const postsSlug = 'posts'
 
@@ -15,15 +17,13 @@ export const PostsCollection: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'richText',
-      type: 'richText',
-    },
-    {
       name: 'richText2',
       type: 'richText',
       editor: lexicalEditor({
         features: ({ defaultFeatures }) => [
           ...defaultFeatures,
+          TreeViewFeature(),
+          Paragraph2Feature(),
           BlocksFeature({
             blocks: [
               {
