@@ -10,6 +10,8 @@ export const RelationshipArray: React.FC<
       readOnly: boolean
     }
 > = (props) => {
+  const { value } = props
+
   return (
     <div>
       <div>Array Style</div>
