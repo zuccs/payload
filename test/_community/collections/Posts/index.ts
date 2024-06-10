@@ -19,6 +19,9 @@ export const PostsCollection: CollectionConfig = {
       type: 'relationship',
       relationTo: [postsSlug],
       hasMany: true,
+      admin: {
+        appearance: 'array',
+      },
     },
     {
       name: 'richText',

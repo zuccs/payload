@@ -16,7 +16,7 @@ export { RelationshipFieldProps }
 const RelationshipField: React.FC<RelationshipFieldProps> = (props) => {
   const {
     name,
-    hasMany,
+    appearance = 'select',
     path: pathFromProps,
     readOnly: readOnlyFromProps,
     required,
@@ -43,8 +43,7 @@ const RelationshipField: React.FC<RelationshipFieldProps> = (props) => {
 
   const readOnly = readOnlyFromProps || readOnlyFromContext || formInitializing
 
-  // TODO: make this condition real, i.e. `admin.appearance === 'array'`
-  if (hasMany) {
+  if (appearance === 'array') {
     return <RelationshipArray {...props} {...useFieldResult} readOnly={readOnly} />
   }
 

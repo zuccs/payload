@@ -6,6 +6,7 @@ import type { FormFieldBase } from '../shared/index.js'
 
 export type RelationshipFieldProps = FormFieldBase & {
   allowCreate?: RelationshipField['admin']['allowCreate']
+  appearance?: RelationshipField['admin']['appearance']
   hasMany?: boolean
   isSortable?: boolean
   name: string

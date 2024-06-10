@@ -406,6 +406,7 @@ export const relationship = baseField.keys({
   type: joi.string().valid('relationship').required(),
   admin: baseAdminFields.keys({
     allowCreate: joi.boolean().default(true),
+    appearance: joi.string().valid('select', 'array'),
     components: baseAdminComponentFields.keys({
       Error: componentSchema,
       Label: componentSchema,

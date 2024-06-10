@@ -16,8 +16,8 @@ import { Tooltip } from '../../../../../elements/Tooltip/index.js'
 import { Plus } from '../../../../../icons/Plus/index.js'
 import { useAuth } from '../../../../../providers/Auth/index.js'
 import { useTranslation } from '../../../../../providers/Translation/index.js'
+import { useRelatedCollections } from '../../../useRelatedCollections.js'
 import './index.scss'
-import { useRelatedCollections } from './useRelatedCollections.js'
 
 const baseClass = 'relationship-add-new'
 

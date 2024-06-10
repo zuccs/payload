@@ -584,12 +584,20 @@ type SharedRelationshipProperties = FieldBase & {
 
 type RelationshipAdmin = Admin & {
   allowCreate?: boolean
+  /**
+   * The appearance of the relationship field in the Admin Panel.
+   * - `select` - A select input (default)
+   * - `array` - The `array` field
+   * @default 'select'
+   */
+  appearance?: 'array' | 'select'
   components?: {
     Error?: CustomComponent<ErrorProps>
     Label?: CustomComponent<LabelProps>
   }
   isSortable?: boolean
 }
+
 export type PolymorphicRelationshipField = SharedRelationshipProperties & {
   admin?: RelationshipAdmin & {
     sortOptions?: { [collectionSlug: string]: string }

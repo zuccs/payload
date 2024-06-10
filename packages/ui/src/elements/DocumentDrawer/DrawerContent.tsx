@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 
 import type { DocumentDrawerProps } from './types.js'
 
-import { useRelatedCollections } from '../../fields/Relationship/AddNew/useRelatedCollections.js'
+import { useRelatedCollections } from '../../fields/Relationship/useRelatedCollections.js'
 import { X } from '../../icons/X/index.js'
 import { useComponentMap } from '../../providers/ComponentMap/index.js'
 import { useConfig } from '../../providers/Config/index.js'
