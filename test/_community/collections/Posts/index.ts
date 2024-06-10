@@ -15,6 +15,12 @@ export const PostsCollection: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'relationship',
+      type: 'relationship',
+      relationTo: [postsSlug],
+      hasMany: true,
+    },
+    {
       name: 'richText',
       type: 'richText',
     },
