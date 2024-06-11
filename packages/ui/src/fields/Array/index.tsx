@@ -1,6 +1,7 @@
 'use client'
+import type { TFunction } from '@payloadcms/translations'
 import type { FieldPermissions } from 'payload/auth'
-import type { ArrayField as ArrayFieldType } from 'payload/types'
+import type { ArrayField as ArrayFieldType, RowLabel } from 'payload/types'
 
 import React, { useCallback } from 'react'
 
@@ -16,7 +17,7 @@ import { useDocumentInfo } from '../../providers/DocumentInfo/index.js'
 import { useLocale } from '../../providers/Locale/index.js'
 import { useTranslation } from '../../providers/Translation/index.js'
 import { scrollToID } from '../../utilities/scrollToID.js'
-import { _Array as Array } from './Array.js'
+import { ArrayComponent } from './ArrayComponent.js'
 
 export type ArrayFieldProps = FormFieldBase & {
   CustomRowLabel?: React.ReactNode
@@ -31,9 +32,23 @@ export type ArrayFieldProps = FormFieldBase & {
   width?: string
 }
 
+// Handle labeling for Arrays, Global Arrays, and Blocks
+export const getLabels = (args: {
+  label?: RowLabel
+  labels?: ArrayFieldType['labels']
+  t: TFunction
+}): ArrayFieldType['labels'] => {
+  const { t } = args
+  if ('labels' in args && args?.labels) return args.labels
+  if ('label' in args && args?.label) return { plural: undefined, singular: args?.label }
+  return { plural: t('general:rows'), singular: t('general:row') }
+}
+
 export const _ArrayField: React.FC<ArrayFieldProps> = (props) => {
   const {
     name,
+    label,
+    labels: labelsFromProps,
     maxRows,
     minRows: minRowsProp,
     path: pathFromProps,
@@ -60,14 +75,7 @@ export const _ArrayField: React.FC<ArrayFieldProps> = (props) => {
     return true
   })()
 
-  // Handle labeling for Arrays, Global Arrays, and Blocks
-  const getLabels = (p: ArrayFieldProps): ArrayFieldType['labels'] => {
-    if ('labels' in p && p?.labels) return p.labels
-    if ('label' in p && p?.label) return { plural: undefined, singular: p?.label }
-    return { plural: t('general:rows'), singular: t('general:row') }
-  }
-
-  const labels = getLabels(props)
+  const labels = getLabels({ label, labels: labelsFromProps, t })
 
   const memoizedValidate = useCallback(
     (value, options) => {
@@ -157,7 +165,7 @@ export const _ArrayField: React.FC<ArrayFieldProps> = (props) => {
   )
 
   return (
-    <Array
+    <ArrayComponent
       {...props}
       addRow={addRow}
       disabled={disabled}

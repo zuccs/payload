@@ -9,11 +9,11 @@ import { RowLabelProvider } from '../RowLabel/Context/index.js'
 const baseClass = 'row-label'
 
 export const RowLabel: React.FC<RowLabelProps> = (props) => {
-  const { RowLabelComponent, className, i18n, path, rowLabel, rowNumber } = props
+  const { RowLabelComponent, className, i18n, path, rowIndex, rowLabel } = props
 
   if (RowLabelComponent) {
     return (
-      <RowLabelProvider path={path} rowNumber={rowNumber}>
+      <RowLabelProvider path={path} rowIndex={rowIndex}>
         {RowLabelComponent}
       </RowLabelProvider>
     )

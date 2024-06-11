@@ -22,7 +22,9 @@ const baseClass = 'array-field'
 type ArrayRowProps = UseDraggableSortableReturn & {
   CustomRowLabel?: React.ReactNode
   addRow: (rowIndex: number) => void
-  duplicateRow: (rowIndex: number) => void
+  appendRowIndexToPath
+  disableDuplicate?: boolean
+  duplicateRow?: (rowIndex: number) => void
   errorCount: number
   fieldMap: FieldMap
   forceRender?: boolean
@@ -45,7 +47,9 @@ type ArrayRowProps = UseDraggableSortableReturn & {
 export const ArrayRow: React.FC<ArrayRowProps> = ({
   CustomRowLabel,
   addRow,
+  appendRowIndexToPath,
   attributes,
+  disableDuplicate,
   duplicateRow,
   errorCount,
   fieldMap,
@@ -56,7 +60,7 @@ export const ArrayRow: React.FC<ArrayRowProps> = ({
   labels,
   listeners,
   moveRow,
-  path: parentPath,
+  path: pathFromProps,
   permissions,
   readOnly,
   removeRow,
@@ -68,11 +72,11 @@ export const ArrayRow: React.FC<ArrayRowProps> = ({
   setNodeRef,
   transform,
 }) => {
-  const path = `${parentPath}.${rowIndex}`
+  const path = `${pathFromProps}${appendRowIndexToPath && typeof rowIndex === 'number' ? `.${rowIndex}` : ''}`
   const { i18n } = useTranslation()
   const hasSubmitted = useFormSubmitted()
 
-  const fallbackLabel = `${getTranslation(labels.singular, i18n)} ${String(rowIndex + 1).padStart(
+  const fallbackLabel = `${getTranslation(labels?.singular, i18n)} ${String(rowIndex + 1).padStart(
     2,
     '0',
   )}`
@@ -88,8 +92,8 @@ export const ArrayRow: React.FC<ArrayRowProps> = ({
 
   return (
     <div
-      id={`${parentPath.split('.').join('-')}-row-${rowIndex}`}
-      key={`${parentPath}-row-${row.id}`}
+      id={`${pathFromProps?.split('.').join('-')}-row-${rowIndex}`}
+      key={`${pathFromProps}-row-${row.id}`}
       ref={setNodeRef}
       style={{
         transform,
@@ -100,6 +104,7 @@ export const ArrayRow: React.FC<ArrayRowProps> = ({
           !readOnly ? (
             <ArrayAction
               addRow={addRow}
+              disableDuplicate={disableDuplicate}
               duplicateRow={duplicateRow}
               hasMaxRows={hasMaxRows}
               index={rowIndex}
@@ -127,8 +132,8 @@ export const ArrayRow: React.FC<ArrayRowProps> = ({
               RowLabelComponent={CustomRowLabel}
               i18n={i18n}
               path={path}
+              rowIndex={rowIndex}
               rowLabel={fallbackLabel}
-              rowNumber={rowIndex + 1}
             />
             {fieldHasErrors && <ErrorPill count={errorCount} i18n={i18n} withMessage />}
           </div>

@@ -1,7 +1,5 @@
 import type { CollectionConfig } from 'payload/types'
 
-import { BlocksFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-
 export const postsSlug = 'posts'
 
 export const PostsCollection: CollectionConfig = {
@@ -15,7 +13,13 @@ export const PostsCollection: CollectionConfig = {
       type: 'text',
     },
     {
-      name: 'relationship',
+      name: 'relationshipSelect',
+      type: 'relationship',
+      relationTo: [postsSlug],
+      hasMany: true,
+    },
+    {
+      name: 'relationshipArray',
       type: 'relationship',
       relationTo: [postsSlug],
       hasMany: true,
@@ -24,31 +28,41 @@ export const PostsCollection: CollectionConfig = {
       },
     },
     {
-      name: 'richText',
-      type: 'richText',
+      name: 'array',
+      type: 'array',
+      fields: [
+        {
+          name: 'text',
+          type: 'text',
+        },
+      ],
     },
-    {
-      name: 'richText2',
-      type: 'richText',
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          BlocksFeature({
-            blocks: [
-              {
-                slug: 'testblock',
-                fields: [
-                  {
-                    name: 'testfield',
-                    type: 'text',
-                  },
-                ],
-              },
-            ],
-          }),
-        ],
-      }),
-    },
+    // {
+    //   name: 'richText',
+    //   type: 'richText',
+    // },
+    // {
+    //   name: 'richText2',
+    //   type: 'richText',
+    //   editor: lexicalEditor({
+    //     features: ({ defaultFeatures }) => [
+    //       ...defaultFeatures,
+    //       BlocksFeature({
+    //         blocks: [
+    //           {
+    //             slug: 'testblock',
+    //             fields: [
+    //               {
+    //                 name: 'testfield',
+    //                 type: 'text',
+    //               },
+    //             ],
+    //           },
+    //         ],
+    //       }),
+    //     ],
+    //   }),
+    // },
     // {
     //   type: 'row',
     //   fields: [],

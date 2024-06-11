@@ -1,12 +1,10 @@
 'use client'
-import type { FieldPermissions } from 'payload/auth'
 import type { ArrayField as ArrayFieldType, Row } from 'payload/types'
 
 import { getTranslation } from '@payloadcms/translations'
-import React from 'react'
+import React, { Fragment } from 'react'
 
-import type { FieldMap } from '../../providers/ComponentMap/buildComponentMap/types.js'
-import type { FormFieldBase } from '../shared/index.js'
+import type { ArrayFieldProps } from './index.js'
 
 import { Banner } from '../../elements/Banner/index.js'
 import { Button } from '../../elements/Button/index.js'
@@ -25,23 +23,14 @@ import './index.scss'
 
 const baseClass = 'array-field'
 
-export type ArrayFieldProps = FormFieldBase & {
-  CustomRowLabel?: React.ReactNode
-  fieldMap: FieldMap
-  forceRender?: boolean
-  isSortable?: boolean
-  labels?: ArrayFieldType['labels']
-  maxRows?: ArrayFieldType['maxRows']
-  minRows?: ArrayFieldType['minRows']
-  name?: string
-  permissions: FieldPermissions
-  width?: string
-}
-
-export const _Array: React.FC<
+export const ArrayComponent: React.FC<
   ArrayFieldProps & {
-    addRow: (rowIndex: number) => void
-    duplicateRow: (rowIndex: number) => void
+    BeforeHeader: React.ReactNode
+    CustomAddButton?: React.ReactNode
+    addRow: (rowIndex: number, value?: any) => void
+    appendRowIndexToPath?: boolean
+    disableDuplicate?: boolean
+    duplicateRow?: (rowIndex: number) => void
     errorPaths: string[]
     indexPath: string
     labels: ArrayFieldType['labels']
@@ -57,16 +46,20 @@ export const _Array: React.FC<
   }
 > = (props) => {
   const {
+    BeforeHeader,
+    CustomAddButton,
     CustomDescription,
     CustomError,
     CustomLabel,
     CustomRowLabel,
     addRow,
+    appendRowIndexToPath = true,
     className,
     descriptionProps,
+    disableDuplicate,
     disabled,
     duplicateRow,
-    errorPaths,
+    errorPaths = [],
     errorProps,
     fieldMap,
     forceRender = false,
@@ -103,7 +96,7 @@ export const _Array: React.FC<
   const fieldHasErrors = submitted && errorPaths.length > 0
 
   const showRequired = disabled && rows.length === 0
-  const showMinRows = rows.length < minRows || (required && rows.length === 0)
+  const showMinRows = (rows && rows.length < minRows) || (required && rows.length === 0)
 
   return (
     <div
@@ -115,9 +108,10 @@ export const _Array: React.FC<
       ]
         .filter(Boolean)
         .join(' ')}
-      id={`field-${path.replace(/\./g, '__')}`}
+      id={`field-${path?.replace(/\./g, '__')}`}
     >
       {showError && <FieldError CustomError={CustomError} path={path} {...(errorProps || {})} />}
+      {BeforeHeader}
       <header className={`${baseClass}__header`}>
         <div className={`${baseClass}__header-wrap`}>
           <div className={`${baseClass}__header-content`}>
@@ -135,7 +129,7 @@ export const _Array: React.FC<
               <ErrorPill count={fieldErrorCount} i18n={i18n} withMessage />
             )}
           </div>
-          {rows.length > 0 && (
+          {rows && rows.length > 0 && (
             <ul className={`${baseClass}__header-actions`}>
               <li>
                 <button
@@ -161,7 +155,7 @@ export const _Array: React.FC<
         <FieldDescription CustomDescription={CustomDescription} {...(descriptionProps || {})} />
       </header>
       <NullifyLocaleField fieldValue={value} localized={localized} path={path} />
-      {(rows.length > 0 || (!valid && (showRequired || showMinRows))) && (
+      {((rows && rows.length > 0) || (!valid && (showRequired || showMinRows))) && (
         <DraggableSortable
           className={`${baseClass}__draggable-rows`}
           ids={rows.map((row) => row.id)}
@@ -178,6 +172,8 @@ export const _Array: React.FC<
                     {...draggableSortableItemProps}
                     CustomRowLabel={CustomRowLabel}
                     addRow={addRow}
+                    appendRowIndexToPath={appendRowIndexToPath}
+                    disableDuplicate={disableDuplicate}
                     duplicateRow={duplicateRow}
                     errorCount={rowErrorCount}
                     fieldMap={fieldMap}
@@ -205,7 +201,7 @@ export const _Array: React.FC<
             <React.Fragment>
               {showRequired && (
                 <Banner>
-                  {t('validation:fieldHasNo', { label: getTranslation(labels.plural, i18n) })}
+                  {t('validation:fieldHasNo', { label: getTranslation(labels?.plural, i18n) })}
                 </Banner>
               )}
               {showMinRows && (
@@ -213,7 +209,7 @@ export const _Array: React.FC<
                   {t('validation:requiresAtLeast', {
                     count: minRows,
                     label:
-                      getTranslation(minRows > 1 ? labels.plural : labels.singular, i18n) ||
+                      getTranslation(minRows > 1 ? labels?.plural : labels?.singular, i18n) ||
                       t(minRows > 1 ? 'general:row' : 'general:rows'),
                   })}
                 </Banner>
@@ -223,16 +219,22 @@ export const _Array: React.FC<
         </DraggableSortable>
       )}
       {!disabled && !hasMaxRows && (
-        <Button
-          buttonStyle="icon-label"
-          className={`${baseClass}__add-row`}
-          icon="plus"
-          iconPosition="left"
-          iconStyle="with-border"
-          onClick={() => addRow(value || 0)}
-        >
-          {t('fields:addLabel', { label: getTranslation(labels.singular, i18n) })}
-        </Button>
+        <Fragment>
+          {CustomAddButton ? (
+            <Fragment>{CustomAddButton}</Fragment>
+          ) : (
+            <Button
+              buttonStyle="icon-label"
+              className={`${baseClass}__add-row`}
+              icon="plus"
+              iconPosition="left"
+              iconStyle="with-border"
+              onClick={() => addRow(value || 0)}
+            >
+              {t('fields:addLabel', { label: getTranslation(labels?.singular, i18n) })}
+            </Button>
+          )}
+        </Fragment>
       )}
     </div>
   )

@@ -15,7 +15,8 @@ const baseClass = 'array-actions'
 
 export type Props = {
   addRow: (current: number, blockType?: string) => void
-  duplicateRow: (current: number) => void
+  disableDuplicate?: boolean
+  duplicateRow?: (current: number) => void
   hasMaxRows: boolean
   index: number
   isSortable?: boolean
@@ -26,6 +27,7 @@ export type Props = {
 
 export const ArrayAction: React.FC<Props> = ({
   addRow,
+  disableDuplicate,
   duplicateRow,
   hasMaxRows,
   index,
@@ -85,16 +87,18 @@ export const ArrayAction: React.FC<Props> = ({
                   <Plus />
                   {t('general:addBelow')}
                 </PopupList.Button>
-                <PopupList.Button
-                  className={`${baseClass}__action ${baseClass}__duplicate`}
-                  onClick={() => {
-                    duplicateRow(index)
-                    close()
-                  }}
-                >
-                  <Copy />
-                  {t('general:duplicate')}
-                </PopupList.Button>
+                {!disableDuplicate && typeof duplicateRow === 'function' && (
+                  <PopupList.Button
+                    className={`${baseClass}__action ${baseClass}__duplicate`}
+                    onClick={() => {
+                      duplicateRow(index)
+                      close()
+                    }}
+                  >
+                    <Copy />
+                    {t('general:duplicate')}
+                  </PopupList.Button>
+                )}
               </React.Fragment>
             )}
             <PopupList.Button

@@ -523,6 +523,7 @@ export const mapFields = (args: {
               ...baseFieldProps,
               name: field.name,
               allowCreate: field.admin.allowCreate,
+              appearance: field.admin?.appearance,
               className: field.admin?.className,
               disabled: field.admin?.disabled,
               hasMany: field.hasMany,
