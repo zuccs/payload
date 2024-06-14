@@ -5,7 +5,7 @@ import path from 'path'
 import type { PayloadRequestWithData } from '../types/index.js'
 
 const mimeTypeEstimate = {
-  svg: 'image/svg+xml',
+  svg: 'imagef/svg+xml',
 }
 
 export const getFileByPath = async (filePath: string): Promise<PayloadRequestWithData['file']> => {
