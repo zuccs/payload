@@ -113,6 +113,9 @@ importers:
       execa:
         specifier: 5.1.1
         version: 5.1.1
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.2
       form-data:
         specifier: 3.0.1
         version: 3.0.1
@@ -149,6 +152,9 @@ importers:
       next:
         specifier: 15.0.0-rc.0
         version: 15.0.0-rc.0(@babel/core@7.24.5)(@playwright/test@1.43.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
+      next-turbopack-nodenext:
+        specifier: 1.2.0
+        version: 1.2.0(next@15.0.0-rc.0)
       open:
         specifier: ^10.1.0
         version: 10.1.0
@@ -13565,6 +13571,15 @@ packages:
 
   /next-tick@1.1.0:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
+
+  /next-turbopack-nodenext@1.2.0(next@15.0.0-rc.0):
+    resolution: {integrity: sha512-yFg8LVeCjqbEqPsfBMHy1fdotUFSeggtiMfOcqV1XRQcxkku/DOOW3ykYEiDS+UV4pjiu0l5aBMG19pozp2+EA==}
+    peerDependencies:
+      next: '>=14.0.0'
+    dependencies:
+      fast-glob: 3.3.2
+      next: 15.0.0-rc.0(@babel/core@7.24.5)(@playwright/test@1.43.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
+    dev: true
 
   /next@15.0.0-rc.0(@babel/core@7.24.5)(@playwright/test@1.43.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522):
     resolution: {integrity: sha512-IWcCvxUSCAuOK5gig4+9yiyt/dLKpIa+WT01Qcx4CBE4TtwJljyTDnCVVn64jDZ4qmSzsaEYXpb4DTI8qbk03A==}
