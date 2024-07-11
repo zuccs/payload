@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 'use client'
 import type { ClientValidate, Option, OptionObject } from 'payload'
 
@@ -13,7 +12,7 @@ import { useField } from '../../forms/useField/index.js'
 import { withCondition } from '../../forms/withCondition/index.js'
 import { SelectInput } from './Input.js'
 
-export type SelectFieldProps = FormFieldBase & {
+export type SelectFieldProps = {
   hasMany?: boolean
   isClearable?: boolean
   isSortable?: boolean
@@ -23,7 +22,7 @@ export type SelectFieldProps = FormFieldBase & {
   path?: string
   value?: string
   width?: string
-}
+} & FormFieldBase
 
 const formatOptions = (options: Option[]): OptionObject[] =>
   options.map((option) => {
