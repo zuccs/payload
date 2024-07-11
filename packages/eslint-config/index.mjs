@@ -10,7 +10,7 @@ import globals from 'globals';
 import importX from 'eslint-plugin-import-x'
 import typescriptParser from '@typescript-eslint/parser'
 import { deepMerge } from './deepMerge.js'
-
+import react from "@eslint-react/eslint-plugin";
 const baseRules = {
   // This rule makes no sense when overriding class methods. This is used a lot in richtext-lexical.
   'class-methods-use-this': 'off',
@@ -53,11 +53,6 @@ const baseRules = {
 }
 
 const reactRules = {
-  'react/no-unused-prop-types': 'off',
-  'react/prop-types': 'off',
-  'react/require-default-props': 'off',
-  'react/destructuring-assignment': 'warn',
-  'react/no-unescaped-entities': 'warn',
   'jsx-a11y/anchor-is-valid': 'warn',
   'jsx-a11y/control-has-associated-label': 'warn',
   'jsx-a11y/no-static-element-interactions': 'warn',
@@ -162,6 +157,7 @@ export const rootEslintConfig = [
       tseslint.configs.recommendedTypeChecked[2],
       reactExtends,
       eslintConfigPrettier,
+      react.configs["recommended-type-checked"],
       {
         plugins: {
           payload: payloadPlugin,
@@ -169,7 +165,21 @@ export const rootEslintConfig = [
         rules: {
           ...baseRules,
           ...typescriptRules,
-          ...reactRules,
+          '@eslint-react/dom/no-dangerously-set-innerhtml': 'off',
+          '@eslint-react/dom/no-dangerously-set-innerhtml-with-children': 'off',
+          '@eslint-react/no-unsafe-component-will-mount': 'off',
+          '@eslint-react/no-unsafe-component-will-receive-props': 'off',
+          '@eslint-react/no-unsafe-component-will-update': 'off',
+          '@eslint-react/no-set-state-in-component-did-mount': 'off',
+          '@eslint-react/no-set-state-in-component-did-update': 'off',
+          '@eslint-react/no-set-state-in-component-will-update': 'off',
+          '@eslint-react/no-missing-component-display-name': 'off',
+          '@eslint-react/no-direct-mutation-state': 'off',
+          '@eslint-react/no-array-index-key': 'off',
+          '@eslint-react/no-unstable-default-props': 'off', // TODO: Evaluate enabling this
+          '@eslint-react/no-unstable-context-value': 'off', // TODO: Evaluate enabling this
+
+          //...reactRules,
         },
       }
     ),
