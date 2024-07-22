@@ -3,7 +3,7 @@
 // based on https://github.com/TehShrike/deepmerge
 // MIT License
 // Copyright (c) 2012 - 2022 James Halliday, Josh Duff, and other contributors of deepmerge
-// and https://github.com/fastify/deepmerge#
+// and https://github.com/fastify/deepmerge :
 /*
 MIT License
 
@@ -80,6 +80,7 @@ export function createDeepMerge(options: Options) {
     const result = Object.keys(value)
     const keys = Object.getOwnPropertySymbols(value)
     for (let i = 0, il = keys.length; i < il; ++i) {
+      // @ts-expect-error need to improve types
       propertyIsEnumerable.call(value, keys[i]) && result.push(keys[i])
     }
     return result
@@ -168,8 +169,13 @@ export function createDeepMerge(options: Options) {
   return _deepmerge
 }
 
+/**
+ * Fully-featured deepMerge. Does not clone React components by default.
+ *
+ * Array handling: Arrays in the target object are combined with the source object's arrays.
+ */
 export const deepMergeCombineArrays = createDeepMerge({
-  mergeArray (options) {
+  mergeArray(options) {
     const deepmerge = options.deepmerge
     const clone = options.clone
     return function (target, source) {
@@ -190,12 +196,20 @@ export const deepMergeCombineArrays = createDeepMerge({
 })
 
 /**
- * Does not clone React components by default
+ * Fully-featured deepMerge. Does not clone React components by default
+ *
+ * Array handling: Arrays in the target object are concatenated with the source object's arrays.
  */
 export const deepMerge = createDeepMerge({})
 
+/**
+ * Fully-featured deepMerge. Does not clone React components by default.
+ *
+ * Array handling: Arrays in the target object are replaced by the source object's arrays.
+ * Additionally, those are not cloned.
+ */
 export const deepMergePreferSourceArray = createDeepMerge({
-  mergeArray (_) {
+  mergeArray(_) {
     return function (_, source) {
       return source
     }
