@@ -1,9 +1,7 @@
 import type { FilterQuery } from 'mongoose'
 import type { Field, Operator, Payload, Where } from 'payload'
 
-import deepmerge from 'deepmerge'
-import { combineMerge } from 'payload'
-import { validOperators } from 'payload/shared'
+import { deepMergeCombineArrays, validOperators } from 'payload/shared'
 
 import { buildAndOrConditions } from './buildAndOrConditions.js'
 import { buildSearchParam } from './buildSearchParams.js'
@@ -70,7 +68,7 @@ export async function parseParams({
                   [searchParam.path]: searchParam.value,
                 }
               } else if (typeof searchParam?.value === 'object') {
-                result = deepmerge(result, searchParam.value, { arrayMerge: combineMerge })
+                result = deepMergeCombineArrays(result, searchParam.value)
               }
             }
           }

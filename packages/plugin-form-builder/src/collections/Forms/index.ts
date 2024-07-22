@@ -1,6 +1,6 @@
 import type { Block, CollectionConfig, Field } from 'payload'
 
-import merge from 'deepmerge'
+import { deepMergePreferSourceArray } from 'payload/shared'
 
 import type { FieldConfig, FormBuilderPluginConfig } from '../../types.js'
 
@@ -84,9 +84,7 @@ export const generateFormCollection = (formConfig: FormBuilderPluginConfig): Col
             }
 
             if (typeof block === 'object' && typeof fieldConfig === 'object') {
-              return merge<FieldConfig>(block, fieldConfig, {
-                arrayMerge: (_, sourceArray) => sourceArray,
-              })
+              return deepMergePreferSourceArray(block, fieldConfig) as FieldConfig
             }
 
             if (typeof block === 'function') {

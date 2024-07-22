@@ -1,7 +1,6 @@
-import merge from 'deepmerge'
-
 import type { Field, FieldWithSubFields } from './config/types.js'
 
+import { deepMerge } from '../utilities/deepMerge/deepMerge.js'
 import { fieldAffectsData, fieldHasSubFields } from './config/types.js'
 
 const mergeBaseFields = (fields: Field[], baseFields: Field[]): Field[] => {
@@ -24,7 +23,7 @@ const mergeBaseFields = (fields: Field[], baseFields: Field[]): Field[] => {
         const matchCopy: Field = { ...match }
         mergedFields.splice(matchedIndex, 1)
 
-        const mergedField = merge<Field>(baseField, matchCopy)
+        const mergedField: Field = deepMerge(baseField, matchCopy)
 
         if (fieldHasSubFields(baseField) && fieldHasSubFields(matchCopy)) {
           ;(mergedField as FieldWithSubFields).fields = mergeBaseFields(

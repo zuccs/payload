@@ -1,5 +1,3 @@
-import merge from 'deepmerge'
-
 import type { RichTextAdapter } from '../../../admin/RichText.js'
 import type { SanitizedCollectionConfig } from '../../../collections/config/types.js'
 import type { SanitizedGlobalConfig } from '../../../globals/config/types.js'
@@ -7,6 +5,10 @@ import type { Operation, PayloadRequest, RequestContext } from '../../../types/i
 import type { Field, FieldHookArgs, TabAsField, ValidateOptions } from '../../config/types.js'
 
 import { MissingEditorProp } from '../../../errors/index.js'
+import {
+  createDeepMerge,
+  deepMergePreferSourceArray,
+} from '../../../utilities/deepMerge/deepMerge.js'
 import { fieldAffectsData, tabHasName } from '../../config/types.js'
 import { getFieldPaths } from '../../getFieldPaths.js'
 import { beforeDuplicate } from './beforeDuplicate.js'
@@ -137,12 +139,12 @@ export const promise = async ({
       const validationResult = await field.validate(valueToValidate, {
         ...field,
         id,
-        data: merge(doc, data, { arrayMerge: (_, source) => source }),
+        data: deepMergePreferSourceArray(doc, data),
         jsonError,
         operation,
         preferences: { fields: {} },
         req,
-        siblingData: merge(siblingDoc, siblingData, { arrayMerge: (_, source) => source }),
+        siblingData: deepMergePreferSourceArray(siblingDoc, siblingData),
       } as ValidateOptions<any, any, { jsonError: object }>)
 
       if (typeof validationResult === 'string') {

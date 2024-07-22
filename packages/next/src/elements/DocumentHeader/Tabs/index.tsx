@@ -6,7 +6,7 @@ import type {
   SanitizedGlobalConfig,
 } from 'payload'
 
-import { isPlainObject } from 'payload'
+import { isReactClientComponent, isReactServerComponentOrFunction } from 'payload/shared'
 import React from 'react'
 
 import { ShouldRenderTabs } from './ShouldRenderTabs.js'
@@ -75,14 +75,15 @@ export const DocumentTabs: React.FC<{
               if ('Tab' in CustomView) {
                 const { Tab, path } = CustomView
 
-                if (typeof Tab === 'object' && !isPlainObject(Tab)) {
+                if (isReactClientComponent(Tab)) {
                   throw new Error(
                     `Custom 'Tab' Component for path: "${path}" must be a React Server Component. To use client-side functionality, render your Client Component within a Server Component and pass it only props that are serializable. More info: https://react.dev/reference/react/use-server#serializable-parameters-and-return-values`,
                   )
                 }
 
-                if (typeof Tab === 'function') {
-                  return <Tab path={path} {...props} key={`tab-custom-${index}`} />
+                if (isReactServerComponentOrFunction<any>(Tab)) {
+                  const Comp = Tab as any
+                  return <Comp path={path} {...props} key={`tab-custom-${index}`} />
                 }
 
                 return (
@@ -90,7 +91,7 @@ export const DocumentTabs: React.FC<{
                     key={`tab-custom-${index}`}
                     {...{
                       ...props,
-                      ...Tab,
+                      ...(Tab as object),
                     }}
                   />
                 )
