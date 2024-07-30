@@ -256,6 +256,28 @@ importers:
         specifier: 20.12.5
         version: 20.12.5
 
+  packages/db-atlas-data-api:
+    dependencies:
+      bson-objectid:
+        specifier: 2.0.4
+        version: 2.0.4
+      http-status:
+        specifier: 1.6.2
+        version: 1.6.2
+      prompts:
+        specifier: 2.4.2
+        version: 2.4.2
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
+    devDependencies:
+      '@payloadcms/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      payload:
+        specifier: workspace:*
+        version: link:../payload
+
   packages/db-mongodb:
     dependencies:
       bson-objectid:
