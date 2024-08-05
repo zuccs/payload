@@ -63,6 +63,9 @@
       "@payloadcms/next/*": [
         "./packages/next/src/exports/*.ts"
       ],
+      "payload": [
+        "./packages/payload/src/index.ts"
+      ],
       "@payloadcms/next": [
         "./packages/next/src/exports/*"
       ]

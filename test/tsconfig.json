@@ -32,7 +32,8 @@
       "@payloadcms/ui/scss": ["../packages/ui/src/scss.scss"],
       "@payloadcms/ui/scss/app.scss": ["../packages/ui/src/scss/app.scss"],
       "@payloadcms/next/*": ["./packages/next/src/exports/*.ts"],
-      "@payload-config": ["./_community/config.ts"]
+      "@payload-config": ["./_community/config.ts"],
+      "payload": ["./packages/payload/src/index.ts"]
     }
   },
   "exclude": [
