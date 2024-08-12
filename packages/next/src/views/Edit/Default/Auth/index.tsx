@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 
 import type { Props } from './types.js'
 
-import { EmailAndUsernameFields } from '../../../../elements/EmailAndUsername/index.js'
+import { RenderEmailAndUsernameFields } from '../../../../elements/EmailAndUsername/index.js'
 import { APIKey } from './APIKey.js'
 import './index.scss'
 
@@ -47,7 +47,7 @@ export const Auth: React.FC<Props> = (props) => {
   const dispatchFields = useFormFields((reducer) => reducer[1])
   const modified = useFormModified()
   const { i18n, t } = useTranslation()
-  const { isInitializing } = useDocumentInfo()
+  const { docPermissions, isInitializing } = useDocumentInfo()
 
   const {
     config: {
@@ -140,17 +140,23 @@ export const Auth: React.FC<Props> = (props) => {
     <div className={[baseClass, className].filter(Boolean).join(' ')}>
       {!disableLocalStrategy && (
         <React.Fragment>
-          <EmailAndUsernameFields loginWithUsername={loginWithUsername} />
+          <RenderEmailAndUsernameFields
+            loginWithUsername={loginWithUsername}
+            operation={operation}
+            permissions={docPermissions?.fields}
+            readOnly={readOnly}
+          />
           {(showPasswordFields || requirePassword) && (
             <div className={`${baseClass}__changing-password`}>
               <PasswordField
                 field={{
                   name: 'password',
-                  disabled,
+                  admin: {
+                    disabled,
+                  },
                   label: t('authentication:newPassword'),
-                  path: 'password',
+                  required: true,
                 }}
-                required
               />
               <ConfirmPasswordField disabled={readOnly} />
             </div>
@@ -195,10 +201,9 @@ export const Auth: React.FC<Props> = (props) => {
           <CheckboxField
             field={{
               name: 'enableAPIKey',
-              disabled,
+              admin: { disabled, readOnly },
               label: t('authentication:enableAPIKey'),
             }}
-            readOnly={readOnly}
           />
           <APIKey enabled={!!enableAPIKey?.value} readOnly={readOnly} />
         </div>
@@ -207,10 +212,9 @@ export const Auth: React.FC<Props> = (props) => {
         <CheckboxField
           field={{
             name: '_verified',
-            disabled,
+            admin: { disabled, readOnly },
             label: t('authentication:verified'),
           }}
-          readOnly={readOnly}
         />
       )}
     </div>

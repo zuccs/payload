@@ -8,8 +8,13 @@ import type {
 } from 'lexical'
 
 import type { SerializedQuoteNode } from './features/blockquote/server/index.js'
+import type { SerializedInlineBlockNode } from './features/blocks/client/nodes/InlineBlocksNode.js'
 import type { SerializedBlockNode } from './features/blocks/server/nodes/BlocksNode.js'
-import type { ServerInlineBlockNode } from './features/blocks/server/nodes/InlineBlocksNode.js'
+import type {
+  SerializedTableCellNode,
+  SerializedTableNode,
+  SerializedTableRowNode,
+} from './features/experimental_table/server/index.js'
 import type { SerializedHeadingNode } from './features/heading/server/index.js'
 import type { SerializedHorizontalRuleNode } from './features/horizontalRule/server/nodes/HorizontalRuleNode.js'
 import type { SerializedAutoLinkNode, SerializedLinkNode } from './features/link/nodes/types.js'
@@ -22,13 +27,16 @@ export type {
   SerializedBlockNode,
   SerializedHeadingNode,
   SerializedHorizontalRuleNode,
+  SerializedInlineBlockNode,
   SerializedLinkNode,
   SerializedListItemNode,
   SerializedListNode,
   SerializedQuoteNode,
   SerializedRelationshipNode,
+  SerializedTableCellNode,
+  SerializedTableNode,
+  SerializedTableRowNode,
   SerializedUploadNode,
-  ServerInlineBlockNode,
 }
 
 export type SerializedParagraphNode<T extends SerializedLexicalNode = SerializedLexicalNode> =

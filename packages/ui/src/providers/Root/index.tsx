@@ -1,6 +1,6 @@
 'use client'
 import type { I18nClient, Language } from '@payloadcms/translations'
-import type { ClientConfig, LanguageOptions } from 'payload'
+import type { ClientConfig, LanguageOptions, Permissions, User } from 'payload'
 
 import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
@@ -13,6 +13,7 @@ import { LoadingOverlayProvider } from '../../elements/LoadingOverlay/index.js'
 import { NavProvider } from '../../elements/Nav/context.js'
 import { StayLoggedInModal } from '../../elements/StayLoggedIn/index.js'
 import { StepNavProvider } from '../../elements/StepNav/index.js'
+import { fieldComponents } from '../../fields/index.js'
 import { ActionsProvider } from '../Actions/index.js'
 import { AuthProvider } from '../Auth/index.js'
 import { ClientFunctionProvider } from '../ClientFunction/index.js'
@@ -35,9 +36,11 @@ type Props = {
   fallbackLang: ClientConfig['i18n']['fallbackLanguage']
   languageCode: string
   languageOptions: LanguageOptions
+  permissions: Permissions
   switchLanguageServerAction?: (lang: string) => Promise<void>
   theme: Theme
   translations: I18nClient['translations']
+  user: User | null
 }
 
 export const RootProvider: React.FC<Props> = ({
@@ -47,15 +50,17 @@ export const RootProvider: React.FC<Props> = ({
   fallbackLang,
   languageCode,
   languageOptions,
+  permissions,
   switchLanguageServerAction,
   theme,
   translations,
+  user,
 }) => {
   return (
     <Fragment>
       <RouteCache>
         <ConfigProvider config={config}>
-          <FieldComponentsProvider>
+          <FieldComponentsProvider fieldComponents={fieldComponents}>
             <ClientFunctionProvider>
               <TranslationProvider
                 dateFNSKey={dateFNSKey}
@@ -76,7 +81,7 @@ export const RootProvider: React.FC<Props> = ({
                   <ScrollInfoProvider>
                     <SearchParamsProvider>
                       <ModalProvider classPrefix="payload" transTime={0} zIndex="var(--z-modal)">
-                        <AuthProvider>
+                        <AuthProvider permissions={permissions} user={user}>
                           <PreferencesProvider>
                             <ThemeProvider cookiePrefix={config.cookiePrefix} theme={theme}>
                               <ParamsProvider>

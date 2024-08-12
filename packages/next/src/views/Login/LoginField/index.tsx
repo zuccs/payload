@@ -6,9 +6,9 @@ import { email, username } from 'payload/shared'
 import React from 'react'
 
 export type LoginFieldProps = {
-  required?: boolean
-  type: 'email' | 'emailOrUsername' | 'username'
-  validate?: Validate
+  readonly required?: boolean
+  readonly type: 'email' | 'emailOrUsername' | 'username'
+  readonly validate?: Validate
 }
 
 export const LoginField: React.FC<LoginFieldProps> = ({ type, required = true }) => {
@@ -21,7 +21,6 @@ export const LoginField: React.FC<LoginFieldProps> = ({ type, required = true })
         field={{
           name: 'email',
           label: t('general:email'),
-          path: 'email',
           required,
         }}
         validate={email}
@@ -35,7 +34,6 @@ export const LoginField: React.FC<LoginFieldProps> = ({ type, required = true })
         field={{
           name: 'username',
           label: t('authentication:username'),
-          path: 'username',
           required,
         }}
         validate={username}
@@ -49,17 +47,13 @@ export const LoginField: React.FC<LoginFieldProps> = ({ type, required = true })
         field={{
           name: 'username',
           label: t('authentication:emailOrUsername'),
-          path: 'username',
           required,
         }}
         validate={(value, options) => {
-          const passesUsername = username(
-            value,
-            options as ValidateOptions<any, { email?: string }, any, string>,
-          )
+          const passesUsername = username(value, options)
           const passesEmail = email(
             value,
-            options as ValidateOptions<any, { username?: string }, any, string>,
+            options as ValidateOptions<any, { username?: string }, any, any>,
           )
 
           if (!passesEmail && !passesUsername) {

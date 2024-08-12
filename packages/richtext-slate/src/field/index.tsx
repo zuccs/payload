@@ -1,11 +1,9 @@
 'use client'
 
-import type { RichTextFieldProps } from 'payload'
-
-import { ShimmerEffect, useClientFunctions, useFieldProps } from '@payloadcms/ui'
+import { RenderComponent, ShimmerEffect, useClientFunctions, useFieldProps } from '@payloadcms/ui'
 import React, { Suspense, lazy, useEffect, useState } from 'react'
 
-import type { RichTextPlugin } from '../types.js'
+import type { RichTextPlugin, SlateFieldProps } from '../types.js'
 import type { EnabledFeatures } from './types.js'
 
 import { createFeatureMap } from './createFeatureMap.js'
@@ -16,7 +14,7 @@ const RichTextEditor = lazy(() =>
   })),
 )
 
-export const RichTextField: React.FC<RichTextFieldProps> = (props) => {
+export const RichTextField: React.FC<SlateFieldProps> = (props) => {
   const {
     field: { richTextComponentMap },
   } = props
@@ -53,7 +51,11 @@ export const RichTextField: React.FC<RichTextFieldProps> = (props) => {
       <React.Fragment>
         {Array.isArray(features.plugins) &&
           features.plugins.map((Plugin, i) => {
-            return <React.Fragment key={i}>{Plugin}</React.Fragment>
+            return (
+              <React.Fragment key={i}>
+                <RenderComponent mappedComponent={Plugin} />
+              </React.Fragment>
+            )
           })}
       </React.Fragment>
     )

@@ -1,17 +1,14 @@
-import type { StaticLabel } from '../../config/types.js'
-import type { ClientFieldConfig } from '../../fields/config/client.js'
+import type { MarkOptional } from 'ts-essentials'
+
+import type { JSONFieldClient } from '../../fields/config/types.js'
 import type { JSONFieldValidation } from '../../fields/validations.js'
 import type { ErrorComponent } from '../forms/Error.js'
 import type { DescriptionComponent, FormFieldBase, LabelComponent } from '../types.js'
 
-export type JSONFieldClient = {
-  readonly label: StaticLabel
-} & Extract<ClientFieldConfig, { type: 'json' }>
-
 export type JSONFieldProps = {
-  readonly field: JSONFieldClient
+  readonly field: MarkOptional<JSONFieldClient, 'type'>
   readonly validate?: JSONFieldValidation
-} & FormFieldBase
+} & Omit<FormFieldBase, 'validate'>
 
 export type JSONFieldLabelComponent = LabelComponent<'json'>
 

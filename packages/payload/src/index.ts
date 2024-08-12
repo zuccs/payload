@@ -780,6 +780,7 @@ export { migrateStatus } from './database/migrations/migrateStatus.js'
 export { migrationTemplate } from './database/migrations/migrationTemplate.js'
 export { migrationsCollection } from './database/migrations/migrationsCollection.js'
 export { readMigrationFiles } from './database/migrations/readMigrationFiles.js'
+export { writeMigrationIndex } from './database/migrations/writeMigrationIndex.js'
 export type * from './database/queryValidation/types.js'
 export type { EntityPolicies, PathToQuery } from './database/queryValidation/types.js'
 export { validateQueryPaths } from './database/queryValidation/validateQueryPaths.js'
@@ -865,66 +866,101 @@ export {
 } from './errors/index.js'
 export { baseBlockFields } from './fields/baseFields/baseBlockFields.js'
 export { baseIDField } from './fields/baseFields/baseIDField.js'
-export type { ClientFieldConfig } from './fields/config/client.js'
 export type { ServerOnlyFieldProperties } from './fields/config/client.js'
 export type { ServerOnlyFieldAdminProperties } from './fields/config/client.js'
 export { sanitizeFields } from './fields/config/sanitize.js'
 export type {
+  AdminClient,
   ArrayField,
+  ArrayFieldClient,
+  BaseValidateOptions,
   Block,
   BlockField,
+  BlockFieldClient,
   CheckboxField,
+  CheckboxFieldClient,
+  ClientBlock,
+  ClientField,
   CodeField,
+  CodeFieldClient,
   CollapsibleField,
+  CollapsibleFieldClient,
   Condition,
   DateField,
+  DateFieldClient,
   EmailField,
+  EmailFieldClient,
   Field,
   FieldAccess,
   FieldAffectingData,
+  FieldAffectingDataClient,
   FieldBase,
+  FieldBaseClient,
   FieldHook,
   FieldHookArgs,
   FieldPresentationalOnly,
+  FieldPresentationalOnlyClient,
   FieldTypes,
   FieldWithMany,
+  FieldWithManyClient,
   FieldWithMaxDepth,
+  FieldWithMaxDepthClient,
   FieldWithPath,
+  FieldWithPathClient,
   FieldWithSubFields,
+  FieldWithSubFieldsClient,
   FilterOptions,
   FilterOptionsProps,
   GroupField,
+  GroupFieldClient,
   HookName,
   JSONField,
+  JSONFieldClient,
   Labels,
+  LabelsClient,
   NamedTab,
   NonPresentationalField,
+  NonPresentationalFieldClient,
   NumberField,
+  NumberFieldClient,
   Option,
   OptionObject,
   PointField,
+  PointFieldClient,
   PolymorphicRelationshipField,
+  PolymorphicRelationshipFieldClient,
   RadioField,
+  RadioFieldClient,
   RelationshipField,
+  RelationshipFieldClient,
   RelationshipValue,
   RichTextField,
-  RowAdmin,
+  RichTextFieldClient,
   RowField,
+  RowFieldClient,
   SelectField,
+  SelectFieldClient,
   SingleRelationshipField,
+  SingleRelationshipFieldClient,
   Tab,
   TabAsField,
-  TabsAdmin,
+  TabAsFieldClient,
   TabsField,
+  TabsFieldClient,
   TextField,
+  TextFieldClient,
   TextareaField,
+  TextareaFieldClient,
   UIField,
+  UIFieldClient,
   UnnamedTab,
   UploadField,
+  UploadFieldClient,
   Validate,
   ValidateOptions,
   ValueWithRelation,
 } from './fields/config/types.js'
+
 export { getDefaultValue } from './fields/getDefaultValue.js'
 export { traverseFields as afterChangeTraverseFields } from './fields/hooks/afterChange/traverseFields.js'
 export { promise as afterReadPromise } from './fields/hooks/afterRead/promise.js'

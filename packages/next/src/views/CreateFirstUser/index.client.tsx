@@ -14,7 +14,7 @@ import {
 import { getFormState } from '@payloadcms/ui/shared'
 import React from 'react'
 
-import { EmailAndUsernameFields } from '../../elements/EmailAndUsername/index.js'
+import { RenderEmailAndUsernameFields } from '../../elements/EmailAndUsername/index.js'
 
 export const CreateFirstUserClient: React.FC<{
   initialState: FormState
@@ -57,14 +57,19 @@ export const CreateFirstUserClient: React.FC<{
       redirect={admin}
       validationOperation="create"
     >
-      <EmailAndUsernameFields loginWithUsername={loginWithUsername} />
+      <RenderEmailAndUsernameFields
+        className="emailAndUsername"
+        loginWithUsername={loginWithUsername}
+        operation="create"
+        readOnly={false}
+      />
       <PasswordField
+        autoComplete={'off'}
         field={{
           name: 'password',
           label: t('authentication:newPassword'),
-          path: 'password',
+          required: true,
         }}
-        required
       />
       <ConfirmPasswordField />
       <RenderFields

@@ -1,15 +1,12 @@
 import fs from 'fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { generateImportMap } from 'payload'
-
-import { load } from './loader/load.js'
+import { type SanitizedConfig, generateImportMap } from 'payload'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-const testSuiteArg = process.argv[2]
-const writeDBAdapter = process.argv[3]
+const runImmediately = process.argv[2]
 
 const databaseAdapters = {
   mongodb: `
@@ -69,15 +66,29 @@ const databaseAdapters = {
   })`,
 }
 
-export async function initDevAndTest() {
-  // create a new importMap.js with contents export const importMap = {} in app/(payload)/admin/importMap.js - delete existing file:
-  if (testSuiteArg === 'live-preview' || testSuiteArg === 'admin-root') {
-    fs.writeFileSync(
-      'test/live-preview/app/(payload)/admin/importMap.js',
-      'export const importMap = {}',
-    )
-  } else {
-    fs.writeFileSync('app/(payload)/admin/importMap.js', 'export const importMap = {}')
+export async function initDevAndTest(
+  testSuiteArg: string,
+  writeDBAdapter: string,
+  skipGenImportMap: string,
+): Promise<void> {
+  let appPath: string
+
+  switch (testSuiteArg) {
+    case 'live-preview':
+      appPath = './live-preview/app/(payload)/admin/importMap.js'
+      break
+    case 'admin-root':
+      appPath = './admin-root/app/(payload)/admin/importMap.js'
+      break
+    default:
+      appPath = '../app/(payload)/admin/importMap.js'
+      break
+  }
+
+  try {
+    fs.writeFileSync(path.resolve(dirname, appPath), 'export const importMap = {}')
+  } catch (error) {
+    console.log('Error writing importMap.js', error)
   }
 
   if (writeDBAdapter === 'true') {
@@ -100,13 +111,18 @@ export async function initDevAndTest() {
     console.log('Wrote', dbAdapter, 'db adapter')
   }
 
+  if (skipGenImportMap === 'true') {
+    console.log('Done')
+    return
+  }
+
   // Generate importMap
   const testDir = path.resolve(dirname, testSuiteArg)
 
   const pathWithConfig = path.resolve(testDir, 'config.ts')
   console.log('Generating import map for config:', pathWithConfig)
 
-  const config = await load(pathWithConfig)
+  const config: SanitizedConfig = await (await import(pathWithConfig)).default
 
   process.env.ROOT_DIR =
     testSuiteArg === 'live-preview' || testSuiteArg === 'admin-root'
@@ -118,4 +134,9 @@ export async function initDevAndTest() {
   console.log('Done')
 }
 
-void initDevAndTest()
+if (runImmediately === 'true') {
+  const testSuiteArg = process.argv[3]
+  const writeDBAdapter = process.argv[4]
+  const skipGenImportMap = process.argv[5]
+  void initDevAndTest(testSuiteArg, writeDBAdapter, skipGenImportMap)
+}

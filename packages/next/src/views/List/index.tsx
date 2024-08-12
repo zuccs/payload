@@ -1,7 +1,7 @@
-import type { AdminViewProps, Where } from 'payload'
+import type { AdminViewProps, ClientCollectionConfig, Where } from 'payload'
 
 import {
-  HydrateClientUser,
+  HydrateAuthProvider,
   ListInfoProvider,
   ListQueryProvider,
   TableColumnsProvider,
@@ -9,7 +9,7 @@ import {
 import { RenderComponent, formatAdminURL, getCreateMappedComponent } from '@payloadcms/ui/shared'
 import { createClientCollectionConfig } from '@payloadcms/ui/utilities/createClientConfig'
 import { notFound } from 'next/navigation.js'
-import { mergeListSearchAndWhere } from 'payload'
+import { deepCopyObjectSimple, mergeListSearchAndWhere } from 'payload'
 import { isNumber } from 'payload/shared'
 import React, { Fragment } from 'react'
 
@@ -59,9 +59,23 @@ export const ListView: React.FC<AdminViewProps> = async ({
         req,
         user,
         where: {
-          key: {
-            equals: preferenceKey,
-          },
+          and: [
+            {
+              key: {
+                equals: preferenceKey,
+              },
+            },
+            {
+              'user.relationTo': {
+                equals: user.collection,
+              },
+            },
+            {
+              'user.value': {
+                equals: user?.id,
+              },
+            },
+          ],
         },
       })
       ?.then((res) => res?.docs?.[0]?.value)) as ListPreferences
@@ -135,21 +149,28 @@ export const ListView: React.FC<AdminViewProps> = async ({
       collectionConfig?.admin?.components?.views?.List?.Component,
       undefined,
       DefaultListView,
+      'collectionConfig?.admin?.components?.views?.List?.Component',
     )
+
+    let clientCollectionConfig = deepCopyObjectSimple(
+      collectionConfig,
+    ) as unknown as ClientCollectionConfig
+    clientCollectionConfig = createClientCollectionConfig({
+      DefaultEditView,
+      DefaultListView,
+      clientCollection: clientCollectionConfig,
+      collection: collectionConfig,
+      createMappedComponent,
+      i18n,
+      importMap: payload.importMap,
+      payload,
+    })
 
     return (
       <Fragment>
-        <HydrateClientUser permissions={permissions} user={user} />
+        <HydrateAuthProvider permissions={permissions} />
         <ListInfoProvider
-          collectionConfig={createClientCollectionConfig({
-            DefaultEditView,
-            DefaultListView,
-            collection: collectionConfig,
-            createMappedComponent,
-            i18n,
-            importMap: payload.importMap,
-            payload,
-          })}
+          collectionConfig={clientCollectionConfig}
           collectionSlug={collectionSlug}
           hasCreatePermission={permissions?.collections?.[collectionSlug]?.create?.permission}
           newDocumentURL={formatAdminURL({

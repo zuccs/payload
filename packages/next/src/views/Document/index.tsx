@@ -5,7 +5,7 @@ import type {
   ServerSideEditViewProps,
 } from 'payload'
 
-import { DocumentInfoProvider, EditDepthProvider, HydrateClientUser } from '@payloadcms/ui'
+import { DocumentInfoProvider, EditDepthProvider, HydrateAuthProvider } from '@payloadcms/ui'
 import {
   RenderComponent,
   formatAdminURL,
@@ -121,6 +121,9 @@ export const Document: React.FC<AdminViewProps> = async ({
         ? createMappedComponent(
             collectionConfig?.admin?.components?.views?.Edit?.Default
               ?.Component as EditViewComponent, // some type info gets lost from Config => SanitizedConfig due to our usage of Deep type operations from ts-essentials. Despite .Component being defined as EditViewComponent, this info is lost and we need cast it here.
+            undefined,
+            undefined,
+            'collectionConfig?.admin?.components?.views?.Edit?.Default',
           )
         : null
 
@@ -136,21 +139,24 @@ export const Document: React.FC<AdminViewProps> = async ({
         collectionViews?.CustomView?.payloadComponent,
         undefined,
         collectionViews?.CustomView?.Component,
+        'collectionViews?.CustomView.payloadComponent',
       )
       DefaultView = createMappedComponent(
         collectionViews?.DefaultView?.payloadComponent,
         undefined,
         collectionViews?.DefaultView?.Component,
+        'collectionViews?.DefaultView.payloadComponent',
       )
       ErrorView = createMappedComponent(
         collectionViews?.ErrorView?.payloadComponent,
         undefined,
         collectionViews?.ErrorView?.Component,
+        'collectionViews?.ErrorView.payloadComponent',
       )
     }
 
     if (!CustomView && !DefaultView && !ViewOverride && !ErrorView) {
-      ErrorView = createMappedComponent(undefined, undefined, NotFoundView)
+      ErrorView = createMappedComponent(undefined, undefined, NotFoundView, 'NotFoundView')
     }
   }
 
@@ -188,20 +194,23 @@ export const Document: React.FC<AdminViewProps> = async ({
         globalViews?.CustomView?.payloadComponent,
         undefined,
         globalViews?.CustomView?.Component,
+        'globalViews?.CustomView.payloadComponent',
       )
       DefaultView = createMappedComponent(
         globalViews?.DefaultView?.payloadComponent,
         undefined,
         globalViews?.DefaultView?.Component,
+        'globalViews?.DefaultView.payloadComponent',
       )
       ErrorView = createMappedComponent(
         globalViews?.ErrorView?.payloadComponent,
         undefined,
         globalViews?.ErrorView?.Component,
+        'globalViews?.ErrorView.payloadComponent',
       )
 
       if (!CustomView && !DefaultView && !ViewOverride && !ErrorView) {
-        ErrorView = createMappedComponent(undefined, undefined, NotFoundView)
+        ErrorView = createMappedComponent(undefined, undefined, NotFoundView, 'NotFoundView')
       }
     }
   }
@@ -264,7 +273,15 @@ export const Document: React.FC<AdminViewProps> = async ({
           permissions={permissions}
         />
       )}
-      <HydrateClientUser permissions={permissions} user={user} />
+      <HydrateAuthProvider permissions={permissions} />
+      {/**
+       * After bumping the Next.js canary to 104, and React to 19.0.0-rc-06d0b89e-20240801" we have to deepCopy the permissions object (https://github.com/payloadcms/payload/pull/7541).
+       * If both HydrateClientUser and RenderCustomComponent receive the same permissions object (same object reference), we get a
+       * "TypeError: Cannot read properties of undefined (reading '$$typeof')" error when loading up some version views - for example a versions
+       * view in the draft-posts collection of the versions test suite. RenderCustomComponent is what renders the versions view.
+       *
+       * // TODO: Revisit this in the future and figure out why this is happening. Might be a React/Next.js bug. We don't know why it happens, and a future React/Next version might unbreak this (keep an eye on this and remove deepCopyObjectSimple if that's the case)
+       */}
       <EditDepthProvider
         depth={1}
         key={`${collectionSlug || globalSlug}${locale?.code ? `-${locale?.code}` : ''}`}

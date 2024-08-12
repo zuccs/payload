@@ -163,7 +163,6 @@ export const APIViewClient: React.FC = () => {
                 <CheckboxField
                   field={{
                     name: 'draft',
-                    _path: 'draft',
                     label: t('version:draft'),
                   }}
                   onChange={() => setDraft(!draft)}
@@ -172,7 +171,6 @@ export const APIViewClient: React.FC = () => {
               <CheckboxField
                 field={{
                   name: 'authenticated',
-                  _path: 'authenticated',
                   label: t('authentication:authenticated'),
                 }}
                 onChange={() => setAuthenticated(!authenticated)}
@@ -182,13 +180,12 @@ export const APIViewClient: React.FC = () => {
             <NumberField
               field={{
                 name: 'depth',
-                _path: 'depth',
                 admin: {
-                  max: 10,
-                  min: 0,
                   step: 1,
                 },
                 label: t('general:depth'),
+                max: 10,
+                min: 0,
               }}
               onChange={(value) => setDepth(value?.toString())}
             />

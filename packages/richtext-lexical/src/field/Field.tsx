@@ -18,6 +18,7 @@ import type { LexicalRichTextFieldProps } from '../types.js'
 import { LexicalProvider } from '../lexical/LexicalProvider.js'
 import './bundled.css'
 import './index.scss'
+import '../lexical/theme/EditorTheme.scss'
 
 const baseClass = 'rich-text-lexical'
 
@@ -36,6 +37,7 @@ const RichTextComponent: React.FC<
       admin: {
         className,
         components: { Description, Error, Label },
+        readOnly: readOnlyFromProps,
         style,
         width,
       },
@@ -44,7 +46,6 @@ const RichTextComponent: React.FC<
     },
     field,
     labelProps,
-    readOnly: readOnlyFromProps,
     validate, // Users can pass in client side validation if they WANT to, but it's not required anymore
   } = props
 
@@ -66,17 +67,8 @@ const RichTextComponent: React.FC<
     validate: memoizedValidate,
   })
 
-  const {
-    errorMessage,
-    formInitializing,
-    formProcessing,
-    initialValue,
-    path,
-    schemaPath,
-    setValue,
-    showError,
-    value,
-  } = fieldType
+  const { formInitializing, formProcessing, initialValue, path, setValue, showError, value } =
+    fieldType
 
   const disabled = readOnlyFromProps || readOnlyFromContext || formProcessing || formInitializing
 
@@ -142,4 +134,4 @@ function fallbackRender({ error }): React.ReactElement {
   )
 }
 
-export const RichText = withCondition(RichTextComponent)
+export const RichText: typeof RichTextComponent = withCondition(RichTextComponent)
