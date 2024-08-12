@@ -12,11 +12,13 @@ import { NextRESTClient } from './NextRESTClient.js'
 export async function initPayloadInt(
   dirname: string,
   testSuiteNameOverride?: string,
+  configFromProps?: Promise<SanitizedConfig>,
 ): Promise<{ config: SanitizedConfig; payload: Payload; restClient: NextRESTClient }> {
   const testSuiteName = testSuiteNameOverride ?? path.basename(dirname)
   await runInit(testSuiteName, false, false, true)
   console.log('importing config', path.resolve(dirname, 'config.ts'))
-  const { default: config } = await import(path.resolve(dirname, 'config.ts'))
+  const config = await configFromProps
+
   console.log('starting payload')
 
   const payload = await getPayload({ config })

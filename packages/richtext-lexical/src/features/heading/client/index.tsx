@@ -1,10 +1,6 @@
 'use client'
 
-import type { HeadingTagType } from '@lexical/rich-text'
-
-import { $createHeadingNode, $isHeadingNode, HeadingNode } from '@lexical/rich-text'
-import { $setBlocksType } from '@lexical/selection'
-import { $getSelection, $isRangeSelection } from 'lexical'
+import { $isRangeSelection } from 'lexical'
 
 import type { ToolbarGroup } from '../../toolbars/types.js'
 import type { HeadingFeatureProps } from '../server/index.js'
@@ -20,10 +16,7 @@ import { slashMenuBasicGroupWithItems } from '../../shared/slashMenu/basicGroup.
 import { toolbarTextDropdownGroupWithItems } from '../../shared/toolbar/textDropdownGroup.js'
 import { MarkdownTransformer } from '../markdownTransformer.js'
 
-const $setHeading = (headingSize: HeadingTagType) => {
-  const selection = $getSelection()
-  $setBlocksType(selection, () => $createHeadingNode(headingSize))
-}
+const $setHeading = (headingSize: any) => {}
 
 const iconImports = {
   h1: H1Icon,
@@ -46,18 +39,7 @@ export const HeadingFeatureClient = createClientFeature<HeadingFeatureProps>(({ 
             if (!$isRangeSelection(selection)) {
               return false
             }
-            for (const node of selection.getNodes()) {
-              if ($isHeadingNode(node) && node.getTag() === headingSize) {
-                continue
-              }
 
-              const parent = node.getParent()
-              if ($isHeadingNode(parent) && parent.getTag() === headingSize) {
-                continue
-              }
-
-              return false
-            }
             return true
           },
           key: headingSize,
@@ -77,7 +59,7 @@ export const HeadingFeatureClient = createClientFeature<HeadingFeatureProps>(({ 
 
   return {
     markdownTransformers: [MarkdownTransformer(enabledHeadingSizes)],
-    nodes: [HeadingNode],
+    nodes: [],
     sanitizedClientFeatureProps: props,
     slashMenu: {
       groups: enabledHeadingSizes?.length

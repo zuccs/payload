@@ -7,36 +7,14 @@ import type {
   Spread,
 } from 'lexical'
 
-import type { SerializedQuoteNode } from './features/blockquote/server/index.js'
-import type { SerializedInlineBlockNode } from './features/blocks/client/nodes/InlineBlocksNode.js'
-import type { SerializedBlockNode } from './features/blocks/server/nodes/BlocksNode.js'
-import type {
-  SerializedTableCellNode,
-  SerializedTableNode,
-  SerializedTableRowNode,
-} from './features/experimental_table/server/index.js'
-import type { SerializedHeadingNode } from './features/heading/server/index.js'
-import type { SerializedHorizontalRuleNode } from './features/horizontalRule/server/nodes/HorizontalRuleNode.js'
 import type { SerializedAutoLinkNode, SerializedLinkNode } from './features/link/nodes/types.js'
 import type { SerializedListItemNode, SerializedListNode } from './features/lists/plugin/index.js'
-import type { SerializedRelationshipNode } from './features/relationship/server/nodes/RelationshipNode.js'
-import type { SerializedUploadNode } from './features/upload/server/nodes/UploadNode.js'
 
 export type {
   SerializedAutoLinkNode,
-  SerializedBlockNode,
-  SerializedHeadingNode,
-  SerializedHorizontalRuleNode,
-  SerializedInlineBlockNode,
   SerializedLinkNode,
   SerializedListItemNode,
   SerializedListNode,
-  SerializedQuoteNode,
-  SerializedRelationshipNode,
-  SerializedTableCellNode,
-  SerializedTableNode,
-  SerializedTableRowNode,
-  SerializedUploadNode,
 }
 
 export type SerializedParagraphNode<T extends SerializedLexicalNode = SerializedLexicalNode> =
@@ -75,17 +53,12 @@ export type TypedEditorState<T extends SerializedLexicalNode = SerializedLexical
 export type DefaultNodeTypes =
   | SerializedAutoLinkNode
   //| SerializedBlockNode // Not included by default
-  | SerializedHeadingNode
-  | SerializedHorizontalRuleNode
   | SerializedLineBreakNode
   | SerializedLinkNode
   | SerializedListItemNode
   | SerializedListNode
   | SerializedParagraphNode
-  | SerializedQuoteNode
-  | SerializedRelationshipNode
   | SerializedTextNode
-  | SerializedUploadNode
 
 export type DefaultTypedEditorState<T extends SerializedLexicalNode = SerializedLexicalNode> =
   TypedEditorState<DefaultNodeTypes | T>

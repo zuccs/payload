@@ -1,18 +1,9 @@
 import type { CollectionConfig } from 'payload'
 
-import {
-  BlocksFeature,
-  HTMLConverterFeature,
-  LinkFeature,
-  TreeViewFeature,
-  UploadFeature,
-  lexicalEditor,
-  lexicalHTML,
-} from '@payloadcms/richtext-lexical'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { slateEditor } from '@payloadcms/richtext-slate'
 
 import { richTextFieldsSlug } from '../../slugs.js'
-import { RelationshipBlock, SelectFieldBlock, TextBlock, UploadAndRichTextBlock } from './blocks.js'
 
 const RichTextFields: CollectionConfig = {
   slug: richTextFieldsSlug,
@@ -33,46 +24,9 @@ const RichTextFields: CollectionConfig = {
       type: 'richText',
       required: true,
       editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          TreeViewFeature(),
-          HTMLConverterFeature({}),
-          LinkFeature({
-            fields: ({ defaultFields }) => [
-              ...defaultFields,
-              {
-                name: 'rel',
-                label: 'Rel Attribute',
-                type: 'select',
-                hasMany: true,
-                options: ['noopener', 'noreferrer', 'nofollow'],
-                admin: {
-                  description:
-                    'The rel attribute defines the relationship between a linked resource and the current document. This is a custom link field.',
-                },
-              },
-            ],
-          }),
-          UploadFeature({
-            collections: {
-              uploads: {
-                fields: [
-                  {
-                    name: 'caption',
-                    type: 'richText',
-                    editor: lexicalEditor(),
-                  },
-                ],
-              },
-            },
-          }),
-          BlocksFeature({
-            blocks: [TextBlock, UploadAndRichTextBlock, SelectFieldBlock, RelationshipBlock],
-          }),
-        ],
+        features: ({ defaultFeatures }) => [...defaultFeatures],
       }),
     },
-    lexicalHTML('lexicalCustomFields', { name: 'lexicalCustomFields_html' }),
     {
       name: 'lexical',
       type: 'richText',
@@ -104,7 +58,7 @@ const RichTextFields: CollectionConfig = {
         },
       },
       editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [...defaultFeatures, TreeViewFeature()],
+        features: ({ defaultFeatures }) => [...defaultFeatures],
       }),
     },
     {

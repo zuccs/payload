@@ -13,9 +13,7 @@ import { LinkIcon } from '../../../lexical/ui/icons/Link/index.js'
 import { getSelectedNode } from '../../../lexical/utils/getSelectedNode.js'
 import { createClientFeature } from '../../../utilities/createClientFeature.js'
 import { toolbarFeatureButtonsGroupWithItems } from '../../shared/toolbar/featureButtonsGroup.js'
-import { LinkMarkdownTransformer } from '../markdownTransformer.js'
-import { AutoLinkNode } from '../nodes/AutoLinkNode.js'
-import { $isLinkNode, LinkNode, TOGGLE_LINK_COMMAND } from '../nodes/LinkNode.js'
+import { $isLinkNode, TOGGLE_LINK_COMMAND } from '../nodes/LinkNode.js'
 import { AutoLinkPlugin } from './plugins/autoLink/index.js'
 import { ClickableLinkPlugin } from './plugins/clickableLink/index.js'
 import { TOGGLE_LINK_WITH_MODAL_COMMAND } from './plugins/floatingLinkEditor/LinkEditor/commands.js'
@@ -80,8 +78,8 @@ const toolbarGroups: ToolbarGroup[] = [
 ]
 
 export const LinkFeatureClient = createClientFeature({
-  markdownTransformers: [LinkMarkdownTransformer],
-  nodes: [LinkNode, AutoLinkNode],
+  markdownTransformers: [],
+  nodes: [],
   plugins: [
     {
       Component: LinkPlugin,

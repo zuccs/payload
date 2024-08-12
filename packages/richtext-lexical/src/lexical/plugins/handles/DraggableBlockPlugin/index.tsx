@@ -3,7 +3,6 @@ import type { LexicalEditor } from 'lexical'
 import type { DragEvent as ReactDragEvent } from 'react'
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext.js'
-import { eventFiles } from '@lexical/rich-text'
 import { $getNearestNodeFromDOMNode, $getNodeByKey } from 'lexical'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
@@ -170,10 +169,6 @@ function useDraggableBlockMenu(
       if (!isDraggingBlockRef.current) {
         return false
       }
-      const [isFileTransfer] = eventFiles(event)
-      if (isFileTransfer) {
-        return false
-      }
 
       const { pageY, target } = event
       if (!isHTMLElement(target)) {
@@ -259,10 +254,7 @@ function useDraggableBlockMenu(
       if (!isDraggingBlockRef.current) {
         return false
       }
-      const [isFileTransfer] = eventFiles(event)
-      if (isFileTransfer) {
-        return false
-      }
+
       const { dataTransfer, pageY, target } = event
       const dragData = dataTransfer?.getData(DRAG_DATA_FORMAT) || ''
 

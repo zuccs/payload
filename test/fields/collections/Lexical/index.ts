@@ -4,19 +4,7 @@ import type { CollectionConfig } from 'payload'
 
 import { createHeadlessEditor } from '@lexical/headless'
 import { $convertToMarkdownString } from '@lexical/markdown'
-import {
-  BlocksFeature,
-  EXPERIMENTAL_TableFeature,
-  FixedToolbarFeature,
-  HeadingFeature,
-  LinkFeature,
-  TreeViewFeature,
-  UploadFeature,
-  defaultEditorFeatures,
-  getEnabledNodes,
-  lexicalEditor,
-  sanitizeServerEditorConfig,
-} from '@payloadcms/richtext-lexical'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 import { lexicalFieldsSlug } from '../../slugs.js'
 import {
@@ -33,77 +21,7 @@ import {
 } from './blocks.js'
 
 const editorConfig: ServerEditorConfig = {
-  features: [
-    ...defaultEditorFeatures,
-    //TestRecorderFeature(),
-    TreeViewFeature(),
-    //HTMLConverterFeature(),
-    FixedToolbarFeature(),
-    LinkFeature({
-      fields: ({ defaultFields }) => [
-        ...defaultFields,
-        {
-          name: 'rel',
-          type: 'select',
-          admin: {
-            description:
-              'The rel attribute defines the relationship between a linked resource and the current document. This is a custom link field.',
-          },
-          hasMany: true,
-          label: 'Rel Attribute',
-          options: ['noopener', 'noreferrer', 'nofollow'],
-        },
-      ],
-    }),
-    UploadFeature({
-      collections: {
-        uploads: {
-          fields: [
-            {
-              name: 'caption',
-              type: 'richText',
-              editor: lexicalEditor(),
-            },
-          ],
-        },
-      },
-    }),
-    BlocksFeature({
-      blocks: [
-        RichTextBlock,
-        TextBlock,
-        UploadAndRichTextBlock,
-        SelectFieldBlock,
-        RelationshipBlock,
-        RelationshipHasManyBlock,
-        SubBlockBlock,
-        RadioButtonsBlock,
-        ConditionalLayoutBlock,
-        TabBlock,
-      ],
-      inlineBlocks: [
-        {
-          slug: 'myInlineBlock',
-          admin: {
-            components: {
-              Label: '/collections/Lexical/LabelComponent.js#LabelComponent',
-            },
-          },
-          fields: [
-            {
-              name: 'key',
-              label: () => {
-                return 'Key'
-              },
-              type: 'select',
-              options: ['value1', 'value2', 'value3'],
-            },
-          ],
-        },
-      ],
-    }),
-    EXPERIMENTAL_TableFeature(),
-  ],
+  features: [],
 }
 
 export const LexicalFields: CollectionConfig = {
@@ -127,21 +45,6 @@ export const LexicalFields: CollectionConfig = {
       editor: lexicalEditor({
         features: ({ defaultFeatures }) => [
           //TestRecorderFeature(),
-          TreeViewFeature(),
-          BlocksFeature({
-            blocks: [
-              RichTextBlock,
-              TextBlock,
-              UploadAndRichTextBlock,
-              SelectFieldBlock,
-              RelationshipBlock,
-              RelationshipHasManyBlock,
-              SubBlockBlock,
-              RadioButtonsBlock,
-              ConditionalLayoutBlock,
-            ],
-          }),
-          HeadingFeature({ enabledHeadingSizes: ['h2', 'h4'] }),
         ],
       }),
     },
@@ -161,16 +64,12 @@ export const LexicalFields: CollectionConfig = {
       type: 'textarea',
       hooks: {
         afterRead: [
-          async ({ data, req, siblingData }) => {
-            const yourSanitizedEditorConfig = await sanitizeServerEditorConfig(
-              editorConfig,
-              req.payload.config,
-            )
+          async ({ data, req, siblingData, value }) => {
+            return value
+            const yourSanitizedEditorConfig = {}
 
             const headlessEditor = createHeadlessEditor({
-              nodes: getEnabledNodes({
-                editorConfig: yourSanitizedEditorConfig,
-              }),
+              nodes: [],
             })
 
             const yourEditorState: SerializedEditorState = siblingData.lexicalWithBlocks
@@ -183,9 +82,7 @@ export const LexicalFields: CollectionConfig = {
             // Export to markdown
             let markdown: string
             headlessEditor.getEditorState().read(() => {
-              markdown = $convertToMarkdownString(
-                yourSanitizedEditorConfig?.features?.markdownTransformers,
-              )
+              markdown = $convertToMarkdownString([])
             })
             return markdown
           },

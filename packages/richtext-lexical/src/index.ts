@@ -35,7 +35,6 @@ import {
   sanitizeServerFeatures,
 } from './lexical/config/server/sanitize.js'
 import { populateLexicalPopulationPromises } from './populateGraphQL/populateLexicalPopulationPromises.js'
-import { getGenerateImportMap } from './utilities/generateImportMap.js'
 import { getGenerateSchemaMap } from './utilities/generateSchemaMap.js'
 import { recurseNodeTree } from './utilities/recurseNodeTree.js'
 import { richTextValidateHOC } from './validate/index.js'
@@ -168,9 +167,6 @@ export function lexicalEditor(props?: LexicalEditorProps): LexicalRichTextAdapte
           resolvedFeatureMap,
         },
       },
-      generateImportMap: getGenerateImportMap({
-        resolvedFeatureMap,
-      }),
       generateSchemaMap: getGenerateSchemaMap({
         resolvedFeatureMap,
       }),
@@ -835,88 +831,17 @@ export function lexicalEditor(props?: LexicalEditorProps): LexicalRichTextAdapte
   }
 }
 
-export { AlignFeature } from './features/align/server/index.js'
-export { BlockquoteFeature } from './features/blockquote/server/index.js'
-export { BlocksFeature, type BlocksFeatureProps } from './features/blocks/server/index.js'
 export { type BlockFields } from './features/blocks/server/nodes/BlocksNode.js'
 
-export { LinebreakHTMLConverter } from './features/converters/html/converter/converters/linebreak.js'
-export { ParagraphHTMLConverter } from './features/converters/html/converter/converters/paragraph.js'
-
-export { TextHTMLConverter } from './features/converters/html/converter/converters/text.js'
-export { defaultHTMLConverters } from './features/converters/html/converter/defaultConverters.js'
-export {
-  convertLexicalNodesToHTML,
-  convertLexicalToHTML,
-} from './features/converters/html/converter/index.js'
-
 export type { HTMLConverter } from './features/converters/html/converter/types.js'
-export { consolidateHTMLConverters, lexicalHTML } from './features/converters/html/field/index.js'
-export {
-  HTMLConverterFeature,
-  type HTMLConverterFeatureProps,
-} from './features/converters/html/index.js'
-export { TestRecorderFeature } from './features/debug/testRecorder/server/index.js'
-export { TreeViewFeature } from './features/debug/treeView/server/index.js'
-export { EXPERIMENTAL_TableFeature } from './features/experimental_table/server/index.js'
-export { BoldFeature } from './features/format/bold/feature.server.js'
-export { InlineCodeFeature } from './features/format/inlineCode/feature.server.js'
-export { ItalicFeature } from './features/format/italic/feature.server.js'
+export { type HTMLConverterFeatureProps } from './features/converters/html/index.js'
 
-export { StrikethroughFeature } from './features/format/strikethrough/feature.server.js'
-export { SubscriptFeature } from './features/format/subscript/feature.server.js'
-export { SuperscriptFeature } from './features/format/superscript/feature.server.js'
-export { UnderlineFeature } from './features/format/underline/feature.server.js'
-export { HeadingFeature, type HeadingFeatureProps } from './features/heading/server/index.js'
-export { HorizontalRuleFeature } from './features/horizontalRule/server/index.js'
-export { IndentFeature } from './features/indent/server/index.js'
-
-export { AutoLinkNode } from './features/link/nodes/AutoLinkNode.js'
-
-export { LinkNode } from './features/link/nodes/LinkNode.js'
 export type { LinkFields } from './features/link/nodes/types.js'
-export { LinkFeature, type LinkFeatureServerProps } from './features/link/server/index.js'
-export { ChecklistFeature } from './features/lists/checklist/server/index.js'
-export { OrderedListFeature } from './features/lists/orderedList/server/index.js'
-export { UnorderedListFeature } from './features/lists/unorderedList/server/index.js'
-export { LexicalPluginToLexicalFeature } from './features/migrations/lexicalPluginToLexical/feature.server.js'
-export { SlateBlockquoteConverter } from './features/migrations/slateToLexical/converter/converters/blockquote/converter.js'
-export { SlateHeadingConverter } from './features/migrations/slateToLexical/converter/converters/heading/converter.js'
-export { SlateIndentConverter } from './features/migrations/slateToLexical/converter/converters/indent/converter.js'
-export { SlateLinkConverter } from './features/migrations/slateToLexical/converter/converters/link/converter.js'
-export { SlateListItemConverter } from './features/migrations/slateToLexical/converter/converters/listItem/converter.js'
-export { SlateOrderedListConverter } from './features/migrations/slateToLexical/converter/converters/orderedList/converter.js'
-export { SlateRelationshipConverter } from './features/migrations/slateToLexical/converter/converters/relationship/converter.js'
-export { SlateUnknownConverter } from './features/migrations/slateToLexical/converter/converters/unknown/converter.js'
-export { SlateUnorderedListConverter } from './features/migrations/slateToLexical/converter/converters/unorderedList/converter.js'
-export { SlateUploadConverter } from './features/migrations/slateToLexical/converter/converters/upload/converter.js'
-export { defaultSlateConverters } from './features/migrations/slateToLexical/converter/defaultConverters.js'
 
-export {
-  convertSlateNodesToLexical,
-  convertSlateToLexical,
-} from './features/migrations/slateToLexical/converter/index.js'
-export type {
-  SlateNode,
-  SlateNodeConverter,
-} from './features/migrations/slateToLexical/converter/types.js'
-export { SlateToLexicalFeature } from './features/migrations/slateToLexical/feature.server.js'
-
-export { ParagraphFeature } from './features/paragraph/server/index.js'
-export {
-  RelationshipFeature,
-  type RelationshipFeatureProps,
-} from './features/relationship/server/index.js'
-export {
-  type RelationshipData,
-  RelationshipServerNode,
-} from './features/relationship/server/nodes/RelationshipNode.js'
-
-export { FixedToolbarFeature } from './features/toolbars/fixed/server/index.js'
-export { InlineToolbarFeature } from './features/toolbars/inline/server/index.js'
+export { type RelationshipFeatureProps } from './features/relationship/server/index.js'
+export { type RelationshipData } from './features/relationship/server/nodes/RelationshipNode.js'
 
 export type { ToolbarGroup, ToolbarGroupItem } from './features/toolbars/types.js'
-export { createNode } from './features/typeUtilities.js' // Only useful in feature.server.ts
 export type {
   ClientComponentProps,
   ClientFeature,
@@ -953,23 +878,10 @@ export type {
   ServerFeatureProviderMap,
 } from './features/typesServer.js'
 
-export { UploadFeature } from './features/upload/server/feature.server.js'
-
 export type { UploadFeatureProps } from './features/upload/server/feature.server.js'
-export { type UploadData, UploadServerNode } from './features/upload/server/nodes/UploadNode.js'
+export { type UploadData } from './features/upload/server/nodes/UploadNode.js'
 
 export type { EditorConfigContextType } from './lexical/config/client/EditorConfigProvider.js'
-export {
-  defaultEditorConfig,
-  defaultEditorFeatures,
-  defaultEditorLexicalConfig,
-} from './lexical/config/server/default.js'
-
-export { loadFeatures, sortFeaturesForOptimalLoading } from './lexical/config/server/loader.js'
-export {
-  sanitizeServerEditorConfig,
-  sanitizeServerFeatures,
-} from './lexical/config/server/sanitize.js'
 
 export type {
   ClientEditorConfig,
@@ -977,7 +889,6 @@ export type {
   SanitizedServerEditorConfig,
   ServerEditorConfig,
 } from './lexical/config/types.js'
-export { getEnabledNodes } from './lexical/nodes/index.js'
 export type { AdapterProps }
 
 export type {
@@ -985,30 +896,7 @@ export type {
   SlashMenuItem,
 } from './lexical/plugins/SlashMenu/LexicalTypeaheadMenuPlugin/types.js'
 
-export {
-  DETAIL_TYPE_TO_DETAIL,
-  DOUBLE_LINE_BREAK,
-  ELEMENT_FORMAT_TO_TYPE,
-  ELEMENT_TYPE_TO_FORMAT,
-  IS_ALL_FORMATTING,
-  LTR_REGEX,
-  NON_BREAKING_SPACE,
-  NodeFormat,
-  RTL_REGEX,
-  TEXT_MODE_TO_TYPE,
-  TEXT_TYPE_TO_FORMAT,
-  TEXT_TYPE_TO_MODE,
-} from './lexical/utils/nodeFormat.js'
-export { sanitizeUrl, validateUrl } from './lexical/utils/url.js'
-
 export type * from './nodeTypes.js'
 
-export { defaultRichTextValue } from './populateGraphQL/defaultValue.js'
-
 export type { LexicalEditorProps, LexicalRichTextAdapter } from './types.js'
-export { createServerFeature } from './utilities/createServerFeature.js'
 export type { FieldsDrawerProps } from './utilities/fieldsDrawer/Drawer.js'
-
-export { migrateSlateToLexical } from './utilities/migrateSlateToLexical/index.js'
-
-export { upgradeLexicalData } from './utilities/upgradeLexicalData/index.js'

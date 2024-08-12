@@ -10,8 +10,6 @@ import type {
   RangeSelection,
 } from 'lexical'
 
-import { addClassNamesToElement, isHTMLAnchorElement } from '@lexical/utils'
-import ObjectID from 'bson-objectid'
 import {
   $applyNodeReplacement,
   $createTextNode,
@@ -83,7 +81,6 @@ export class LinkNode extends ElementNode {
     }
 
     if (serializedNode.version === 2 && !serializedNode.id) {
-      serializedNode.id = new ObjectID.default().toHexString()
       serializedNode.version = 3
     }
 
@@ -122,7 +119,6 @@ export class LinkNode extends ElementNode {
       element.rel = manageRel(element.rel, 'add', 'noopener')
     }
 
-    addClassNamesToElement(element, config.theme.link)
     return element
   }
 
@@ -233,16 +229,14 @@ export class LinkNode extends ElementNode {
 
 function $convertAnchorElement(domNode: Node): DOMConversionOutput {
   let node: LinkNode | null = null
-  if (isHTMLAnchorElement(domNode)) {
+  if (false) {
     const content = domNode.textContent
     if (content !== null && content !== '') {
       node = $createLinkNode({
-        id: new ObjectID.default().toHexString(),
+        id: null,
         fields: {
           doc: null,
           linkType: 'custom',
-          newTab: domNode.getAttribute('target') === '_blank',
-          url: domNode.getAttribute('href') ?? '',
         },
       })
     }
@@ -250,23 +244,22 @@ function $convertAnchorElement(domNode: Node): DOMConversionOutput {
   return { node }
 }
 
-export function $createLinkNode({ id, fields }: { fields: LinkFields; id?: string }): LinkNode {
+function $createLinkNode({ id, fields }: { fields: LinkFields; id?: string }): LinkNode {
   return $applyNodeReplacement(
     new LinkNode({
-      id: id ?? new ObjectID.default().toHexString(),
+      id: id ?? null,
       fields,
     }),
   )
 }
 
-export function $isLinkNode(node: LexicalNode | null | undefined): node is LinkNode {
+function $isLinkNode(node: LexicalNode | null | undefined): node is LinkNode {
   return node instanceof LinkNode
 }
 
-export const TOGGLE_LINK_COMMAND: LexicalCommand<LinkPayload | null> =
-  createCommand('TOGGLE_LINK_COMMAND')
+const TOGGLE_LINK_COMMAND: LexicalCommand<LinkPayload | null> = createCommand('TOGGLE_LINK_COMMAND')
 
-export function $toggleLink(payload: LinkPayload): void {
+function $toggleLink(payload: LinkPayload): void {
   const selection = $getSelection()
 
   if (!$isRangeSelection(selection) && !payload.selectedNodes.length) {

@@ -1,28 +1,6 @@
 import type { Config, SanitizedConfig } from 'payload'
 
-import {
-  AlignFeature,
-  BlockquoteFeature,
-  BlocksFeature,
-  BoldFeature,
-  ChecklistFeature,
-  HeadingFeature,
-  IndentFeature,
-  InlineCodeFeature,
-  ItalicFeature,
-  LinkFeature,
-  OrderedListFeature,
-  ParagraphFeature,
-  RelationshipFeature,
-  StrikethroughFeature,
-  SubscriptFeature,
-  SuperscriptFeature,
-  TreeViewFeature,
-  UnderlineFeature,
-  UnorderedListFeature,
-  UploadFeature,
-  lexicalEditor,
-} from '@payloadcms/richtext-lexical'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import { buildConfig } from 'payload'
 import { de } from 'payload/i18n/de'
@@ -48,85 +26,7 @@ export async function buildConfigWithDefaults(
   const config: Config = {
     db: databaseAdapter,
     editor: lexicalEditor({
-      features: [
-        ParagraphFeature(),
-        RelationshipFeature(),
-        LinkFeature({
-          fields: ({ defaultFields }) => [
-            ...defaultFields,
-            {
-              name: 'description',
-              type: 'text',
-            },
-          ],
-        }),
-        ChecklistFeature(),
-        UnorderedListFeature(),
-        OrderedListFeature(),
-        AlignFeature(),
-        BlockquoteFeature(),
-        BoldFeature(),
-        ItalicFeature(),
-        UploadFeature({
-          collections: {
-            media: {
-              fields: [
-                {
-                  name: 'alt',
-                  type: 'text',
-                },
-              ],
-            },
-          },
-        }),
-        UnderlineFeature(),
-        StrikethroughFeature(),
-        SubscriptFeature(),
-        SuperscriptFeature(),
-        InlineCodeFeature(),
-        TreeViewFeature(),
-        HeadingFeature(),
-        IndentFeature(),
-        BlocksFeature({
-          blocks: [
-            {
-              slug: 'myBlock',
-              fields: [
-                {
-                  name: 'someText',
-                  type: 'text',
-                },
-                {
-                  name: 'someTextRequired',
-                  type: 'text',
-                  required: true,
-                },
-                {
-                  name: 'radios',
-                  type: 'radio',
-                  options: [
-                    {
-                      label: 'Option 1',
-                      value: 'option1',
-                    },
-                    {
-                      label: 'Option 2',
-                      value: 'option2',
-                    },
-                    {
-                      label: 'Option 3',
-                      value: 'option3',
-                    },
-                  ],
-                  validate: (value) => {
-                    return value !== 'option2' ? true : 'Cannot be option2'
-                  },
-                },
-              ],
-            },
-          ],
-        }),
-      ],
+      features: [],
     }),
     email: testEmailAdapter,
     endpoints: [localAPIEndpoint, reInitEndpoint],

@@ -1,6 +1,5 @@
 'use client'
 
-import { $createQuoteNode, $isQuoteNode, QuoteNode } from '@lexical/rich-text'
 import { $setBlocksType } from '@lexical/selection'
 import { $getSelection, $isRangeSelection } from 'lexical'
 
@@ -21,9 +20,6 @@ const toolbarGroups: ToolbarGroup[] = [
           return false
         }
         for (const node of selection.getNodes()) {
-          if (!$isQuoteNode(node) && !$isQuoteNode(node.getParent())) {
-            return false
-          }
         }
         return true
       },
@@ -34,7 +30,6 @@ const toolbarGroups: ToolbarGroup[] = [
       onSelect: ({ editor }) => {
         editor.update(() => {
           const selection = $getSelection()
-          $setBlocksType(selection, () => $createQuoteNode())
         })
       },
       order: 20,
@@ -44,7 +39,7 @@ const toolbarGroups: ToolbarGroup[] = [
 
 export const BlockquoteFeatureClient = createClientFeature({
   markdownTransformers: [MarkdownTransformer],
-  nodes: [QuoteNode],
+  nodes: [],
 
   slashMenu: {
     groups: [
@@ -59,7 +54,6 @@ export const BlockquoteFeatureClient = createClientFeature({
           onSelect: ({ editor }) => {
             editor.update(() => {
               const selection = $getSelection()
-              $setBlocksType(selection, () => $createQuoteNode())
             })
           },
         },
