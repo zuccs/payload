@@ -1,6 +1,15 @@
-import type { ArrayField, Payload, RelationshipField } from 'payload'
-
+import { Console } from 'console'
+import { randomBytes } from 'crypto'
 import path from 'path'
+import {
+  type ArrayField,
+  commitTransaction,
+  initTransaction,
+  type Payload,
+  type PayloadRequest,
+  type RelationshipField,
+} from 'payload'
+import { wait } from 'payload/shared'
 import { fileURLToPath } from 'url'
 
 import { initPayloadInt } from '../helpers/initPayloadInt.js'
@@ -109,6 +118,114 @@ describe('@payloadcms/plugin-nested-docs', () => {
       expect(grandchild.categorization[1].doc).toStrictEqual(child.id)
       expect(grandchild.categorization[1].label).toStrictEqual('child')
       expect(grandchild.categorization[2].label).toStrictEqual('grandchild')
+    })
+  })
+
+  describe('tryissue', () => {
+    it('deadlock?', async () => {
+      const start = Date.now()
+
+      const req = { payload } as PayloadRequest
+      await initTransaction(req)
+      const parents = await Promise.all(
+        Array.from({ length: 20 }, () =>
+          payload.create({
+            collection: 'pages',
+            data: {
+              slug: randomBytes(10).toString('hex'),
+              title: randomBytes(10).toString('hex'),
+              _status: 'published',
+            },
+            req,
+          }),
+        ),
+      )
+
+      const randParent = () => {
+        const randomIndex = Math.floor(Math.random() * parents.length)
+        // Return the randomly selected parent object
+        return parents[randomIndex].id
+      }
+
+      const a = randParent()
+
+      const children = await Promise.all(
+        Array.from({ length: 100 }, () =>
+          payload.create({
+            collection: 'pages',
+            data: {
+              slug: randomBytes(10).toString('hex'),
+              title: randomBytes(10).toString('hex'),
+              _status: 'published',
+              parent: a,
+            },
+            req,
+          }),
+        ),
+      )
+
+      const randChildren = () => {
+        const randomIndex = Math.floor(Math.random() * children.length)
+        // Return the randomly selected parent object
+        return children[randomIndex].id
+      }
+
+      const p = randChildren()
+
+      const grandChildren = await Promise.all(
+        Array.from({ length: 300 }, () =>
+          payload
+            .create({
+              collection: 'pages',
+              data: {
+                slug: randomBytes(10).toString('hex'),
+                title: randomBytes(10).toString('hex'),
+                _status: 'published',
+                parent: p,
+              },
+              req,
+              // req,
+            })
+            .then((grand) =>
+              payload.create({
+                collection: 'pages',
+                data: {
+                  slug: randomBytes(10).toString('hex'),
+                  title: randomBytes(10).toString('hex'),
+                  _status: 'published',
+                  parent: grand.id,
+                },
+                req,
+              }),
+            ),
+        ),
+      )
+
+      const randGrandChildren = () => {
+        const randomIndex = Math.floor(Math.random() * grandChildren.length)
+
+        return grandChildren[randomIndex].id
+      }
+
+      // await Promise.all([
+      //   ...Array.from({ length: 100 }, () =>
+      //     payload.update({
+      //       collection: 'pages',
+      //       id: randGrandChildren(),
+      //       data: {
+      //         slug: randomBytes(10).toString('hex'),
+      //         title: randomBytes(10).toString('hex'),
+      //         _status: 'published',
+      //         parent: randChildren(),
+      //       },
+      //       req,
+      //     }),
+      //   ),
+      // ])
+
+      await commitTransaction(req)
+
+      expect(1).toBe(1)
     })
   })
 })

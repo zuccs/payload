@@ -24,15 +24,14 @@ export default buildConfigWithDefaults({
     locales: ['en', 'es', 'de'],
   },
   onInit: async (payload) => {
-    await payload.create({
-      collection: 'users',
-      data: {
-        email: devUser.email,
-        password: devUser.password,
-      },
-    })
-
-    await seed(payload)
+    // await payload.create({
+    //   collection: 'users',
+    //   data: {
+    //     email: devUser.email,
+    //     password: devUser.password,
+    //   },
+    // })
+    // await seed(payload)
   },
   plugins: [
     nestedDocsPlugin({

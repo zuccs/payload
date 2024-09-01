@@ -12,6 +12,7 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'fullTitle',
   },
   versions: {
+    maxPerDoc: 30,
     drafts: true,
   },
   access: {
