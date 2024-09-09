@@ -1,5 +1,7 @@
 export { parsePayloadComponent } from '../bin/generateImportMap/parsePayloadComponent.js'
 export { defaults as collectionDefaults } from '../collections/config/defaults.js'
+export { getComponent } from '../config/getComponent.js'
+
 export { serverProps } from '../config/types.js'
 
 export {

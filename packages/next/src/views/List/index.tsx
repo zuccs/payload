@@ -7,9 +7,12 @@ import {
   TableColumnsProvider,
 } from '@payloadcms/ui'
 import { formatAdminURL, getCreateMappedComponent, RenderComponent } from '@payloadcms/ui/shared'
-import { createClientCollectionConfig } from '@payloadcms/ui/utilities/createClientConfig'
 import { notFound } from 'next/navigation.js'
-import { deepCopyObjectSimple, mergeListSearchAndWhere } from 'payload'
+import {
+  createClientCollectionConfig,
+  deepCopyObjectSimple,
+  mergeListSearchAndWhere,
+} from 'payload'
 import { isNumber } from 'payload/shared'
 import React, { Fragment } from 'react'
 

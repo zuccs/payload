@@ -1,7 +1,6 @@
 import type { ClientField, Field, MappedComponent, RichTextGenerateComponentMap } from 'payload'
 
-import { createClientFields } from '@payloadcms/ui/utilities/createClientConfig'
-import { deepCopyObjectSimple } from 'payload'
+import { createClientFields, deepCopyObjectSimple } from 'payload'
 
 import type { AdapterArguments, RichTextCustomElement, RichTextCustomLeaf } from './types.js'
 

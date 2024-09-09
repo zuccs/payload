@@ -1,6 +1,20 @@
-import type { ImportMap, PayloadComponent, ResolvedComponent } from 'payload'
+import type { I18nClient } from '@payloadcms/translations'
 
-import { parsePayloadComponent } from 'payload/shared'
+import type { CreateMappedComponent } from '../admin/types.js'
+import type { ImportMap } from '../bin/generateImportMap/index.js'
+import type { PayloadComponent, ResolvedComponent } from '../config/types.js'
+import type { Payload } from '../types/index.js'
+
+import { parsePayloadComponent } from '../bin/generateImportMap/parsePayloadComponent.js'
+
+export type GetCreateMappedComponent = (props: {
+  importMap: ImportMap
+  serverProps: {
+    [key: string]: any
+    i18n?: I18nClient
+    payload?: Payload
+  }
+}) => CreateMappedComponent
 
 /**
  * Gets the resolved React component from `PayloadComponent` from the importMap

@@ -1,8 +1,7 @@
 import type { ClientField, MappedComponent, RichTextGenerateComponentMap } from 'payload'
 
-import { getComponent } from '@payloadcms/ui/shared'
-import { createClientFields } from '@payloadcms/ui/utilities/createClientConfig'
-import { deepCopyObjectSimple } from 'payload'
+import { createClientFields, deepCopyObjectSimple } from 'payload'
+import { getComponent } from 'payload/shared'
 
 import type { FeatureProviderProviderClient } from '../features/typesClient.js'
 import type { ResolvedServerFeatureMap } from '../features/typesServer.js'

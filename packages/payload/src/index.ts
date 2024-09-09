@@ -664,13 +664,18 @@ export type {
 export { generateImportMap } from './bin/generateImportMap/index.js'
 
 export type { ImportMap } from './bin/generateImportMap/index.js'
+
 export { genImportMapIterateFields } from './bin/generateImportMap/iterateFields.js'
-export type { ClientCollectionConfig } from './collections/config/client.js'
-export type {
-  ServerOnlyCollectionAdminProperties,
-  ServerOnlyCollectionProperties,
-  ServerOnlyUploadProperties,
+
+export {
+  type ClientCollectionConfig,
+  createClientCollectionConfig,
+  createClientCollectionConfigs,
+  type ServerOnlyCollectionAdminProperties,
+  type ServerOnlyCollectionProperties,
+  type ServerOnlyUploadProperties,
 } from './collections/config/client.js'
+
 export type {
   AfterChangeHook as CollectionAfterChangeHook,
   AfterDeleteHook as CollectionAfterDeleteHook,
@@ -719,9 +724,11 @@ export { restoreVersionOperation } from './collections/operations/restoreVersion
 export { updateOperation } from './collections/operations/update.js'
 export { updateByIDOperation } from './collections/operations/updateByID.js'
 export { buildConfig } from './config/build.js'
-export type { ClientConfig } from './config/client.js'
-
-export { serverOnlyConfigProperties } from './config/client.js'
+export {
+  type ClientConfig,
+  createClientConfig,
+  serverOnlyConfigProperties,
+} from './config/client.js'
 export { defaults } from './config/defaults.js'
 export { sanitizeConfig } from './config/sanitize.js'
 export type * from './config/types.js'
@@ -824,11 +831,20 @@ export {
   ValidationError,
   ValidationErrorName,
 } from './errors/index.js'
+
 export { baseBlockFields } from './fields/baseFields/baseBlockFields.js'
+
 export { baseIDField } from './fields/baseFields/baseIDField.js'
-export type { ServerOnlyFieldProperties } from './fields/config/client.js'
-export type { ServerOnlyFieldAdminProperties } from './fields/config/client.js'
+
+export {
+  createClientField,
+  createClientFields,
+  type ServerOnlyFieldAdminProperties,
+  type ServerOnlyFieldProperties,
+} from './fields/config/client.js'
+
 export { sanitizeFields } from './fields/config/sanitize.js'
+
 export type {
   AdminClient,
   ArrayField,
@@ -949,11 +965,15 @@ export type {
   UploadFieldValidation,
   UsernameFieldValidation,
 } from './fields/validations.js'
-export type { ClientGlobalConfig } from './globals/config/client.js'
-export type {
-  ServerOnlyGlobalAdminProperties,
-  ServerOnlyGlobalProperties,
+
+export {
+  type ClientGlobalConfig,
+  createClientGlobalConfig,
+  createClientGlobalConfigs,
+  type ServerOnlyGlobalAdminProperties,
+  type ServerOnlyGlobalProperties,
 } from './globals/config/client.js'
+
 export type {
   AfterChangeHook as GlobalAfterChangeHook,
   AfterReadHook as GlobalAfterReadHook,

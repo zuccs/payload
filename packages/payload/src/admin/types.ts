@@ -1,7 +1,9 @@
+import type { I18nClient } from '@payloadcms/translations'
 import type React from 'react'
 
+import type { ImportMap } from '../bin/generateImportMap/index.js'
 import type { PayloadComponent } from '../config/types.js'
-import type { JsonObject } from '../types/index.js'
+import type { JsonObject, Payload } from '../types/index.js'
 
 export type { CellComponentProps, DefaultCellComponentProps } from './elements/Cell.js'
 export type { ConditionalDateProps } from './elements/DatePicker.js'
@@ -384,3 +386,12 @@ export type CreateMappedComponent = {
     identifier: string,
   ): MappedComponent<T>[]
 }
+
+export type GetCreateMappedComponent = (props: {
+  importMap: ImportMap
+  serverProps: {
+    [key: string]: any
+    i18n?: I18nClient
+    payload?: Payload
+  }
+}) => CreateMappedComponent

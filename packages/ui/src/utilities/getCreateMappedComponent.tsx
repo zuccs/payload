@@ -8,10 +8,8 @@ import type {
   PayloadComponent,
 } from 'payload'
 
-import { isReactServerComponentOrFunction } from 'payload/shared'
+import { getComponent, isReactServerComponentOrFunction } from 'payload/shared'
 import React from 'react'
-
-import { getComponent } from './getComponent.js'
 
 export function getCreateMappedComponent({
   importMap,
