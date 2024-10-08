@@ -741,4 +741,41 @@ describe('database', () => {
       }),
     ).rejects.toThrow(QueryError)
   })
+
+  it('parallel updates with indexed field', async () => {
+    // On MongoDB, this was either freezing up or throwing transaction errors
+    const runFn = async (i: number) => {
+      const { id } = await payload.create({
+        collection: 'collectionWithIndex',
+        data: {
+          indexedText: 'A',
+        },
+      })
+
+      await payload.update({
+        collection: 'collectionWithIndex',
+        id,
+        data: {
+          indexedText: 'B',
+        },
+      })
+    }
+
+    await Promise.all(
+      new Array(100).fill(0).map(async (_, i) => {
+        await runFn(i)
+      }),
+    )
+
+    const allCollectionsWithIndex = await payload.find({
+      collection: 'collectionWithIndex',
+      limit: 1000,
+    })
+
+    expect(allCollectionsWithIndex.totalDocs).toBe(100)
+
+    for (const document of allCollectionsWithIndex.docs) {
+      expect(document.indexedText).toBe('B')
+    }
+  })
 })

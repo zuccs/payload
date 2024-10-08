@@ -60,6 +60,16 @@ export default buildConfigWithDefaults({
       },
     },
     {
+      slug: 'collectionWithIndex',
+      fields: [
+        {
+          name: 'indexedText',
+          type: 'text',
+          index: true,
+        },
+      ],
+    },
+    {
       slug: 'default-values',
       fields: [
         {

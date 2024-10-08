@@ -12,6 +12,7 @@ export interface Config {
   };
   collections: {
     posts: Post;
+    collectionWithIndex: CollectionWithIndex;
     'default-values': DefaultValue;
     'relation-a': RelationA;
     'relation-b': RelationB;
@@ -61,6 +62,16 @@ export interface Post {
   id: string;
   title: string;
   throwAfterChange?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collectionWithIndex".
+ */
+export interface CollectionWithIndex {
+  id: string;
+  indexedText?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -257,6 +268,10 @@ export interface PayloadLockedDocument {
         value: string | Post;
       } | null)
     | ({
+        relationTo: 'collectionWithIndex';
+        value: string | CollectionWithIndex;
+      } | null)
+    | ({
         relationTo: 'default-values';
         value: string | DefaultValue;
       } | null)
@@ -289,14 +304,10 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null);
   globalSlug?: string | null;
-  _lastEdited: {
-    user: {
-      relationTo: 'users';
-      value: string | User;
-    };
-    editedAt?: string | null;
+  user: {
+    relationTo: 'users';
+    value: string | User;
   };
-  isLocked?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
