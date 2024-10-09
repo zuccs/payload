@@ -21,6 +21,17 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
+  collectionsJoins?: {
+    posts: PostsJoins;
+    categories: CategoriesJoins;
+    uploads: UploadsJoins;
+    'localized-posts': LocalizedPostsJoins;
+    'localized-categories': LocalizedCategoriesJoins;
+    users: UsersJoins;
+    'payload-locked-documents': PayloadLockedDocumentsJoins;
+    'payload-preferences': PayloadPreferencesJoins;
+    'payload-migrations': PayloadMigrationsJoins;
+  };
   db: {
     defaultIDType: string;
   };
@@ -230,6 +241,60 @@ export interface PayloadMigration {
   updatedAt: string;
   createdAt: string;
 }
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_joins".
+ */
+export interface PostsJoins {}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_joins".
+ */
+export interface CategoriesJoins {
+  relatedPosts: 'posts';
+  hasManyPosts: 'posts';
+  'group.relatedPosts': 'posts';
+  'group.camelCasePosts': 'posts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "uploads_joins".
+ */
+export interface UploadsJoins {
+  relatedPosts: 'posts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "localized-posts_joins".
+ */
+export interface LocalizedPostsJoins {}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "localized-categories_joins".
+ */
+export interface LocalizedCategoriesJoins {
+  relatedPosts: 'localized-posts';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_joins".
+ */
+export interface UsersJoins {}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_joins".
+ */
+export interface PayloadLockedDocumentsJoins {}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_joins".
+ */
+export interface PayloadPreferencesJoins {}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_joins".
+ */
+export interface PayloadMigrationsJoins {}
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".

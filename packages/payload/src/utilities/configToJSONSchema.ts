@@ -73,6 +73,23 @@ function generateEntitySchemas(
   }
 }
 
+function generateCollectionsJoinsSchema(collections: SanitizedCollectionConfig[]): JSONSchema4 {
+  const properties = collections.reduce((acc, { slug }) => {
+    acc[slug] = {
+      $ref: `#/definitions/${slug}_joins`,
+    }
+
+    return acc
+  }, {})
+
+  return {
+    type: 'object',
+    additionalProperties: false,
+    properties,
+    required: Object.keys(properties),
+  }
+}
+
 function generateLocaleEntitySchemas(localization: SanitizedConfig['localization']): JSONSchema4 {
   if (localization && 'locales' in localization && localization?.locales) {
     const localesFromConfig = localization?.locales
@@ -633,6 +650,47 @@ export function entityToJSONSchema(
   }
 }
 
+export function collectionToJoinsJSONSchema(collection: SanitizedCollectionConfig) {
+  const schema: JSONSchema4 = {
+    type: 'object',
+    additionalProperties: false,
+    properties: {},
+  }
+
+  const traverseFields = (fields: Field[], path = '') => {
+    for (const field of fields) {
+      switch (field.type) {
+        case 'join':
+          schema.properties[`${path}${field.name}`] = {
+            enum: [field.collection],
+          }
+
+          break
+        case 'row':
+        case 'collapsible':
+          traverseFields(field.fields, path)
+          break
+        case 'tabs':
+          field.tabs.forEach((tab) => {
+            traverseFields(tab.fields, tabHasName(tab) ? `${path}${tab.name}.` : path)
+          })
+          break
+        case 'group':
+          traverseFields(field.fields, `${path}${field.name}.`)
+          break
+        default:
+          break
+      }
+    }
+  }
+
+  traverseFields(collection.fields)
+
+  schema.required = Object.keys(schema.properties)
+
+  return schema
+}
+
 const fieldType: JSONSchema4 = {
   type: 'string',
   required: false,
@@ -811,6 +869,14 @@ export function configToJSONSchema(
     return acc
   }, {})
 
+  const collectionsJoinsDefinitions: { [k: string]: JSONSchema4 } = config.collections.reduce(
+    (acc, collection) => {
+      acc[`${collection.slug}_joins`] = collectionToJoinsJSONSchema(collection)
+      return acc
+    },
+    {},
+  )
+
   const authOperationDefinitions = [...config.collections]
     .filter(({ auth }) => Boolean(auth))
     .reduce(
@@ -827,12 +893,14 @@ export function configToJSONSchema(
       ...entityDefinitions,
       ...Object.fromEntries(interfaceNameDefinitions),
       ...authOperationDefinitions,
+      ...collectionsJoinsDefinitions,
     },
     // These properties here will be very simple, as all the complexity is in the definitions. These are just the properties for the top-level `Config` type
     type: 'object',
     properties: {
       auth: generateAuthOperationSchemas(config.collections),
       collections: generateEntitySchemas(config.collections || []),
+      collectionsJoins: generateCollectionsJoinsSchema(config.collections),
       db: generateDbEntitySchema(config),
       globals: generateEntitySchemas(config.globals || []),
       locale: generateLocaleEntitySchemas(config.localization),
