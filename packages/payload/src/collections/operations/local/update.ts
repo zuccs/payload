@@ -24,6 +24,7 @@ export type BaseOptions<TSlug extends CollectionSlug> = {
   context?: RequestContext
   data: DeepPartial<RequiredDataFromCollectionSlug<TSlug>>
   depth?: number
+  disableTransaction?: boolean
   draft?: boolean
   fallbackLocale?: TypedLocale
   file?: File
@@ -45,6 +46,7 @@ export type ByIDOptions<TSlug extends CollectionSlug> = {
 
 export type ManyOptions<TSlug extends CollectionSlug> = {
   id?: never
+  limit?: number
   where: Where
 } & BaseOptions<TSlug>
 
@@ -72,6 +74,7 @@ async function updateLocal<TSlug extends CollectionSlug>(
     collection: collectionSlug,
     data,
     depth,
+    disableTransaction,
     draft,
     file,
     filePath,
@@ -100,6 +103,7 @@ async function updateLocal<TSlug extends CollectionSlug>(
     collection,
     data,
     depth,
+    disableTransaction,
     draft,
     overrideAccess,
     overrideLock,

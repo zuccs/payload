@@ -458,6 +458,46 @@ describe('database', () => {
           ).rejects.toThrow('Not Found')
         })
       }
+
+      describe('disableTransaction', () => {
+        let disabledTransactionPost
+        beforeAll(async () => {
+          disabledTransactionPost = await payload.create({
+            collection,
+            data: {
+              title,
+            },
+            disableTransaction: true,
+          })
+        })
+        it('should not use transaction calling create() with disableTransaction', () => {
+          expect(disabledTransactionPost.hasTransaction).toBeFalsy()
+        })
+        it('should not use transaction calling update() with disableTransaction', async () => {
+          const result = await payload.update({
+            collection,
+            id: disabledTransactionPost.id,
+            data: {
+              title,
+            },
+            disableTransaction: true,
+          })
+
+          expect(result.hasTransaction).toBeFalsy()
+        })
+        it('should not use transaction calling delete() with disableTransaction', async () => {
+          const result = await payload.delete({
+            collection,
+            id: disabledTransactionPost.id,
+            data: {
+              title,
+            },
+            disableTransaction: true,
+          })
+
+          expect(result.hasTransaction).toBeFalsy()
+        })
+      })
     })
   })
 
@@ -740,5 +780,26 @@ describe('database', () => {
         where: { text: { equals: 'asd' } },
       }),
     ).rejects.toThrow(QueryError)
+  })
+
+  it('should not allow document creation with relationship data to an invalid document ID', async () => {
+    let invalidDoc
+
+    try {
+      invalidDoc = await payload.create({
+        collection: 'relation-b',
+        data: { title: 'invalid', relationship: 'not-real-id' },
+      })
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+    }
+
+    expect(invalidDoc).toBeUndefined()
+
+    const relationBDocs = await payload.find({
+      collection: 'relation-b',
+    })
+
+    expect(relationBDocs.docs).toHaveLength(0)
   })
 })
