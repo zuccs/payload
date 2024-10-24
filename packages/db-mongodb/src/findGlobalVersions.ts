@@ -1,4 +1,9 @@
-import type { PaginateOptions } from 'mongoose'
+import type {
+  AggregatePaginateResult,
+  PaginateOptions,
+  PipelineStage,
+  QueryOptions,
+} from 'mongoose'
 import type { FindGlobalVersions, PayloadRequest } from 'payload'
 
 import { buildVersionGlobalFields, flattenWhereToOperators } from 'payload'
@@ -31,7 +36,7 @@ export const findGlobalVersions: FindGlobalVersions = async function findGlobalV
     this.payload.globals.config.find(({ slug }) => slug === global),
     true,
   )
-  const options = {
+  const options: QueryOptions = {
     ...(await withSession(this, req)),
     limit,
     skip,
@@ -55,10 +60,16 @@ export const findGlobalVersions: FindGlobalVersions = async function findGlobalV
     })
   }
 
+  const pipeline: PipelineStage[] = []
+  const projection: Record<string, boolean> = {}
+
   const query = await Model.buildQuery({
     globalSlug: global,
     locale,
     payload: this.payload,
+    pipeline,
+    projection,
+    session: options.session,
     where,
   })
 
@@ -110,7 +121,24 @@ export const findGlobalVersions: FindGlobalVersions = async function findGlobalV
     }
   }
 
-  const result = await Model.paginate(query, paginationOptions)
+  let result: AggregatePaginateResult<unknown>
+
+  if (pipeline.length) {
+    pipeline.push({ $sort: { createdAt: -1 } })
+
+    if (limit) {
+      pipeline.push({ $limit: limit })
+    }
+
+    if (Object.keys(projection).length > 0) {
+      pipeline.push({ $project: projection })
+    }
+
+    result = await Model.aggregatePaginate(Model.aggregate(pipeline), paginationOptions)
+  } else {
+    result = await Model.paginate(query, paginationOptions)
+  }
+
   const docs = JSON.parse(JSON.stringify(result.docs))
 
   return {
