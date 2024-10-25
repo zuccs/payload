@@ -19,6 +19,7 @@ export interface Config {
     'custom-schema': CustomSchema;
     places: Place;
     'fields-persistance': FieldsPersistance;
+    products: Product;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -29,6 +30,7 @@ export interface Config {
   };
   globals: {
     global: Global;
+    hookedGlobal: HookedGlobal;
   };
   locale: 'en' | 'es';
   user: User & {
@@ -234,6 +236,16 @@ export interface FieldsPersistance {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -289,6 +301,10 @@ export interface PayloadLockedDocument {
         value: string | FieldsPersistance;
       } | null)
     | ({
+        relationTo: 'products';
+        value: string | Product;
+      } | null)
+    | ({
         relationTo: 'users';
         value: string | User;
       } | null);
@@ -341,6 +357,17 @@ export interface PayloadMigration {
 export interface Global {
   id: string;
   text?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hookedGlobal".
+ */
+export interface HookedGlobal {
+  id: string;
+  text?: string | null;
+  products?: (string | Product)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

@@ -356,6 +356,15 @@ export default buildConfigWithDefaults({
         },
       ],
     },
+    {
+      slug: 'products',
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+        },
+      ],
+    },
   ],
   globals: [
     {
@@ -368,6 +377,33 @@ export default buildConfigWithDefaults({
         },
       ],
       versions: true,
+    },
+    {
+      slug: 'hookedGlobal',
+      fields: [
+        {
+          name: 'text',
+          type: 'text',
+        },
+        {
+          name: 'products',
+          type: 'relationship',
+          hasMany: true,
+          relationTo: 'products',
+        },
+      ],
+      hooks: {
+        afterChange: [
+          async ({ req, doc }) => {
+            await req.payload.update({
+              collection: 'products',
+              data: { title: 'another' },
+              where: {},
+            })
+            return doc
+          },
+        ],
+      },
     },
   ],
   localization: {

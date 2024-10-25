@@ -4,6 +4,7 @@ import type { Table } from 'drizzle-orm'
 import type { NextRESTClient } from 'helpers/NextRESTClient.js'
 import type { Payload, PayloadRequest, TypeWithID } from 'payload'
 
+import { randomUUID } from 'crypto'
 import * as drizzlePg from 'drizzle-orm/pg-core'
 import * as drizzleSqlite from 'drizzle-orm/sqlite-core'
 import fs from 'fs'
@@ -496,6 +497,40 @@ describe('database', () => {
           })
 
           expect(result.hasTransaction).toBeFalsy()
+        })
+      })
+
+      describe('update many', () => {
+        it('should', async () => {
+          const req = { payload } as PayloadRequest
+          const docs = await Promise.all(
+            Array.from({ length: 20 }, () => ({ title: randomUUID() })).map((data) =>
+              payload.create({ collection: 'products', req, data }),
+            ),
+          )
+
+          req.transactionID = await payload.db.beginTransaction()
+          await payload.updateGlobal({
+            req,
+            slug: 'hookedGlobal',
+            data: {
+              products: [docs[0].id, docs[1].id],
+            },
+          })
+          // await payload.update({
+          //   collection: 'products',
+          //   where: {},
+          //   data: { title: 'another' },
+          //   req,
+          // })
+
+          await payload.db.commitTransaction(req.transactionID)
+
+          const res = await payload.find({ collection: 'products', pagination: false })
+
+          res.docs.forEach((doc) => {
+            expect(doc.title).toBe('another')
+          })
         })
       })
     })
