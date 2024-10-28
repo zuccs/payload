@@ -54,7 +54,7 @@ export const getStaticHandler = ({ cachingOptions, collection }: Args): StaticHa
           Key,
         })
       } catch (err: any) {
-        if (err.code === 'ExpiredToken') {
+        if (err.code === 'ExpiredToken' || err.Code === 'ExpiredToken') {
           await refreshSession()
 
           const { storageClient: newStorageClient } = await getStorageClient()
