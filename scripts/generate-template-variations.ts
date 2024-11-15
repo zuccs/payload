@@ -48,6 +48,9 @@ main().catch((error) => {
 async function main() {
   const templatesDir = path.resolve(dirname, '../templates')
 
+  // Update pnpm-lock.yaml for website template as this is not a generated template
+  execSync(`pnpm install --ignore-workspace`, { cwd: path.resolve(templatesDir, 'website') })
+
   // WARNING: This will need to be updated when this merges into main
   const templateRepoUrlBase = `https://github.com/payloadcms/payload/tree/beta/templates`
 
@@ -77,6 +80,7 @@ async function main() {
       base: 'website', // This is the base template to copy from
       dirname: 'with-vercel-website',
       db: 'vercel-postgres',
+      generateLockfile: true, // Generate lockfile for Payload Cloud package manager detection
       storage: 'vercelBlobStorage',
       sharp: false,
       vercelDeployButtonLink:
@@ -134,7 +138,7 @@ async function main() {
       name: 'payload-cloud-mongodb-template',
       dirname: 'with-payload-cloud',
       db: 'mongodb',
-      generateLockfile: true,
+      generateLockfile: true, // Generate lockfile for Payload Cloud package manager detection
       storage: 'payloadCloud',
       sharp: true,
     },
