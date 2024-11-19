@@ -20,6 +20,11 @@ export const migrate: DrizzleAdapter['migrate'] = async function migrate(
     return
   }
 
+  payload.logger.info({
+    migrationFilesCount: migrationFiles.length,
+    msg: 'Found migrations to run',
+  })
+
   if ('createExtensions' in this && typeof this.createExtensions === 'function') {
     await this.createExtensions()
   }
@@ -29,12 +34,17 @@ export const migrate: DrizzleAdapter['migrate'] = async function migrate(
 
   const hasMigrationTable = await migrationTableExists(this)
 
+  payload.logger.info({ hasMigrationTable })
+
   if (hasMigrationTable) {
     ;({ docs: migrationsInDB } = await payload.find({
       collection: 'payload-migrations',
       limit: 0,
       sort: '-name',
     }))
+
+    payload.logger.info({ migrationsInDB })
+
     if (Number(migrationsInDB?.[0]?.batch) > 0) {
       latestBatch = Number(migrationsInDB[0]?.batch)
     }
@@ -57,6 +67,8 @@ export const migrate: DrizzleAdapter['migrate'] = async function migrate(
       },
     )
 
+    payload.logger.info({ runMigrations })
+
     if (!runMigrations) {
       process.exit(0)
     }
@@ -68,10 +80,14 @@ export const migrate: DrizzleAdapter['migrate'] = async function migrate(
   for (const migration of migrationFiles) {
     const alreadyRan = migrationsInDB.find((existing) => existing.name === migration.name)
 
+    payload.logger.info({ alreadyRan, migration })
+
     // If already ran, skip
     if (alreadyRan) {
       continue
     }
+
+    payload.logger.info({ msg: 'Running migration' })
 
     await runMigrationFile(payload, migration, newBatch)
   }

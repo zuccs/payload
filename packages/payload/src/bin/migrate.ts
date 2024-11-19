@@ -48,6 +48,8 @@ export const migrate = async ({ config, parsedArgs }: Args): Promise<void> => {
     ...prettySyncLogger,
   })
 
+  payload.logger.info('Migrate process beginning...')
+
   const adapter = payload.db
 
   if (!adapter) {
