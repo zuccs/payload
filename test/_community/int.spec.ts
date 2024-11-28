@@ -364,7 +364,7 @@ const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
   propertiesBenchmarks = {}
   payload.logger.info(`${size} BENCHMARK START`)
 
-  const posts = Array.from({ length: 150 }, () => generateBenchamrkPost(size))
+  const posts = Array.from({ length: 10 }, () => generateBenchamrkPost(size))
 
   let full = 0
   let now = Date.now()
@@ -381,44 +381,62 @@ const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
     docs: [smallPost],
   } = await payload.find({ collection: 'benchmark-posts' })
 
-  payload.logger.info(`${size} find - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
   await payload.find({ collection: 'benchmark-posts', limit: 0 })
-  payload.logger.info(`${size} findWithoutLimit - ${Date.now() - now}MS`)
+
   full += Date.now() - now
   now = Date.now()
 
   await payload.update({ collection: 'benchmark-posts', data: {}, where: {} })
 
-  payload.logger.info(`${size} update - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
   await payload.update({ collection: 'benchmark-posts', data: {}, id: smallPost.id })
 
-  payload.logger.info(`${size} updateOne - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
   await payload.delete({ collection: 'benchmark-posts', id: smallPost.id })
 
-  payload.logger.info(`${size} deleteOne - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
   await payload.delete({ collection: 'benchmark-posts', where: {} })
 
-  payload.logger.info(`${size} deleteMany - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
   payload.logger.info(`${size} FULL - ${full}`)
-
-  payload.logger.info(`DB ${size} PROXY TEST:`)
-  payload.logger.info(propertiesBenchmarks)
 }
+
+const batchBench = async (size: any) => {
+  let full = 0
+  const fullProperties: any = {}
+
+  const now = Date.now()
+  for (let i = 0; i < 10; i++) {
+    payload.logger.info(`ITERATION 1`)
+    await benchmarkSize(size)
+    full += Date.now() - now
+    for (const prop in propertiesBenchmarks) {
+      if (!fullProperties[prop]) {
+        fullProperties[prop] = 0
+      }
+
+      fullProperties[prop] += propertiesBenchmarks[prop]
+    }
+  }
+
+  payload.logger.info(`DB ${size} database layer TEST:`)
+  for (const property in fullProperties) {
+    payload.logger.info(`payload.db.${property} - ${fullProperties[property]}MS`)
+  }
+  payload.logger.info(`DB ${size} FULL - ${full}MS`)
+}
+
 describe('_Community Tests', () => {
   // --__--__--__--__--__--__--__--__--__
   // Boilerplate test setup/teardown
@@ -480,9 +498,9 @@ describe('_Community Tests', () => {
   it('benchmark', async () => {
     proxyDB()
 
-    await benchmarkSize('small')
-    await benchmarkSize('medium')
-    await benchmarkSize('large')
+    await batchBench('small')
+    await batchBench('medium')
+    await batchBench('large')
 
     expect(true).toBeTruthy()
   })
