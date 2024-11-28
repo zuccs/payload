@@ -362,7 +362,6 @@ const proxyDB = () => {
 
 const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
   propertiesBenchmarks = {}
-  payload.logger.info(`${size} BENCHMARK START`)
 
   const posts = Array.from({ length: 10 }, () => generateBenchamrkPost(size))
 
@@ -373,7 +372,6 @@ const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
     await payload.create({ collection: 'benchmark-posts', data: post })
   }
 
-  payload.logger.info(`${size} create - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 
