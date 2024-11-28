@@ -364,7 +364,7 @@ const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
   propertiesBenchmarks = {}
   payload.logger.info(`${size} BENCHMARK START`)
 
-  const posts = Array.from({ length: 10 }, () => generateBenchamrkPost(size))
+  const posts = Array.from({ length: 150 }, () => generateBenchamrkPost(size))
 
   let full = 0
   let now = Date.now()
@@ -382,6 +382,11 @@ const benchmarkSize = async (size: 'large' | 'medium' | 'small') => {
   } = await payload.find({ collection: 'benchmark-posts' })
 
   payload.logger.info(`${size} find - ${Date.now() - now}MS`)
+  full += Date.now() - now
+  now = Date.now()
+
+  await payload.find({ collection: 'benchmark-posts', limit: 0 })
+  payload.logger.info(`${size} findWithoutLimit - ${Date.now() - now}MS`)
   full += Date.now() - now
   now = Date.now()
 

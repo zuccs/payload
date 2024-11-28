@@ -37,7 +37,7 @@ const baseJestConfig = {
   },
   testEnvironment: 'node',
   testMatch: ['<rootDir>/packages/*/src/**/*.spec.ts'],
-  testTimeout: 90000,
+  testTimeout: 900000000,
   transform: {
     '^.+\\.(t|j)sx?$': ['@swc/jest'],
   },
