@@ -418,7 +418,7 @@ const batchBench = async (size: any) => {
 
   const now = Date.now()
   for (let i = 0; i < 10; i++) {
-    payload.logger.info(`ITERATION 1`)
+    payload.logger.info(`ITERATION ${i + 1}`)
     await benchmarkSize(size)
     full += Date.now() - now
     for (const prop in propertiesBenchmarks) {
