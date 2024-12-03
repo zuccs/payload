@@ -20,12 +20,9 @@ jobs:
           ascending: true
           operations-per-run: 300
 
-          # Ignore all assigned
-          exempt-all-assignees: false
-
           # Issues
           stale-issue-label: 'stale'
-          exempt-issue-labels: 'prioritized,created-by: Payload team,created-by: Contributor'
+          exempt-issue-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-issue-message: >
             This issue has been marked as stale due to lack of activity. To keep the ticket open, please indicate that it is still relevant in a comment below.
           close-issue-message: >
@@ -33,7 +30,7 @@ jobs:
 
           # Pull Requests
           stale-pr-label: 'stale'
-          exempt-pr-labels: 'prioritized,created-by: Payload team,created-by: Contributor'
+          exempt-pr-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-pr-message: >
             This PR is stale due to lack of activity. To keep the PR open, please indicate that it is still relevant in a comment below.
           close-pr-message: >
@@ -53,25 +50,22 @@ jobs:
         with:
           debug-only: true
           days-before-stale: 30
-          days-before-close: 0
+          days-before-close: 7
           ascending: true
           operations-per-run: 300
 
           only-labels: 'v2'
 
-          # Ignore all assigned
-          exempt-all-assignees: false
-
           # Issues
           stale-issue-label: 'stale'
-          exempt-issue-labels: 'prioritized,created-by: Payload team,created-by: Contributor'
+          exempt-issue-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-issue-message: ''
           close-issue-message: >
             This issue was automatically closed due to lack of activity.
 
           # Pull Requests
           stale-pr-label: 'stale'
-          exempt-pr-labels: 'prioritized,created-by: Payload team,created-by: Contributor'
+          exempt-pr-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-pr-message: ''
           close-pr-message: >
             This pull request was automatically closed due to lack of activity.
