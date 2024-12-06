@@ -62,12 +62,15 @@ jobs:
 
           only-labels: 'v2'
           ignore-updates: true # Setting for one-time batching purposes
+          ignore-pr-updates: true # Setting for one-time batching purposes
+          remove-stale-when-updated: false # Setting for one-time batching purposes
+          # remove stale label when closed
 
           # Issues
           stale-issue-label: 'stale'
           exempt-issue-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-issue-message: ''
-          close-issue-message: >
+          close-issue-message: |
             This issue was automatically closed due to lack of activity.
 
             If this issue is still relevant against the latest codebase, please create a new issue.
@@ -76,7 +79,7 @@ jobs:
           stale-pr-label: 'stale'
           exempt-pr-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-pr-message: ''
-          close-pr-message: >
+          close-pr-message: |
             This pull request was automatically closed due to lack of activity.
 
             If you believe this PR is critical, please resolve all merge conflicts and re-open it.
