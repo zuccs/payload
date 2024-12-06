@@ -55,6 +55,7 @@ jobs:
           operations-per-run: 300
 
           only-labels: 'v2'
+          ignore-updates: true # Setting for one-time batching purposes
 
           # Issues
           stale-issue-label: 'stale'
@@ -63,12 +64,18 @@ jobs:
           close-issue-message: >
             This issue was automatically closed due to lack of activity.
 
+            If this issue is still relevant against the latest codebase, please create a new issue.
+
           # Pull Requests
           stale-pr-label: 'stale'
           exempt-pr-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
           stale-pr-message: ''
           close-pr-message: >
             This pull request was automatically closed due to lack of activity.
+
+            If you believe this PR is critical, please resolve all merge conflicts and re-open it.
+
+            If this is a feature, please create a new PR against the latest codebase.
 
       - name: Print outputs
         run: echo ${{ format('{0},{1}', toJSON(steps.stale.outputs.staled-issues-prs), toJSON(steps.stale.outputs.closed-issues-prs)) }}
