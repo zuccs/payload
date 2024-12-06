@@ -48,9 +48,9 @@ jobs:
       - uses: actions/stale@v9
         id: stale
         with:
-          # debug-only: true
+          debug-only: true
           days-before-stale: 30
-          days-before-close: 7
+          days-before-close: 0
           ascending: true
           operations-per-run: 300
 
