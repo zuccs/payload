@@ -2,6 +2,12 @@ name: stale
 
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Run the stale action in debug-only mode'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   stale:
@@ -14,7 +20,7 @@ jobs:
       - uses: actions/stale@v9
         id: stale
         with:
-          debug-only: true
+          debug-only: ${{ github.event.inputs.dry-run }}
           days-before-stale: 90
           days-before-close: 7
           ascending: true
@@ -48,7 +54,7 @@ jobs:
       - uses: actions/stale@v9
         id: stale
         with:
-          debug-only: true
+          debug-only: ${{ github.event.inputs.dry-run }}
           days-before-stale: 30
           days-before-close: 0
           ascending: true
