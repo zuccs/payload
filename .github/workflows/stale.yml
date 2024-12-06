@@ -60,7 +60,7 @@ jobs:
           ascending: true
           operations-per-run: 300
 
-          only-labels: 'v2'
+          only-labels: 'v2,stale'
           ignore-updates: true # Setting for one-time batching purposes
           ignore-pr-updates: true # Setting for one-time batching purposes
           remove-stale-when-updated: false # Setting for one-time batching purposes
