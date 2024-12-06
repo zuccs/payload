@@ -75,6 +75,8 @@ jobs:
 
             If this issue is still relevant against the latest codebase, please create a new issue.
 
+            Thank you for being part of the Payload community! 🙌
+
           # Pull Requests
           stale-pr-label: 'stale'
           exempt-pr-labels: 'prioritized,keep,created-by: Payload team,created-by: Contributor'
@@ -85,6 +87,8 @@ jobs:
             If you believe this PR is critical, please resolve all merge conflicts and re-open it.
 
             If this is a feature, please create a new PR against the latest codebase.
+
+            Thank you for being part of the Payload community! 🙌
 
       - name: Print outputs
         run: echo ${{ format('{0},{1}', toJSON(steps.stale.outputs.staled-issues-prs), toJSON(steps.stale.outputs.closed-issues-prs)) }}
