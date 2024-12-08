@@ -84,17 +84,12 @@ export function buildSearchParam({
   const field = paths[0].field
 
   if (path) {
-    const result = sanitizeQueryValue({
-      field,
-      hasCustomID,
-      operator,
-      path,
-      payload,
-      val,
-    })
+    let formattedOperator: string
+    let rawQuery: unknown
+    let formattedValue: unknown
 
-    let formattedValue = result.val
-    const { operator: formattedOperator, rawQuery } = result
+    // let formattedValue = result.val
+    // const { operator: formattedOperator, rawQuery } = result
 
     if (rawQuery) {
       return { value: rawQuery }
@@ -138,6 +133,20 @@ export function buildSearchParam({
         }
         if (i === paths.length - 1) {
           currentPath += pathToQuery.path
+          const sanitizeResult = sanitizeQueryValue({
+            field: pathToQuery.field,
+            hasCustomID,
+            operator,
+            path: pathToQuery.path,
+            payload,
+            val,
+          })
+
+          if (sanitizeResult) {
+            formattedOperator = sanitizeResult.operator
+            formattedValue = sanitizeResult.val
+            rawQuery = sanitizeResult.rawQuery
+          }
         } else {
           currentPath += `_${pathToQuery.path}.`
         }
@@ -147,6 +156,21 @@ export function buildSearchParam({
 
       if (isID && typeof formattedValue === 'string') {
         formattedValue = new Types.ObjectId(formattedValue)
+      }
+    } else {
+      const sanitizeResult = sanitizeQueryValue({
+        field,
+        hasCustomID,
+        operator,
+        path,
+        payload,
+        val,
+      })
+
+      if (sanitizeResult) {
+        formattedOperator = sanitizeResult.operator
+        formattedValue = sanitizeResult.val
+        rawQuery = sanitizeResult.rawQuery
       }
     }
 

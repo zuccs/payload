@@ -8,7 +8,7 @@ import type { MongooseAdapter } from './index.js'
 import { buildSortParam } from './queries/buildSortParam.js'
 import { buildAggregation } from './utilities/buildAggregation.js'
 import { buildProjectionFromSelect } from './utilities/buildProjectionFromSelect.js'
-import { mergeQueryAndSelectProjection } from './utilities/mergeQueryAndSelectProjection.js'
+import { mergeProjections } from './utilities/mergeProjections.js'
 import { sanitizeInternalFields } from './utilities/sanitizeInternalFields.js'
 import { withSession } from './withSession.js'
 
@@ -50,11 +50,6 @@ export const find: Find = async function find(
   }
 
   const pipeline: PipelineStage[] = []
-  const selectProjection = buildProjectionFromSelect({
-    adapter: this,
-    fields: collectionConfig.fields,
-    select,
-  })
 
   const queryProjection = {}
   const query = await Model.buildQuery({
@@ -66,6 +61,15 @@ export const find: Find = async function find(
     where,
   })
 
+  const projection = mergeProjections({
+    queryProjection,
+    selectProjection: buildProjectionFromSelect({
+      adapter: this,
+      fields: collectionConfig.flattenedFields,
+      select,
+    }),
+  })
+
   // useEstimatedCount is faster, but not accurate, as it ignores any filters. It is thus set to true if there are no filters.
   const useEstimatedCount = hasNearConstraint || !query || Object.keys(query).length === 0
   const paginationOptions: PaginateOptions = {
@@ -74,16 +78,9 @@ export const find: Find = async function find(
     options,
     page,
     pagination,
+    projection,
     sort,
     useEstimatedCount,
-  }
-
-  if (select) {
-    paginationOptions.projection = buildProjectionFromSelect({
-      adapter: this,
-      fields: collectionConfig.flattenedFields,
-      select,
-    })
   }
 
   if (this.collation) {
@@ -122,8 +119,6 @@ export const find: Find = async function find(
 
   let result
 
-  const projection = mergeQueryAndSelectProjection({ queryProjection, selectProjection })
-
   const aggregate = await buildAggregation({
     adapter: this,
     collection,
@@ -138,7 +133,6 @@ export const find: Find = async function find(
   if (aggregate) {
     result = await Model.aggregatePaginate(Model.aggregate(aggregate), paginationOptions)
   } else {
-    paginationOptions.projection = projection
     result = await Model.paginate(query, paginationOptions)
   }
 

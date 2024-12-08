@@ -1,8 +1,8 @@
 /**
- * `queryProjection` - project with false values.
+ * `queryProjection` - project with false values to remove relationship that included to $lookup .
  * `selectProjection` contains only true values
  */
-export const mergeQueryAndSelectProjection = ({
+export const mergeProjections = ({
   queryProjection,
   selectProjection,
 }: {

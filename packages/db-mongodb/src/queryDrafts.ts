@@ -8,6 +8,7 @@ import type { MongooseAdapter } from './index.js'
 import { buildSortParam } from './queries/buildSortParam.js'
 import { buildAggregation } from './utilities/buildAggregation.js'
 import { buildProjectionFromSelect } from './utilities/buildProjectionFromSelect.js'
+import { mergeProjections } from './utilities/mergeProjections.js'
 import { sanitizeInternalFields } from './utilities/sanitizeInternalFields.js'
 import { withSession } from './withSession.js'
 
@@ -51,19 +52,25 @@ export const queryDrafts: QueryDrafts = async function queryDrafts(
   const combinedWhere = combineQueries({ latest: { equals: true } }, where)
 
   const pipeline: PipelineStage[] = []
-  const projection = buildProjectionFromSelect({
-    adapter: this,
-    fields: buildVersionCollectionFields(this.payload.config, collectionConfig, true),
-    select,
-  })
+
+  const queryProjection = {}
 
   const versionQuery = await VersionModel.buildQuery({
     locale,
     payload: this.payload,
     pipeline,
-    projection,
+    projection: queryProjection,
     session: options.session,
     where: combinedWhere,
+  })
+
+  const projection = mergeProjections({
+    queryProjection,
+    selectProjection: buildProjectionFromSelect({
+      adapter: this,
+      fields: buildVersionCollectionFields(this.payload.config, collectionConfig, true),
+      select,
+    }),
   })
 
   // useEstimatedCount is faster, but not accurate, as it ignores any filters. It is thus set to true if there are no filters.

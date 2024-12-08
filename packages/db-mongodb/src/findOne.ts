@@ -5,6 +5,7 @@ import type { MongooseAdapter } from './index.js'
 
 import { buildAggregation } from './utilities/buildAggregation.js'
 import { buildProjectionFromSelect } from './utilities/buildProjectionFromSelect.js'
+import { mergeProjections } from './utilities/mergeProjections.js'
 import { sanitizeInternalFields } from './utilities/sanitizeInternalFields.js'
 import { withSession } from './withSession.js'
 
@@ -21,19 +22,24 @@ export const findOne: FindOne = async function findOne(
 
   const pipeline: PipelineStage.Lookup[] = []
 
-  const projection = buildProjectionFromSelect({
-    adapter: this,
-    fields: collectionConfig.flattenedFields,
-    select,
-  })
+  const queryProjection = {}
 
   const query = await Model.buildQuery({
     locale,
     payload: this.payload,
     pipeline,
-    projection,
+    projection: queryProjection,
     session: options.session,
     where,
+  })
+
+  const projection = mergeProjections({
+    queryProjection,
+    selectProjection: buildProjectionFromSelect({
+      adapter: this,
+      fields: collectionConfig.flattenedFields,
+      select,
+    }),
   })
 
   const aggregate = await buildAggregation({

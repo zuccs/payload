@@ -1,3 +1,4 @@
+import type { CountOptions } from 'mongodb'
 import type {
   AggregatePaginateResult,
   PaginateOptions,
@@ -12,6 +13,7 @@ import type { MongooseAdapter } from './index.js'
 
 import { buildSortParam } from './queries/buildSortParam.js'
 import { buildProjectionFromSelect } from './utilities/buildProjectionFromSelect.js'
+import { mergeProjections } from './utilities/mergeProjections.js'
 import { sanitizeInternalFields } from './utilities/sanitizeInternalFields.js'
 import { withSession } from './withSession.js'
 
@@ -57,15 +59,24 @@ export const findVersions: FindVersions = async function findVersions(
   }
 
   const pipeline: PipelineStage[] = []
-  const projection: Record<string, boolean> = {}
+  const queryProjection = {}
 
   const query = await Model.buildQuery({
     locale,
     payload: this.payload,
     pipeline,
-    projection,
+    projection: queryProjection,
     session: options.session,
     where,
+  })
+
+  const projection = mergeProjections({
+    queryProjection,
+    selectProjection: buildProjectionFromSelect({
+      adapter: this,
+      fields: buildVersionCollectionFields(this.payload.config, collectionConfig, true),
+      select,
+    }),
   })
 
   // useEstimatedCount is faster, but not accurate, as it ignores any filters. It is thus set to true if there are no filters.
@@ -77,11 +88,7 @@ export const findVersions: FindVersions = async function findVersions(
     options,
     page,
     pagination,
-    projection: buildProjectionFromSelect({
-      adapter: this,
-      fields: buildVersionCollectionFields(this.payload.config, collectionConfig, true),
-      select,
-    }),
+    projection,
     sort,
     useEstimatedCount,
   }
@@ -102,7 +109,7 @@ export const findVersions: FindVersions = async function findVersions(
     paginationOptions.useCustomCountFn = () => {
       return Promise.resolve(
         Model.countDocuments(query, {
-          ...options,
+          ...(options as CountOptions),
           hint: { _id: 1 },
         }),
       )

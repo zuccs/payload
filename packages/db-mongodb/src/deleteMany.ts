@@ -1,3 +1,4 @@
+import type { DeleteOptions } from 'mongodb'
 import type { QueryOptions } from 'mongoose'
 import type { DeleteMany, PayloadRequest } from 'payload'
 
@@ -21,5 +22,5 @@ export const deleteMany: DeleteMany = async function deleteMany(
     where,
   })
 
-  await Model.deleteMany(query, options)
+  await Model.deleteMany(query, options as DeleteOptions)
 }
