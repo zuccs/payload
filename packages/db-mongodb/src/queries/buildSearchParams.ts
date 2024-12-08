@@ -88,9 +88,6 @@ export function buildSearchParam({
     let rawQuery: unknown
     let formattedValue: unknown
 
-    // let formattedValue = result.val
-    // const { operator: formattedOperator, rawQuery } = result
-
     if (rawQuery) {
       return { value: rawQuery }
     }
@@ -113,6 +110,21 @@ export function buildSearchParam({
           if (paths[i + 1].path === 'id') {
             currentPath = `${currentPath}${pathToQuery.path}`
             isID = true
+            const sanitizeResult = sanitizeQueryValue({
+              field: pathToQuery.field,
+              hasCustomID,
+              operator,
+              path: pathToQuery.path,
+              payload,
+              val,
+            })
+
+            if (sanitizeResult) {
+              formattedOperator = sanitizeResult.operator
+              formattedValue = sanitizeResult.val
+              rawQuery = sanitizeResult.rawQuery
+            }
+
             break
           }
           const as = `${currentPath}_${pathToQuery.path}`
@@ -172,6 +184,10 @@ export function buildSearchParam({
         formattedValue = sanitizeResult.val
         rawQuery = sanitizeResult.rawQuery
       }
+    }
+
+    if (rawQuery) {
+      return { value: rawQuery }
     }
 
     if (formattedOperator && validOperators.includes(formattedOperator as Operator)) {
