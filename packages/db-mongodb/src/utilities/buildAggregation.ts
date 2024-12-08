@@ -73,14 +73,14 @@ export const buildAggregation = async ({
         const joinModel = adapter.collections[join.field.collection]
 
         const {
-          limit: limitJoin = 10,
-          sort: sortJoin,
+          limit: limitJoin = join.field.defaultLimit ?? 10,
+          sort: sortJoin = join.field.defaultSort || collectionConfig.defaultSort,
           where: whereJoin,
         } = joins?.[join.joinPath] || {}
 
         const sort = buildSortParam({
           config: adapter.payload.config,
-          fields: adapter.payload.collections[slug].config.fields,
+          fields: adapter.payload.collections[slug].config.flattenedFields,
           locale,
           sort: sortJoin || collectionConfig.defaultSort,
           timestamps: true,
