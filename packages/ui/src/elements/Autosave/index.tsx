@@ -88,19 +88,36 @@ export const Autosave: React.FC<Props> = ({ id, collection, global: globalDoc })
   // can always retrieve the most to date locale
   localeRef.current = locale
 
+  const autosaveQueue = useRef<(() => Promise<void>)[]>([])
+  const isProcessingQueue = useRef(false)
+
+  const processQueue = async () => {
+    if (isProcessingQueue.current) {
+      return
+    }
+    isProcessingQueue.current = true
+
+    while (autosaveQueue.current.length > 0) {
+      const autosaveFunc = autosaveQueue.current.shift()
+      if (autosaveFunc) {
+        await autosaveFunc()
+      }
+    }
+
+    isProcessingQueue.current = false
+  }
+
+  const enqueueAutosave = (autosaveFunc: () => Promise<void>) => {
+    autosaveQueue.current.push(autosaveFunc)
+    void processQueue()
+  }
+
   // When debounced fields change, autosave
   useIgnoredEffect(
     () => {
-      const abortController = new AbortController()
-      let autosaveTimeout = undefined
-      // We need to log the time in order to figure out if we need to trigger the state off later
-      let startTimestamp = undefined
-      let endTimestamp = undefined
-
-      const autosave = () => {
+      const autosave = async () => {
         if (modified) {
-          startTimestamp = new Date().getTime()
-
+          const startTimestamp = new Date().getTime()
           setSaving(true)
 
           let url: string
@@ -129,39 +146,35 @@ export const Autosave: React.FC<Props> = ({ id, collection, global: globalDoc })
                 submitted && !valid && versionsConfig?.drafts && versionsConfig?.drafts?.validate
 
               if (!skipSubmission) {
-                void fetch(url, {
-                  body: JSON.stringify(data),
-                  credentials: 'include',
-                  headers: {
-                    'Accept-Language': i18n.language,
-                    'Content-Type': 'application/json',
-                  },
-                  method,
-                  signal: abortController.signal,
-                })
-                  .then((res) => {
-                    const newDate = new Date()
-                    // We need to log the time in order to figure out if we need to trigger the state off later
-                    endTimestamp = newDate.getTime()
-
-                    if (res.status === 200) {
-                      setLastUpdateTime(newDate.getTime())
-
-                      reportUpdate({
-                        id,
-                        entitySlug,
-                        updatedAt: newDate.toISOString(),
-                      })
-
-                      if (!mostRecentVersionIsAutosaved) {
-                        incrementVersionCount()
-                        setMostRecentVersionIsAutosaved(true)
-                      }
-                    } else {
-                      return res.json()
-                    }
+                try {
+                  const res = await fetch(url, {
+                    body: JSON.stringify(data),
+                    credentials: 'include',
+                    headers: {
+                      'Accept-Language': i18n.language,
+                      'Content-Type': 'application/json',
+                    },
+                    method,
                   })
-                  .then((json) => {
+
+                  const newDate = new Date()
+                  const endTimestamp = newDate.getTime()
+
+                  if (res.status === 200) {
+                    setLastUpdateTime(newDate.getTime())
+
+                    reportUpdate({
+                      id,
+                      entitySlug,
+                      updatedAt: newDate.toISOString(),
+                    })
+
+                    if (!mostRecentVersionIsAutosaved) {
+                      incrementVersionCount()
+                      setMostRecentVersionIsAutosaved(true)
+                    }
+                  } else {
+                    const json = await res.json()
                     if (
                       versionsConfig?.drafts &&
                       versionsConfig?.drafts?.validate &&
@@ -209,39 +222,27 @@ export const Autosave: React.FC<Props> = ({ id, collection, global: globalDoc })
                         return
                       }
                     }
-                  })
-                  .then(() => {
-                    // If request was faster than minimum animation time, animate the difference
-                    if (endTimestamp - startTimestamp < minimumAnimationTime) {
-                      autosaveTimeout = setTimeout(
-                        () => {
-                          setSaving(false)
-                        },
-                        minimumAnimationTime - (endTimestamp - startTimestamp),
-                      )
-                    } else {
-                      setSaving(false)
-                    }
-                  })
+                  }
+
+                  if (endTimestamp - startTimestamp < minimumAnimationTime) {
+                    await new Promise((resolve) =>
+                      setTimeout(resolve, minimumAnimationTime - (endTimestamp - startTimestamp)),
+                    )
+                  }
+                } catch (error) {
+                  // Handle error
+                } finally {
+                  setSaving(false)
+                }
               }
             }
           }
         }
       }
 
-      void autosave()
+      enqueueAutosave(autosave)
 
       return () => {
-        if (autosaveTimeout) {
-          clearTimeout(autosaveTimeout)
-        }
-        if (abortController.signal) {
-          try {
-            abortController.abort('Autosave closed early.')
-          } catch (error) {
-            // swallow error
-          }
-        }
         setSaving(false)
       }
     },
