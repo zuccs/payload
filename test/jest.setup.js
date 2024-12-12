@@ -11,6 +11,8 @@ process.env.PAYLOAD_PUBLIC_CLOUD_STORAGE_ADAPTER = 's3'
 process.env.NODE_OPTIONS = '--no-deprecation'
 process.env.PAYLOAD_CI_DEPENDENCY_CHECKER = 'true'
 
+process.env.REDIS_URL = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379'
+
 const dbAdapter = process.env.PAYLOAD_DATABASE || 'mongodb'
 
 generateDatabaseAdapter(dbAdapter)
