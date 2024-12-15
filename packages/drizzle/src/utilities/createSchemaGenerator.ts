@@ -1,6 +1,6 @@
 import type { GenerateSchema } from 'payload'
 
-import { exec, execSync } from 'child_process'
+import { exec } from 'child_process'
 import { existsSync } from 'fs'
 import { writeFile } from 'fs/promises'
 import path from 'path'
@@ -42,7 +42,7 @@ const columnConverter = ({
 
   if (column.type === 'geometry') {
     columnBuilderFn = 'geometryColumn'
-    addImport(`${adapter.packageName}/postgres`, columnBuilderFn)
+    addImport(`@payloadcms/drizzle/postgres`, columnBuilderFn)
   } else if (column.type === 'enum') {
     if ('isLocale' in column) {
       columnBuilderFn = `enum__locales`
@@ -94,7 +94,10 @@ const columnConverter = ({
   if (column.default) {
     let sanitizedDefault = column.default
 
-    if (typeof column.default === 'string') {
+    if (column.type === 'geometry') {
+      addImport(`${adapter.packageName}/drizzle`, 'sql')
+      sanitizedDefault = `sql\`${column.default}\``
+    } else if (typeof column.default === 'string') {
       sanitizedDefault = `'${column.default}'`
     }
 
@@ -133,10 +136,20 @@ export const createSchemaGenerator = ({
       importDeclarations[from].add(name)
     }
 
-    const enumFn = 'pgEnum'
+    let schemaDeclaration: null | string = null
+
+    if (this.schemaName) {
+      addImport(`${this.packageName}/drizzle/pg-core`, 'pgSchema')
+      schemaDeclaration = `export const pg_schema = pgSchema('${this.schemaName}')`
+    }
+
+    const enumFn = this.schemaName ? `pg_schema.enum` : 'pgEnum'
 
     const enumsList: string[] = []
     const addEnum = (name: string, options: string[]) => {
+      if (enumsList.some((each) => each === name)) {
+        return
+      }
       enumsList.push(name)
       enumDeclarations.push(
         `export const ${name} = ${enumFn}('${name}', [${options.map((option) => `'${option}'`).join(', ')}])`,
@@ -147,8 +160,11 @@ export const createSchemaGenerator = ({
       addEnum('enum__locales', this.payload.config.localization.localeCodes)
     }
 
-    const tableFn = 'pgTable'
-    addImport(`${this.packageName}/drizzle/pg-core`, 'pgTable')
+    const tableFn = this.schemaName ? `pg_schema.table` : 'pgTable'
+
+    if (!this.schemaName) {
+      addImport(`${this.packageName}/drizzle/pg-core`, 'pgTable')
+    }
 
     addImport(`${this.packageName}/drizzle/pg-core`, 'index')
     addImport(`${this.packageName}/drizzle/pg-core`, 'uniqueIndex')
@@ -226,6 +242,7 @@ ${Object.entries(table.columns)
 
         if (relation.type === 'one') {
           declaration = `${sanitizeObjectKey(key)}: one(${relation.to}, {
+    ${relation.fields.some((field) => field.table !== tableName) ? '// @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table' : ''}
     fields: [${relation.fields.map((field) => `${field.table}['${field.name}']`).join(', ')}],
     references: [${relation.references.map((col) => `${relation.to}['${col}']`).join(', ')}],
     ${relation.relationName ? `relationName: '${relation.relationName}',` : ''}
@@ -246,7 +263,7 @@ ${Object.entries(table.columns)
       relationsDeclarations.push(declaration)
     }
 
-    if (enumDeclarations.length) {
+    if (enumDeclarations.length && !this.schemaName) {
       addImport(`${this.packageName}/drizzle/pg-core`, 'pgEnum')
     }
 
@@ -262,7 +279,15 @@ ${Object.entries(table.columns)
 
     const schemaType = `
 type DatabaseSchema = {
-  ${[...enumsList, ...Object.keys(this.rawTables), ...Object.keys(this.rawRelations).map((table) => `relations_${table}`)].map((name) => `${name}: typeof ${name}`).join('\n  ')}
+  ${[
+    this.schemaName ? 'pg_schema' : null,
+    ...enumsList,
+    ...Object.keys(this.rawTables),
+    ...Object.keys(this.rawRelations).map((table) => `relations_${table}`),
+  ]
+    .filter(Boolean)
+    .map((name) => `${name}: typeof ${name}`)
+    .join('\n  ')}
 }
     `
 
@@ -275,12 +300,15 @@ declare module '${this.packageName}/types' {
     `
     const code = [
       ...importDeclarationsSanitized,
+      schemaDeclaration,
       ...enumDeclarations,
       ...tableDeclarations,
       ...relationsDeclarations,
       schemaType,
       finalDeclaration,
-    ].join('\n')
+    ]
+      .filter(Boolean)
+      .join('\n')
 
     if (!outputFile) {
       const cwd = process.cwd()
