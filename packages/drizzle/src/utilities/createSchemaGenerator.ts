@@ -27,6 +27,21 @@ const sanitizeObjectKey = (key: string) => {
   return `'${key}'`
 }
 
+/**
+ * @example
+ * (columns default-valuesID) -> columns['default-valuesID']
+ * (columns defaultValues) -> columns.defaultValues
+ */
+const accessProperty = (objName: string, key: string) => {
+  const sanitized = sanitizeObjectKey(key)
+
+  if (sanitized.startsWith("'")) {
+    return `${objName}[${sanitized}]`
+  }
+
+  return `${objName}.${key}`
+}
+
 export const createSchemaGenerator = ({
   columnToCodeConverter,
   corePackageSuffix,
@@ -108,7 +123,7 @@ export const createSchemaGenerator = ({
         for (const key in table.indexes) {
           const index = table.indexes[key]
           let indexDeclaration = `${sanitizeObjectKey(key)}: ${index.unique ? 'uniqueIndex' : 'index'}('${index.name}')`
-          indexDeclaration += `.on(${typeof index.on === 'string' ? `columns['${index.on}']` : `${index.on.map((on) => `columns['${on}']`).join(', ')}`}),`
+          indexDeclaration += `.on(${typeof index.on === 'string' ? `${accessProperty('columns', index.on)}` : `${index.on.map((on) => `${accessProperty('columns', on)}`).join(', ')}`}),`
           extrasDeclarations.push(indexDeclaration)
         }
       }
@@ -119,7 +134,7 @@ export const createSchemaGenerator = ({
 
           let foreignKeyDeclaration = `${sanitizeObjectKey(key)}: foreignKey({
       columns: [${foreignKey.columns.map((col) => `columns['${col}']`).join(', ')}],
-      foreignColumns: [${foreignKey.foreignColumns.map((col) => `${col.table}['${col.name}']`).join(', ')}],
+      foreignColumns: [${foreignKey.foreignColumns.map((col) => `${accessProperty(col.table, col.name)}`).join(', ')}],
       name: '${foreignKey.name}' 
     })`
 
@@ -176,8 +191,8 @@ ${Object.entries(table.columns)
         if (relation.type === 'one') {
           declaration = `${sanitizeObjectKey(key)}: one(${relation.to}, {
     ${relation.fields.some((field) => field.table !== tableName) ? '// @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table' : ''}
-    fields: [${relation.fields.map((field) => `${field.table}['${field.name}']`).join(', ')}],
-    references: [${relation.references.map((col) => `${relation.to}['${col}']`).join(', ')}],
+    fields: [${relation.fields.map((field) => `${accessProperty(field.table, field.name)}`).join(', ')}],
+    references: [${relation.references.map((col) => `${accessProperty(relation.to, col)}`).join(', ')}],
     ${relation.relationName ? `relationName: '${relation.relationName}',` : ''}
     }),`
         } else {

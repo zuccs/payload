@@ -32,8 +32,8 @@ export const posts = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    posts_updated_at_idx: index('posts_updated_at_idx').on(columns['updatedAt']),
-    posts_created_at_idx: index('posts_created_at_idx').on(columns['createdAt']),
+    posts_updated_at_idx: index('posts_updated_at_idx').on(columns.updatedAt),
+    posts_created_at_idx: index('posts_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -46,11 +46,11 @@ export const default_values_array = sqliteTable(
     defaultValue: text('default_value').default('default value from database'),
   },
   (columns) => ({
-    _orderIdx: index('default_values_array_order_idx').on(columns['_order']),
-    _parentIDIdx: index('default_values_array_parent_id_idx').on(columns['_parentID']),
+    _orderIdx: index('default_values_array_order_idx').on(columns._order),
+    _parentIDIdx: index('default_values_array_parent_id_idx').on(columns._parentID),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [default_values['id']],
+      foreignColumns: [default_values.id],
       name: 'default_values_array_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -73,8 +73,8 @@ export const default_values = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    default_values_updated_at_idx: index('default_values_updated_at_idx').on(columns['updatedAt']),
-    default_values_created_at_idx: index('default_values_created_at_idx').on(columns['createdAt']),
+    default_values_updated_at_idx: index('default_values_updated_at_idx').on(columns.updatedAt),
+    default_values_created_at_idx: index('default_values_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -92,8 +92,8 @@ export const relation_a = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    relation_a_updated_at_idx: index('relation_a_updated_at_idx').on(columns['updatedAt']),
-    relation_a_created_at_idx: index('relation_a_created_at_idx').on(columns['createdAt']),
+    relation_a_updated_at_idx: index('relation_a_updated_at_idx').on(columns.updatedAt),
+    relation_a_created_at_idx: index('relation_a_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -114,9 +114,9 @@ export const relation_b = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    relation_b_relationship_idx: index('relation_b_relationship_idx').on(columns['relationship']),
-    relation_b_updated_at_idx: index('relation_b_updated_at_idx').on(columns['updatedAt']),
-    relation_b_created_at_idx: index('relation_b_created_at_idx').on(columns['createdAt']),
+    relation_b_relationship_idx: index('relation_b_relationship_idx').on(columns.relationship),
+    relation_b_updated_at_idx: index('relation_b_updated_at_idx').on(columns.updatedAt),
+    relation_b_created_at_idx: index('relation_b_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -128,13 +128,11 @@ export const pg_migrations_my_array_my_sub_array = sqliteTable(
     id: text('id').primaryKey(),
   },
   (columns) => ({
-    _orderIdx: index('pg_migrations_my_array_my_sub_array_order_idx').on(columns['_order']),
-    _parentIDIdx: index('pg_migrations_my_array_my_sub_array_parent_id_idx').on(
-      columns['_parentID'],
-    ),
+    _orderIdx: index('pg_migrations_my_array_my_sub_array_order_idx').on(columns._order),
+    _parentIDIdx: index('pg_migrations_my_array_my_sub_array_parent_id_idx').on(columns._parentID),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations_my_array['id']],
+      foreignColumns: [pg_migrations_my_array.id],
       name: 'pg_migrations_my_array_my_sub_array_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -153,13 +151,13 @@ export const pg_migrations_my_array_my_sub_array_locales = sqliteTable(
   (columns) => ({
     pg_migrations_my_array_my_sub_array_relation3_idx: index(
       'pg_migrations_my_array_my_sub_array_relation3_idx',
-    ).on(columns['relation3'], columns['_locale']),
+    ).on(columns.relation3, columns._locale),
     _localeParent: uniqueIndex(
       'pg_migrations_my_array_my_sub_array_locales_locale_parent_id_unique',
-    ).on(columns['_locale'], columns['_parentID']),
+    ).on(columns._locale, columns._parentID),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations_my_array_my_sub_array['id']],
+      foreignColumns: [pg_migrations_my_array_my_sub_array.id],
       name: 'pg_migrations_my_array_my_sub_array_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -176,14 +174,14 @@ export const pg_migrations_my_array = sqliteTable(
     }),
   },
   (columns) => ({
-    _orderIdx: index('pg_migrations_my_array_order_idx').on(columns['_order']),
-    _parentIDIdx: index('pg_migrations_my_array_parent_id_idx').on(columns['_parentID']),
+    _orderIdx: index('pg_migrations_my_array_order_idx').on(columns._order),
+    _parentIDIdx: index('pg_migrations_my_array_parent_id_idx').on(columns._parentID),
     pg_migrations_my_array_relation2_idx: index('pg_migrations_my_array_relation2_idx').on(
-      columns['relation2'],
+      columns.relation2,
     ),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations['id']],
+      foreignColumns: [pg_migrations.id],
       name: 'pg_migrations_my_array_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -202,15 +200,15 @@ export const pg_migrations_blocks_my_block = sqliteTable(
     blockName: text('block_name'),
   },
   (columns) => ({
-    _orderIdx: index('pg_migrations_blocks_my_block_order_idx').on(columns['_order']),
-    _parentIDIdx: index('pg_migrations_blocks_my_block_parent_id_idx').on(columns['_parentID']),
-    _pathIdx: index('pg_migrations_blocks_my_block_path_idx').on(columns['_path']),
+    _orderIdx: index('pg_migrations_blocks_my_block_order_idx').on(columns._order),
+    _parentIDIdx: index('pg_migrations_blocks_my_block_parent_id_idx').on(columns._parentID),
+    _pathIdx: index('pg_migrations_blocks_my_block_path_idx').on(columns._path),
     pg_migrations_blocks_my_block_relation5_idx: index(
       'pg_migrations_blocks_my_block_relation5_idx',
-    ).on(columns['relation5']),
+    ).on(columns.relation5),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations['id']],
+      foreignColumns: [pg_migrations.id],
       name: 'pg_migrations_blocks_my_block_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -229,14 +227,14 @@ export const pg_migrations_blocks_my_block_locales = sqliteTable(
   (columns) => ({
     pg_migrations_blocks_my_block_relation6_idx: index(
       'pg_migrations_blocks_my_block_relation6_idx',
-    ).on(columns['relation6'], columns['_locale']),
+    ).on(columns.relation6, columns._locale),
     _localeParent: uniqueIndex('pg_migrations_blocks_my_block_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations_blocks_my_block['id']],
+      foreignColumns: [pg_migrations_blocks_my_block.id],
       name: 'pg_migrations_blocks_my_block_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -257,9 +255,9 @@ export const pg_migrations = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    pg_migrations_relation1_idx: index('pg_migrations_relation1_idx').on(columns['relation1']),
-    pg_migrations_updated_at_idx: index('pg_migrations_updated_at_idx').on(columns['updatedAt']),
-    pg_migrations_created_at_idx: index('pg_migrations_created_at_idx').on(columns['createdAt']),
+    pg_migrations_relation1_idx: index('pg_migrations_relation1_idx').on(columns.relation1),
+    pg_migrations_updated_at_idx: index('pg_migrations_updated_at_idx').on(columns.updatedAt),
+    pg_migrations_created_at_idx: index('pg_migrations_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -276,14 +274,14 @@ export const pg_migrations_locales = sqliteTable(
   (columns) => ({
     pg_migrations_my_group_my_group_relation4_idx: index(
       'pg_migrations_my_group_my_group_relation4_idx',
-    ).on(columns['myGroup_relation4'], columns['_locale']),
+    ).on(columns.myGroup_relation4, columns._locale),
     _localeParent: uniqueIndex('pg_migrations_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [pg_migrations['id']],
+      foreignColumns: [pg_migrations.id],
       name: 'pg_migrations_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -298,15 +296,13 @@ export const _pg_migrations_v_version_my_array_my_sub_array = sqliteTable(
     _uuid: text('_uuid'),
   },
   (columns) => ({
-    _orderIdx: index('_pg_migrations_v_version_my_array_my_sub_array_order_idx').on(
-      columns['_order'],
-    ),
+    _orderIdx: index('_pg_migrations_v_version_my_array_my_sub_array_order_idx').on(columns._order),
     _parentIDIdx: index('_pg_migrations_v_version_my_array_my_sub_array_parent_id_idx').on(
-      columns['_parentID'],
+      columns._parentID,
     ),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v_version_my_array['id']],
+      foreignColumns: [_pg_migrations_v_version_my_array.id],
       name: '_pg_migrations_v_version_my_array_my_sub_array_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -325,13 +321,13 @@ export const _pg_migrations_v_version_my_array_my_sub_array_locales = sqliteTabl
   (columns) => ({
     _pg_migrations_v_version_my_array_my_sub_array_relation3_idx: index(
       '_pg_migrations_v_version_my_array_my_sub_array_relation3_idx',
-    ).on(columns['relation3'], columns['_locale']),
+    ).on(columns.relation3, columns._locale),
     _localeParent: uniqueIndex(
       '_pg_migrations_v_version_my_array_my_sub_array_locales_locale_parent_id_unique',
-    ).on(columns['_locale'], columns['_parentID']),
+    ).on(columns._locale, columns._parentID),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v_version_my_array_my_sub_array['id']],
+      foreignColumns: [_pg_migrations_v_version_my_array_my_sub_array.id],
       name: '_pg_migrations_v_version_my_array_my_sub_array_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -349,14 +345,14 @@ export const _pg_migrations_v_version_my_array = sqliteTable(
     _uuid: text('_uuid'),
   },
   (columns) => ({
-    _orderIdx: index('_pg_migrations_v_version_my_array_order_idx').on(columns['_order']),
-    _parentIDIdx: index('_pg_migrations_v_version_my_array_parent_id_idx').on(columns['_parentID']),
+    _orderIdx: index('_pg_migrations_v_version_my_array_order_idx').on(columns._order),
+    _parentIDIdx: index('_pg_migrations_v_version_my_array_parent_id_idx').on(columns._parentID),
     _pg_migrations_v_version_my_array_relation2_idx: index(
       '_pg_migrations_v_version_my_array_relation2_idx',
-    ).on(columns['relation2']),
+    ).on(columns.relation2),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v['id']],
+      foreignColumns: [_pg_migrations_v.id],
       name: '_pg_migrations_v_version_my_array_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -376,15 +372,15 @@ export const _pg_migrations_v_blocks_my_block = sqliteTable(
     blockName: text('block_name'),
   },
   (columns) => ({
-    _orderIdx: index('_pg_migrations_v_blocks_my_block_order_idx').on(columns['_order']),
-    _parentIDIdx: index('_pg_migrations_v_blocks_my_block_parent_id_idx').on(columns['_parentID']),
-    _pathIdx: index('_pg_migrations_v_blocks_my_block_path_idx').on(columns['_path']),
+    _orderIdx: index('_pg_migrations_v_blocks_my_block_order_idx').on(columns._order),
+    _parentIDIdx: index('_pg_migrations_v_blocks_my_block_parent_id_idx').on(columns._parentID),
+    _pathIdx: index('_pg_migrations_v_blocks_my_block_path_idx').on(columns._path),
     _pg_migrations_v_blocks_my_block_relation5_idx: index(
       '_pg_migrations_v_blocks_my_block_relation5_idx',
-    ).on(columns['relation5']),
+    ).on(columns.relation5),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v['id']],
+      foreignColumns: [_pg_migrations_v.id],
       name: '_pg_migrations_v_blocks_my_block_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -403,13 +399,13 @@ export const _pg_migrations_v_blocks_my_block_locales = sqliteTable(
   (columns) => ({
     _pg_migrations_v_blocks_my_block_relation6_idx: index(
       '_pg_migrations_v_blocks_my_block_relation6_idx',
-    ).on(columns['relation6'], columns['_locale']),
+    ).on(columns.relation6, columns._locale),
     _localeParent: uniqueIndex(
       '_pg_migrations_v_blocks_my_block_locales_locale_parent_id_unique',
-    ).on(columns['_locale'], columns['_parentID']),
+    ).on(columns._locale, columns._parentID),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v_blocks_my_block['id']],
+      foreignColumns: [_pg_migrations_v_blocks_my_block.id],
       name: '_pg_migrations_v_blocks_my_block_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -439,22 +435,18 @@ export const _pg_migrations_v = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    _pg_migrations_v_parent_idx: index('_pg_migrations_v_parent_idx').on(columns['parent']),
+    _pg_migrations_v_parent_idx: index('_pg_migrations_v_parent_idx').on(columns.parent),
     _pg_migrations_v_version_version_relation1_idx: index(
       '_pg_migrations_v_version_version_relation1_idx',
-    ).on(columns['version_relation1']),
+    ).on(columns.version_relation1),
     _pg_migrations_v_version_version_updated_at_idx: index(
       '_pg_migrations_v_version_version_updated_at_idx',
-    ).on(columns['version_updatedAt']),
+    ).on(columns.version_updatedAt),
     _pg_migrations_v_version_version_created_at_idx: index(
       '_pg_migrations_v_version_version_created_at_idx',
-    ).on(columns['version_createdAt']),
-    _pg_migrations_v_created_at_idx: index('_pg_migrations_v_created_at_idx').on(
-      columns['createdAt'],
-    ),
-    _pg_migrations_v_updated_at_idx: index('_pg_migrations_v_updated_at_idx').on(
-      columns['updatedAt'],
-    ),
+    ).on(columns.version_createdAt),
+    _pg_migrations_v_created_at_idx: index('_pg_migrations_v_created_at_idx').on(columns.createdAt),
+    _pg_migrations_v_updated_at_idx: index('_pg_migrations_v_updated_at_idx').on(columns.updatedAt),
   }),
 )
 
@@ -474,14 +466,14 @@ export const _pg_migrations_v_locales = sqliteTable(
   (columns) => ({
     _pg_migrations_v_version_my_group_version_my_group_relation4_idx: index(
       '_pg_migrations_v_version_my_group_version_my_group_relation4_idx',
-    ).on(columns['version_myGroup_relation4'], columns['_locale']),
+    ).on(columns.version_myGroup_relation4, columns._locale),
     _localeParent: uniqueIndex('_pg_migrations_v_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_pg_migrations_v['id']],
+      foreignColumns: [_pg_migrations_v.id],
       name: '_pg_migrations_v_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -496,11 +488,11 @@ export const customs_customSelect = sqliteTable(
     id: integer('id').primaryKey(),
   },
   (columns) => ({
-    orderIdx: index('customs_customSelect_order_idx').on(columns['order']),
-    parentIdx: index('customs_customSelect_parent_idx').on(columns['parent']),
+    orderIdx: index('customs_customSelect_order_idx').on(columns.order),
+    parentIdx: index('customs_customSelect_parent_idx').on(columns.parent),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'customs_customSelect_parent_fk',
     }).onDelete('cascade'),
   }),
@@ -515,11 +507,11 @@ export const customArrays = sqliteTable(
     text: text('text'),
   },
   (columns) => ({
-    _orderIdx: index('customArrays_order_idx').on(columns['_order']),
-    _parentIDIdx: index('customArrays_parent_id_idx').on(columns['_parentID']),
+    _orderIdx: index('customArrays_order_idx').on(columns._order),
+    _parentIDIdx: index('customArrays_parent_id_idx').on(columns._parentID),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'customArrays_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -535,12 +527,12 @@ export const customArrays_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('customArrays_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [customArrays['id']],
+      foreignColumns: [customArrays.id],
       name: 'customArrays_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -557,12 +549,12 @@ export const customBlocks = sqliteTable(
     blockName: text('block_name'),
   },
   (columns) => ({
-    _orderIdx: index('customBlocks_order_idx').on(columns['_order']),
-    _parentIDIdx: index('customBlocks_parent_id_idx').on(columns['_parentID']),
-    _pathIdx: index('customBlocks_path_idx').on(columns['_path']),
+    _orderIdx: index('customBlocks_order_idx').on(columns._order),
+    _parentIDIdx: index('customBlocks_parent_id_idx').on(columns._parentID),
+    _pathIdx: index('customBlocks_path_idx').on(columns._path),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'customBlocks_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -578,12 +570,12 @@ export const customBlocks_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('customBlocks_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [customBlocks['id']],
+      foreignColumns: [customBlocks.id],
       name: 'customBlocks_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -604,9 +596,9 @@ export const customs = sqliteTable(
     _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
   },
   (columns) => ({
-    customs_updated_at_idx: index('customs_updated_at_idx').on(columns['updatedAt']),
-    customs_created_at_idx: index('customs_created_at_idx').on(columns['createdAt']),
-    customs__status_idx: index('customs__status_idx').on(columns['_status']),
+    customs_updated_at_idx: index('customs_updated_at_idx').on(columns.updatedAt),
+    customs_created_at_idx: index('customs_created_at_idx').on(columns.createdAt),
+    customs__status_idx: index('customs__status_idx').on(columns._status),
   }),
 )
 
@@ -620,12 +612,12 @@ export const customs_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('customs_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'customs_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -641,20 +633,20 @@ export const customs_rels = sqliteTable(
     'relation-aID': integer('relation_a_id'),
   },
   (columns) => ({
-    order: index('customs_rels_order_idx').on(columns['order']),
-    parentIdx: index('customs_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('customs_rels_path_idx').on(columns['path']),
+    order: index('customs_rels_order_idx').on(columns.order),
+    parentIdx: index('customs_rels_parent_idx').on(columns.parent),
+    pathIdx: index('customs_rels_path_idx').on(columns.path),
     customs_rels_relation_a_id_idx: index('customs_rels_relation_a_id_idx').on(
       columns['relation-aID'],
     ),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'customs_rels_parent_fk',
     }).onDelete('cascade'),
     'relation-aIdFk': foreignKey({
       columns: [columns['relation-aID']],
-      foreignColumns: [relation_a['id']],
+      foreignColumns: [relation_a.id],
       name: 'customs_rels_relation_a_fk',
     }).onDelete('cascade'),
   }),
@@ -669,11 +661,11 @@ export const __customs_v_version_customSelect_v = sqliteTable(
     id: integer('id').primaryKey(),
   },
   (columns) => ({
-    orderIdx: index('__customs_v_version_customSelect_v_order_idx').on(columns['order']),
-    parentIdx: index('__customs_v_version_customSelect_v_parent_idx').on(columns['parent']),
+    orderIdx: index('__customs_v_version_customSelect_v_order_idx').on(columns.order),
+    parentIdx: index('__customs_v_version_customSelect_v_parent_idx').on(columns.parent),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [_customs_v['id']],
+      foreignColumns: [_customs_v.id],
       name: '__customs_v_version_customSelect_v_parent_fk',
     }).onDelete('cascade'),
   }),
@@ -689,11 +681,11 @@ export const _customArrays_v = sqliteTable(
     _uuid: text('_uuid'),
   },
   (columns) => ({
-    _orderIdx: index('_customArrays_v_order_idx').on(columns['_order']),
-    _parentIDIdx: index('_customArrays_v_parent_id_idx').on(columns['_parentID']),
+    _orderIdx: index('_customArrays_v_order_idx').on(columns._order),
+    _parentIDIdx: index('_customArrays_v_parent_id_idx').on(columns._parentID),
     _parentIDFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_customs_v['id']],
+      foreignColumns: [_customs_v.id],
       name: '_customArrays_v_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -709,12 +701,12 @@ export const _customArrays_v_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('_customArrays_v_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_customArrays_v['id']],
+      foreignColumns: [_customArrays_v.id],
       name: '_customArrays_v_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -732,12 +724,12 @@ export const _customBlocks_v = sqliteTable(
     blockName: text('block_name'),
   },
   (columns) => ({
-    _orderIdx: index('_customBlocks_v_order_idx').on(columns['_order']),
-    _parentIDIdx: index('_customBlocks_v_parent_id_idx').on(columns['_parentID']),
-    _pathIdx: index('_customBlocks_v_path_idx').on(columns['_path']),
+    _orderIdx: index('_customBlocks_v_order_idx').on(columns._order),
+    _parentIDIdx: index('_customBlocks_v_parent_id_idx').on(columns._parentID),
+    _pathIdx: index('_customBlocks_v_path_idx').on(columns._path),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_customs_v['id']],
+      foreignColumns: [_customs_v.id],
       name: '_customBlocks_v_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -753,12 +745,12 @@ export const _customBlocks_v_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('_customBlocks_v_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_customBlocks_v['id']],
+      foreignColumns: [_customBlocks_v.id],
       name: '_customBlocks_v_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -791,23 +783,23 @@ export const _customs_v = sqliteTable(
     latest: integer('latest', { mode: 'boolean' }),
   },
   (columns) => ({
-    _customs_v_parent_idx: index('_customs_v_parent_idx').on(columns['parent']),
+    _customs_v_parent_idx: index('_customs_v_parent_idx').on(columns.parent),
     _customs_v_version_version_updated_at_idx: index(
       '_customs_v_version_version_updated_at_idx',
-    ).on(columns['version_updatedAt']),
+    ).on(columns.version_updatedAt),
     _customs_v_version_version_created_at_idx: index(
       '_customs_v_version_version_created_at_idx',
-    ).on(columns['version_createdAt']),
+    ).on(columns.version_createdAt),
     _customs_v_version_version__status_idx: index('_customs_v_version_version__status_idx').on(
-      columns['version__status'],
+      columns.version__status,
     ),
-    _customs_v_created_at_idx: index('_customs_v_created_at_idx').on(columns['createdAt']),
-    _customs_v_updated_at_idx: index('_customs_v_updated_at_idx').on(columns['updatedAt']),
-    _customs_v_snapshot_idx: index('_customs_v_snapshot_idx').on(columns['snapshot']),
+    _customs_v_created_at_idx: index('_customs_v_created_at_idx').on(columns.createdAt),
+    _customs_v_updated_at_idx: index('_customs_v_updated_at_idx').on(columns.updatedAt),
+    _customs_v_snapshot_idx: index('_customs_v_snapshot_idx').on(columns.snapshot),
     _customs_v_published_locale_idx: index('_customs_v_published_locale_idx').on(
-      columns['publishedLocale'],
+      columns.publishedLocale,
     ),
-    _customs_v_latest_idx: index('_customs_v_latest_idx').on(columns['latest']),
+    _customs_v_latest_idx: index('_customs_v_latest_idx').on(columns.latest),
   }),
 )
 
@@ -821,12 +813,12 @@ export const _customs_v_locales = sqliteTable(
   },
   (columns) => ({
     _localeParent: uniqueIndex('_customs_v_locales_locale_parent_id_unique').on(
-      columns['_locale'],
-      columns['_parentID'],
+      columns._locale,
+      columns._parentID,
     ),
     _parentIdFk: foreignKey({
       columns: [columns['_parentID']],
-      foreignColumns: [_customs_v['id']],
+      foreignColumns: [_customs_v.id],
       name: '_customs_v_locales_parent_id_fk',
     }).onDelete('cascade'),
   }),
@@ -842,20 +834,20 @@ export const _customs_v_rels = sqliteTable(
     'relation-aID': integer('relation_a_id'),
   },
   (columns) => ({
-    order: index('_customs_v_rels_order_idx').on(columns['order']),
-    parentIdx: index('_customs_v_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('_customs_v_rels_path_idx').on(columns['path']),
+    order: index('_customs_v_rels_order_idx').on(columns.order),
+    parentIdx: index('_customs_v_rels_parent_idx').on(columns.parent),
+    pathIdx: index('_customs_v_rels_path_idx').on(columns.path),
     _customs_v_rels_relation_a_id_idx: index('_customs_v_rels_relation_a_id_idx').on(
       columns['relation-aID'],
     ),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [_customs_v['id']],
+      foreignColumns: [_customs_v.id],
       name: '_customs_v_rels_parent_fk',
     }).onDelete('cascade'),
     'relation-aIdFk': foreignKey({
       columns: [columns['relation-aID']],
-      foreignColumns: [relation_a['id']],
+      foreignColumns: [relation_a.id],
       name: '_customs_v_rels_relation_a_fk',
     }).onDelete('cascade'),
   }),
@@ -875,8 +867,8 @@ export const places = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    places_updated_at_idx: index('places_updated_at_idx').on(columns['updatedAt']),
-    places_created_at_idx: index('places_created_at_idx').on(columns['createdAt']),
+    places_updated_at_idx: index('places_updated_at_idx').on(columns.updatedAt),
+    places_created_at_idx: index('places_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -893,10 +885,10 @@ export const fields_persistance = sqliteTable(
   },
   (columns) => ({
     fields_persistance_updated_at_idx: index('fields_persistance_updated_at_idx').on(
-      columns['updatedAt'],
+      columns.updatedAt,
     ),
     fields_persistance_created_at_idx: index('fields_persistance_created_at_idx').on(
-      columns['createdAt'],
+      columns.createdAt,
     ),
   }),
 )
@@ -915,9 +907,9 @@ export const custom_ids = sqliteTable(
     _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
   },
   (columns) => ({
-    custom_ids_updated_at_idx: index('custom_ids_updated_at_idx').on(columns['updatedAt']),
-    custom_ids_created_at_idx: index('custom_ids_created_at_idx').on(columns['createdAt']),
-    custom_ids__status_idx: index('custom_ids__status_idx').on(columns['_status']),
+    custom_ids_updated_at_idx: index('custom_ids_updated_at_idx').on(columns.updatedAt),
+    custom_ids_created_at_idx: index('custom_ids_created_at_idx').on(columns.createdAt),
+    custom_ids__status_idx: index('custom_ids__status_idx').on(columns._status),
   }),
 )
 
@@ -947,23 +939,23 @@ export const _custom_ids_v = sqliteTable(
     latest: integer('latest', { mode: 'boolean' }),
   },
   (columns) => ({
-    _custom_ids_v_parent_idx: index('_custom_ids_v_parent_idx').on(columns['parent']),
+    _custom_ids_v_parent_idx: index('_custom_ids_v_parent_idx').on(columns.parent),
     _custom_ids_v_version_version_updated_at_idx: index(
       '_custom_ids_v_version_version_updated_at_idx',
-    ).on(columns['version_updatedAt']),
+    ).on(columns.version_updatedAt),
     _custom_ids_v_version_version_created_at_idx: index(
       '_custom_ids_v_version_version_created_at_idx',
-    ).on(columns['version_createdAt']),
+    ).on(columns.version_createdAt),
     _custom_ids_v_version_version__status_idx: index(
       '_custom_ids_v_version_version__status_idx',
-    ).on(columns['version__status']),
-    _custom_ids_v_created_at_idx: index('_custom_ids_v_created_at_idx').on(columns['createdAt']),
-    _custom_ids_v_updated_at_idx: index('_custom_ids_v_updated_at_idx').on(columns['updatedAt']),
-    _custom_ids_v_snapshot_idx: index('_custom_ids_v_snapshot_idx').on(columns['snapshot']),
+    ).on(columns.version__status),
+    _custom_ids_v_created_at_idx: index('_custom_ids_v_created_at_idx').on(columns.createdAt),
+    _custom_ids_v_updated_at_idx: index('_custom_ids_v_updated_at_idx').on(columns.updatedAt),
+    _custom_ids_v_snapshot_idx: index('_custom_ids_v_snapshot_idx').on(columns.snapshot),
     _custom_ids_v_published_locale_idx: index('_custom_ids_v_published_locale_idx').on(
-      columns['publishedLocale'],
+      columns.publishedLocale,
     ),
-    _custom_ids_v_latest_idx: index('_custom_ids_v_latest_idx').on(columns['latest']),
+    _custom_ids_v_latest_idx: index('_custom_ids_v_latest_idx').on(columns.latest),
   }),
 )
 
@@ -980,12 +972,8 @@ export const fake_custom_ids = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    fake_custom_ids_updated_at_idx: index('fake_custom_ids_updated_at_idx').on(
-      columns['updatedAt'],
-    ),
-    fake_custom_ids_created_at_idx: index('fake_custom_ids_created_at_idx').on(
-      columns['createdAt'],
-    ),
+    fake_custom_ids_updated_at_idx: index('fake_custom_ids_updated_at_idx').on(columns.updatedAt),
+    fake_custom_ids_created_at_idx: index('fake_custom_ids_created_at_idx').on(columns.createdAt),
   }),
 )
 
@@ -1005,13 +993,13 @@ export const relationships_migration = sqliteTable(
   },
   (columns) => ({
     relationships_migration_relationship_idx: index('relationships_migration_relationship_idx').on(
-      columns['relationship'],
+      columns.relationship,
     ),
     relationships_migration_updated_at_idx: index('relationships_migration_updated_at_idx').on(
-      columns['updatedAt'],
+      columns.updatedAt,
     ),
     relationships_migration_created_at_idx: index('relationships_migration_created_at_idx').on(
-      columns['createdAt'],
+      columns.createdAt,
     ),
   }),
 )
@@ -1026,20 +1014,20 @@ export const relationships_migration_rels = sqliteTable(
     'default-valuesID': integer('default_values_id'),
   },
   (columns) => ({
-    order: index('relationships_migration_rels_order_idx').on(columns['order']),
-    parentIdx: index('relationships_migration_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('relationships_migration_rels_path_idx').on(columns['path']),
+    order: index('relationships_migration_rels_order_idx').on(columns.order),
+    parentIdx: index('relationships_migration_rels_parent_idx').on(columns.parent),
+    pathIdx: index('relationships_migration_rels_path_idx').on(columns.path),
     relationships_migration_rels_default_values_id_idx: index(
       'relationships_migration_rels_default_values_id_idx',
     ).on(columns['default-valuesID']),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [relationships_migration['id']],
+      foreignColumns: [relationships_migration.id],
       name: 'relationships_migration_rels_parent_fk',
     }).onDelete('cascade'),
     'default-valuesIdFk': foreignKey({
       columns: [columns['default-valuesID']],
-      foreignColumns: [default_values['id']],
+      foreignColumns: [default_values.id],
       name: 'relationships_migration_rels_default_values_fk',
     }).onDelete('cascade'),
   }),
@@ -1070,23 +1058,23 @@ export const _relationships_migration_v = sqliteTable(
   },
   (columns) => ({
     _relationships_migration_v_parent_idx: index('_relationships_migration_v_parent_idx').on(
-      columns['parent'],
+      columns.parent,
     ),
     _relationships_migration_v_version_version_relationship_idx: index(
       '_relationships_migration_v_version_version_relationship_idx',
-    ).on(columns['version_relationship']),
+    ).on(columns.version_relationship),
     _relationships_migration_v_version_version_updated_at_idx: index(
       '_relationships_migration_v_version_version_updated_at_idx',
-    ).on(columns['version_updatedAt']),
+    ).on(columns.version_updatedAt),
     _relationships_migration_v_version_version_created_at_idx: index(
       '_relationships_migration_v_version_version_created_at_idx',
-    ).on(columns['version_createdAt']),
+    ).on(columns.version_createdAt),
     _relationships_migration_v_created_at_idx: index(
       '_relationships_migration_v_created_at_idx',
-    ).on(columns['createdAt']),
+    ).on(columns.createdAt),
     _relationships_migration_v_updated_at_idx: index(
       '_relationships_migration_v_updated_at_idx',
-    ).on(columns['updatedAt']),
+    ).on(columns.updatedAt),
   }),
 )
 
@@ -1100,20 +1088,20 @@ export const _relationships_migration_v_rels = sqliteTable(
     'default-valuesID': integer('default_values_id'),
   },
   (columns) => ({
-    order: index('_relationships_migration_v_rels_order_idx').on(columns['order']),
-    parentIdx: index('_relationships_migration_v_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('_relationships_migration_v_rels_path_idx').on(columns['path']),
+    order: index('_relationships_migration_v_rels_order_idx').on(columns.order),
+    parentIdx: index('_relationships_migration_v_rels_parent_idx').on(columns.parent),
+    pathIdx: index('_relationships_migration_v_rels_path_idx').on(columns.path),
     _relationships_migration_v_rels_default_values_id_idx: index(
       '_relationships_migration_v_rels_default_values_id_idx',
     ).on(columns['default-valuesID']),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [_relationships_migration_v['id']],
+      foreignColumns: [_relationships_migration_v.id],
       name: '_relationships_migration_v_rels_parent_fk',
     }).onDelete('cascade'),
     'default-valuesIdFk': foreignKey({
       columns: [columns['default-valuesID']],
-      foreignColumns: [default_values['id']],
+      foreignColumns: [default_values.id],
       name: '_relationships_migration_v_rels_default_values_fk',
     }).onDelete('cascade'),
   }),
@@ -1140,9 +1128,9 @@ export const users = sqliteTable(
     lockUntil: text('lock_until').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    users_updated_at_idx: index('users_updated_at_idx').on(columns['updatedAt']),
-    users_created_at_idx: index('users_created_at_idx').on(columns['createdAt']),
-    users_email_idx: uniqueIndex('users_email_idx').on(columns['email']),
+    users_updated_at_idx: index('users_updated_at_idx').on(columns.updatedAt),
+    users_created_at_idx: index('users_created_at_idx').on(columns.createdAt),
+    users_email_idx: uniqueIndex('users_email_idx').on(columns.email),
   }),
 )
 
@@ -1160,13 +1148,13 @@ export const payload_locked_documents = sqliteTable(
   },
   (columns) => ({
     payload_locked_documents_global_slug_idx: index('payload_locked_documents_global_slug_idx').on(
-      columns['globalSlug'],
+      columns.globalSlug,
     ),
     payload_locked_documents_updated_at_idx: index('payload_locked_documents_updated_at_idx').on(
-      columns['updatedAt'],
+      columns.updatedAt,
     ),
     payload_locked_documents_created_at_idx: index('payload_locked_documents_created_at_idx').on(
-      columns['createdAt'],
+      columns.createdAt,
     ),
   }),
 )
@@ -1192,12 +1180,12 @@ export const payload_locked_documents_rels = sqliteTable(
     usersID: integer('users_id'),
   },
   (columns) => ({
-    order: index('payload_locked_documents_rels_order_idx').on(columns['order']),
-    parentIdx: index('payload_locked_documents_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('payload_locked_documents_rels_path_idx').on(columns['path']),
+    order: index('payload_locked_documents_rels_order_idx').on(columns.order),
+    parentIdx: index('payload_locked_documents_rels_parent_idx').on(columns.parent),
+    pathIdx: index('payload_locked_documents_rels_path_idx').on(columns.path),
     payload_locked_documents_rels_posts_id_idx: index(
       'payload_locked_documents_rels_posts_id_idx',
-    ).on(columns['postsID']),
+    ).on(columns.postsID),
     payload_locked_documents_rels_default_values_id_idx: index(
       'payload_locked_documents_rels_default_values_id_idx',
     ).on(columns['default-valuesID']),
@@ -1215,7 +1203,7 @@ export const payload_locked_documents_rels = sqliteTable(
     ).on(columns['custom-schemaID']),
     payload_locked_documents_rels_places_id_idx: index(
       'payload_locked_documents_rels_places_id_idx',
-    ).on(columns['placesID']),
+    ).on(columns.placesID),
     payload_locked_documents_rels_fields_persistance_id_idx: index(
       'payload_locked_documents_rels_fields_persistance_id_idx',
     ).on(columns['fields-persistanceID']),
@@ -1230,70 +1218,70 @@ export const payload_locked_documents_rels = sqliteTable(
     ).on(columns['relationships-migrationID']),
     payload_locked_documents_rels_users_id_idx: index(
       'payload_locked_documents_rels_users_id_idx',
-    ).on(columns['usersID']),
+    ).on(columns.usersID),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [payload_locked_documents['id']],
+      foreignColumns: [payload_locked_documents.id],
       name: 'payload_locked_documents_rels_parent_fk',
     }).onDelete('cascade'),
     postsIdFk: foreignKey({
       columns: [columns['postsID']],
-      foreignColumns: [posts['id']],
+      foreignColumns: [posts.id],
       name: 'payload_locked_documents_rels_posts_fk',
     }).onDelete('cascade'),
     'default-valuesIdFk': foreignKey({
       columns: [columns['default-valuesID']],
-      foreignColumns: [default_values['id']],
+      foreignColumns: [default_values.id],
       name: 'payload_locked_documents_rels_default_values_fk',
     }).onDelete('cascade'),
     'relation-aIdFk': foreignKey({
       columns: [columns['relation-aID']],
-      foreignColumns: [relation_a['id']],
+      foreignColumns: [relation_a.id],
       name: 'payload_locked_documents_rels_relation_a_fk',
     }).onDelete('cascade'),
     'relation-bIdFk': foreignKey({
       columns: [columns['relation-bID']],
-      foreignColumns: [relation_b['id']],
+      foreignColumns: [relation_b.id],
       name: 'payload_locked_documents_rels_relation_b_fk',
     }).onDelete('cascade'),
     'pg-migrationsIdFk': foreignKey({
       columns: [columns['pg-migrationsID']],
-      foreignColumns: [pg_migrations['id']],
+      foreignColumns: [pg_migrations.id],
       name: 'payload_locked_documents_rels_pg_migrations_fk',
     }).onDelete('cascade'),
     'custom-schemaIdFk': foreignKey({
       columns: [columns['custom-schemaID']],
-      foreignColumns: [customs['id']],
+      foreignColumns: [customs.id],
       name: 'payload_locked_documents_rels_custom_schema_fk',
     }).onDelete('cascade'),
     placesIdFk: foreignKey({
       columns: [columns['placesID']],
-      foreignColumns: [places['id']],
+      foreignColumns: [places.id],
       name: 'payload_locked_documents_rels_places_fk',
     }).onDelete('cascade'),
     'fields-persistanceIdFk': foreignKey({
       columns: [columns['fields-persistanceID']],
-      foreignColumns: [fields_persistance['id']],
+      foreignColumns: [fields_persistance.id],
       name: 'payload_locked_documents_rels_fields_persistance_fk',
     }).onDelete('cascade'),
     'custom-idsIdFk': foreignKey({
       columns: [columns['custom-idsID']],
-      foreignColumns: [custom_ids['id']],
+      foreignColumns: [custom_ids.id],
       name: 'payload_locked_documents_rels_custom_ids_fk',
     }).onDelete('cascade'),
     'fake-custom-idsIdFk': foreignKey({
       columns: [columns['fake-custom-idsID']],
-      foreignColumns: [fake_custom_ids['id']],
+      foreignColumns: [fake_custom_ids.id],
       name: 'payload_locked_documents_rels_fake_custom_ids_fk',
     }).onDelete('cascade'),
     'relationships-migrationIdFk': foreignKey({
       columns: [columns['relationships-migrationID']],
-      foreignColumns: [relationships_migration['id']],
+      foreignColumns: [relationships_migration.id],
       name: 'payload_locked_documents_rels_relationships_migration_fk',
     }).onDelete('cascade'),
     usersIdFk: foreignKey({
       columns: [columns['usersID']],
-      foreignColumns: [users['id']],
+      foreignColumns: [users.id],
       name: 'payload_locked_documents_rels_users_fk',
     }).onDelete('cascade'),
   }),
@@ -1313,12 +1301,12 @@ export const payload_preferences = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    payload_preferences_key_idx: index('payload_preferences_key_idx').on(columns['key']),
+    payload_preferences_key_idx: index('payload_preferences_key_idx').on(columns.key),
     payload_preferences_updated_at_idx: index('payload_preferences_updated_at_idx').on(
-      columns['updatedAt'],
+      columns.updatedAt,
     ),
     payload_preferences_created_at_idx: index('payload_preferences_created_at_idx').on(
-      columns['createdAt'],
+      columns.createdAt,
     ),
   }),
 )
@@ -1333,20 +1321,20 @@ export const payload_preferences_rels = sqliteTable(
     usersID: integer('users_id'),
   },
   (columns) => ({
-    order: index('payload_preferences_rels_order_idx').on(columns['order']),
-    parentIdx: index('payload_preferences_rels_parent_idx').on(columns['parent']),
-    pathIdx: index('payload_preferences_rels_path_idx').on(columns['path']),
+    order: index('payload_preferences_rels_order_idx').on(columns.order),
+    parentIdx: index('payload_preferences_rels_parent_idx').on(columns.parent),
+    pathIdx: index('payload_preferences_rels_path_idx').on(columns.path),
     payload_preferences_rels_users_id_idx: index('payload_preferences_rels_users_id_idx').on(
-      columns['usersID'],
+      columns.usersID,
     ),
     parentFk: foreignKey({
       columns: [columns['parent']],
-      foreignColumns: [payload_preferences['id']],
+      foreignColumns: [payload_preferences.id],
       name: 'payload_preferences_rels_parent_fk',
     }).onDelete('cascade'),
     usersIdFk: foreignKey({
       columns: [columns['usersID']],
-      foreignColumns: [users['id']],
+      foreignColumns: [users.id],
       name: 'payload_preferences_rels_users_fk',
     }).onDelete('cascade'),
   }),
@@ -1367,10 +1355,10 @@ export const payload_migrations = sqliteTable(
   },
   (columns) => ({
     payload_migrations_updated_at_idx: index('payload_migrations_updated_at_idx').on(
-      columns['updatedAt'],
+      columns.updatedAt,
     ),
     payload_migrations_created_at_idx: index('payload_migrations_created_at_idx').on(
-      columns['createdAt'],
+      columns.createdAt,
     ),
   }),
 )
@@ -1401,20 +1389,16 @@ export const _customGlobal_v = sqliteTable(
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
-    _customGlobal_v_created_at_idx: index('_customGlobal_v_created_at_idx').on(
-      columns['createdAt'],
-    ),
-    _customGlobal_v_updated_at_idx: index('_customGlobal_v_updated_at_idx').on(
-      columns['updatedAt'],
-    ),
+    _customGlobal_v_created_at_idx: index('_customGlobal_v_created_at_idx').on(columns.createdAt),
+    _customGlobal_v_updated_at_idx: index('_customGlobal_v_updated_at_idx').on(columns.updatedAt),
   }),
 )
 
 export const relations_posts = relations(posts, () => ({}))
 export const relations_default_values_array = relations(default_values_array, ({ one }) => ({
   _parentID: one(default_values, {
-    fields: [default_values_array['_parentID']],
-    references: [default_values['id']],
+    fields: [default_values_array._parentID],
+    references: [default_values.id],
     relationName: 'array',
   }),
 }))
@@ -1426,8 +1410,8 @@ export const relations_default_values = relations(default_values, ({ many }) => 
 export const relations_relation_a = relations(relation_a, () => ({}))
 export const relations_relation_b = relations(relation_b, ({ one }) => ({
   relationship: one(relation_a, {
-    fields: [relation_b['relationship']],
-    references: [relation_a['id']],
+    fields: [relation_b.relationship],
+    references: [relation_a.id],
     relationName: 'relationship',
   }),
 }))
@@ -1435,13 +1419,13 @@ export const relations_pg_migrations_my_array_my_sub_array_locales = relations(
   pg_migrations_my_array_my_sub_array_locales,
   ({ one }) => ({
     _parentID: one(pg_migrations_my_array_my_sub_array, {
-      fields: [pg_migrations_my_array_my_sub_array_locales['_parentID']],
-      references: [pg_migrations_my_array_my_sub_array['id']],
+      fields: [pg_migrations_my_array_my_sub_array_locales._parentID],
+      references: [pg_migrations_my_array_my_sub_array.id],
       relationName: '_locales',
     }),
     relation3: one(relation_b, {
-      fields: [pg_migrations_my_array_my_sub_array_locales['relation3']],
-      references: [relation_b['id']],
+      fields: [pg_migrations_my_array_my_sub_array_locales.relation3],
+      references: [relation_b.id],
       relationName: 'relation3',
     }),
   }),
@@ -1450,8 +1434,8 @@ export const relations_pg_migrations_my_array_my_sub_array = relations(
   pg_migrations_my_array_my_sub_array,
   ({ one, many }) => ({
     _parentID: one(pg_migrations_my_array, {
-      fields: [pg_migrations_my_array_my_sub_array['_parentID']],
-      references: [pg_migrations_my_array['id']],
+      fields: [pg_migrations_my_array_my_sub_array._parentID],
+      references: [pg_migrations_my_array.id],
       relationName: 'mySubArray',
     }),
     _locales: many(pg_migrations_my_array_my_sub_array_locales, {
@@ -1459,8 +1443,8 @@ export const relations_pg_migrations_my_array_my_sub_array = relations(
     }),
     relation3: one(relation_b, {
       // @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table
-      fields: [pg_migrations_my_array_my_sub_array_locales['relation3']],
-      references: [relation_b['id']],
+      fields: [pg_migrations_my_array_my_sub_array_locales.relation3],
+      references: [relation_b.id],
       relationName: 'relation3',
     }),
   }),
@@ -1469,13 +1453,13 @@ export const relations_pg_migrations_my_array = relations(
   pg_migrations_my_array,
   ({ one, many }) => ({
     _parentID: one(pg_migrations, {
-      fields: [pg_migrations_my_array['_parentID']],
-      references: [pg_migrations['id']],
+      fields: [pg_migrations_my_array._parentID],
+      references: [pg_migrations.id],
       relationName: 'myArray',
     }),
     relation2: one(relation_b, {
-      fields: [pg_migrations_my_array['relation2']],
-      references: [relation_b['id']],
+      fields: [pg_migrations_my_array.relation2],
+      references: [relation_b.id],
       relationName: 'relation2',
     }),
     mySubArray: many(pg_migrations_my_array_my_sub_array, {
@@ -1487,13 +1471,13 @@ export const relations_pg_migrations_blocks_my_block_locales = relations(
   pg_migrations_blocks_my_block_locales,
   ({ one }) => ({
     _parentID: one(pg_migrations_blocks_my_block, {
-      fields: [pg_migrations_blocks_my_block_locales['_parentID']],
-      references: [pg_migrations_blocks_my_block['id']],
+      fields: [pg_migrations_blocks_my_block_locales._parentID],
+      references: [pg_migrations_blocks_my_block.id],
       relationName: '_locales',
     }),
     relation6: one(relation_b, {
-      fields: [pg_migrations_blocks_my_block_locales['relation6']],
-      references: [relation_b['id']],
+      fields: [pg_migrations_blocks_my_block_locales.relation6],
+      references: [relation_b.id],
       relationName: 'relation6',
     }),
   }),
@@ -1502,42 +1486,42 @@ export const relations_pg_migrations_blocks_my_block = relations(
   pg_migrations_blocks_my_block,
   ({ one, many }) => ({
     _parentID: one(pg_migrations, {
-      fields: [pg_migrations_blocks_my_block['_parentID']],
-      references: [pg_migrations['id']],
+      fields: [pg_migrations_blocks_my_block._parentID],
+      references: [pg_migrations.id],
       relationName: '_blocks_myBlock',
     }),
     _locales: many(pg_migrations_blocks_my_block_locales, {
       relationName: '_locales',
     }),
     relation5: one(relation_a, {
-      fields: [pg_migrations_blocks_my_block['relation5']],
-      references: [relation_a['id']],
+      fields: [pg_migrations_blocks_my_block.relation5],
+      references: [relation_a.id],
       relationName: 'relation5',
     }),
     relation6: one(relation_b, {
       // @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table
-      fields: [pg_migrations_blocks_my_block_locales['relation6']],
-      references: [relation_b['id']],
+      fields: [pg_migrations_blocks_my_block_locales.relation6],
+      references: [relation_b.id],
       relationName: 'relation6',
     }),
   }),
 )
 export const relations_pg_migrations_locales = relations(pg_migrations_locales, ({ one }) => ({
   _parentID: one(pg_migrations, {
-    fields: [pg_migrations_locales['_parentID']],
-    references: [pg_migrations['id']],
+    fields: [pg_migrations_locales._parentID],
+    references: [pg_migrations.id],
     relationName: '_locales',
   }),
   myGroup_relation4: one(relation_b, {
-    fields: [pg_migrations_locales['myGroup_relation4']],
-    references: [relation_b['id']],
+    fields: [pg_migrations_locales.myGroup_relation4],
+    references: [relation_b.id],
     relationName: 'myGroup_relation4',
   }),
 }))
 export const relations_pg_migrations = relations(pg_migrations, ({ one, many }) => ({
   relation1: one(relation_a, {
-    fields: [pg_migrations['relation1']],
-    references: [relation_a['id']],
+    fields: [pg_migrations.relation1],
+    references: [relation_a.id],
     relationName: 'relation1',
   }),
   myArray: many(pg_migrations_my_array, {
@@ -1554,13 +1538,13 @@ export const relations__pg_migrations_v_version_my_array_my_sub_array_locales = 
   _pg_migrations_v_version_my_array_my_sub_array_locales,
   ({ one }) => ({
     _parentID: one(_pg_migrations_v_version_my_array_my_sub_array, {
-      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales['_parentID']],
-      references: [_pg_migrations_v_version_my_array_my_sub_array['id']],
+      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales._parentID],
+      references: [_pg_migrations_v_version_my_array_my_sub_array.id],
       relationName: '_locales',
     }),
     relation3: one(relation_b, {
-      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales['relation3']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales.relation3],
+      references: [relation_b.id],
       relationName: 'relation3',
     }),
   }),
@@ -1569,8 +1553,8 @@ export const relations__pg_migrations_v_version_my_array_my_sub_array = relation
   _pg_migrations_v_version_my_array_my_sub_array,
   ({ one, many }) => ({
     _parentID: one(_pg_migrations_v_version_my_array, {
-      fields: [_pg_migrations_v_version_my_array_my_sub_array['_parentID']],
-      references: [_pg_migrations_v_version_my_array['id']],
+      fields: [_pg_migrations_v_version_my_array_my_sub_array._parentID],
+      references: [_pg_migrations_v_version_my_array.id],
       relationName: 'mySubArray',
     }),
     _locales: many(_pg_migrations_v_version_my_array_my_sub_array_locales, {
@@ -1578,8 +1562,8 @@ export const relations__pg_migrations_v_version_my_array_my_sub_array = relation
     }),
     relation3: one(relation_b, {
       // @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table
-      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales['relation3']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_version_my_array_my_sub_array_locales.relation3],
+      references: [relation_b.id],
       relationName: 'relation3',
     }),
   }),
@@ -1588,13 +1572,13 @@ export const relations__pg_migrations_v_version_my_array = relations(
   _pg_migrations_v_version_my_array,
   ({ one, many }) => ({
     _parentID: one(_pg_migrations_v, {
-      fields: [_pg_migrations_v_version_my_array['_parentID']],
-      references: [_pg_migrations_v['id']],
+      fields: [_pg_migrations_v_version_my_array._parentID],
+      references: [_pg_migrations_v.id],
       relationName: 'version_myArray',
     }),
     relation2: one(relation_b, {
-      fields: [_pg_migrations_v_version_my_array['relation2']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_version_my_array.relation2],
+      references: [relation_b.id],
       relationName: 'relation2',
     }),
     mySubArray: many(_pg_migrations_v_version_my_array_my_sub_array, {
@@ -1606,13 +1590,13 @@ export const relations__pg_migrations_v_blocks_my_block_locales = relations(
   _pg_migrations_v_blocks_my_block_locales,
   ({ one }) => ({
     _parentID: one(_pg_migrations_v_blocks_my_block, {
-      fields: [_pg_migrations_v_blocks_my_block_locales['_parentID']],
-      references: [_pg_migrations_v_blocks_my_block['id']],
+      fields: [_pg_migrations_v_blocks_my_block_locales._parentID],
+      references: [_pg_migrations_v_blocks_my_block.id],
       relationName: '_locales',
     }),
     relation6: one(relation_b, {
-      fields: [_pg_migrations_v_blocks_my_block_locales['relation6']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_blocks_my_block_locales.relation6],
+      references: [relation_b.id],
       relationName: 'relation6',
     }),
   }),
@@ -1621,22 +1605,22 @@ export const relations__pg_migrations_v_blocks_my_block = relations(
   _pg_migrations_v_blocks_my_block,
   ({ one, many }) => ({
     _parentID: one(_pg_migrations_v, {
-      fields: [_pg_migrations_v_blocks_my_block['_parentID']],
-      references: [_pg_migrations_v['id']],
+      fields: [_pg_migrations_v_blocks_my_block._parentID],
+      references: [_pg_migrations_v.id],
       relationName: '_blocks_myBlock',
     }),
     _locales: many(_pg_migrations_v_blocks_my_block_locales, {
       relationName: '_locales',
     }),
     relation5: one(relation_a, {
-      fields: [_pg_migrations_v_blocks_my_block['relation5']],
-      references: [relation_a['id']],
+      fields: [_pg_migrations_v_blocks_my_block.relation5],
+      references: [relation_a.id],
       relationName: 'relation5',
     }),
     relation6: one(relation_b, {
       // @ts-expect-error Drizzle TypeScript bug for ONE relationships with a field in different table
-      fields: [_pg_migrations_v_blocks_my_block_locales['relation6']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_blocks_my_block_locales.relation6],
+      references: [relation_b.id],
       relationName: 'relation6',
     }),
   }),
@@ -1645,26 +1629,26 @@ export const relations__pg_migrations_v_locales = relations(
   _pg_migrations_v_locales,
   ({ one }) => ({
     _parentID: one(_pg_migrations_v, {
-      fields: [_pg_migrations_v_locales['_parentID']],
-      references: [_pg_migrations_v['id']],
+      fields: [_pg_migrations_v_locales._parentID],
+      references: [_pg_migrations_v.id],
       relationName: '_locales',
     }),
     version_myGroup_relation4: one(relation_b, {
-      fields: [_pg_migrations_v_locales['version_myGroup_relation4']],
-      references: [relation_b['id']],
+      fields: [_pg_migrations_v_locales.version_myGroup_relation4],
+      references: [relation_b.id],
       relationName: 'version_myGroup_relation4',
     }),
   }),
 )
 export const relations__pg_migrations_v = relations(_pg_migrations_v, ({ one, many }) => ({
   parent: one(pg_migrations, {
-    fields: [_pg_migrations_v['parent']],
-    references: [pg_migrations['id']],
+    fields: [_pg_migrations_v.parent],
+    references: [pg_migrations.id],
     relationName: 'parent',
   }),
   version_relation1: one(relation_a, {
-    fields: [_pg_migrations_v['version_relation1']],
-    references: [relation_a['id']],
+    fields: [_pg_migrations_v.version_relation1],
+    references: [relation_a.id],
     relationName: 'version_relation1',
   }),
   version_myArray: many(_pg_migrations_v_version_my_array, {
@@ -1679,22 +1663,22 @@ export const relations__pg_migrations_v = relations(_pg_migrations_v, ({ one, ma
 }))
 export const relations_customs_customSelect = relations(customs_customSelect, ({ one }) => ({
   parent: one(customs, {
-    fields: [customs_customSelect['parent']],
-    references: [customs['id']],
+    fields: [customs_customSelect.parent],
+    references: [customs.id],
     relationName: 'select',
   }),
 }))
 export const relations_customArrays_locales = relations(customArrays_locales, ({ one }) => ({
   _parentID: one(customArrays, {
-    fields: [customArrays_locales['_parentID']],
-    references: [customArrays['id']],
+    fields: [customArrays_locales._parentID],
+    references: [customArrays.id],
     relationName: '_locales',
   }),
 }))
 export const relations_customArrays = relations(customArrays, ({ one, many }) => ({
   _parentID: one(customs, {
-    fields: [customArrays['_parentID']],
-    references: [customs['id']],
+    fields: [customArrays._parentID],
+    references: [customs.id],
     relationName: 'array',
   }),
   _locales: many(customArrays_locales, {
@@ -1703,15 +1687,15 @@ export const relations_customArrays = relations(customArrays, ({ one, many }) =>
 }))
 export const relations_customBlocks_locales = relations(customBlocks_locales, ({ one }) => ({
   _parentID: one(customBlocks, {
-    fields: [customBlocks_locales['_parentID']],
-    references: [customBlocks['id']],
+    fields: [customBlocks_locales._parentID],
+    references: [customBlocks.id],
     relationName: '_locales',
   }),
 }))
 export const relations_customBlocks = relations(customBlocks, ({ one, many }) => ({
   _parentID: one(customs, {
-    fields: [customBlocks['_parentID']],
-    references: [customs['id']],
+    fields: [customBlocks._parentID],
+    references: [customs.id],
     relationName: '_blocks_block',
   }),
   _locales: many(customBlocks_locales, {
@@ -1720,20 +1704,20 @@ export const relations_customBlocks = relations(customBlocks, ({ one, many }) =>
 }))
 export const relations_customs_locales = relations(customs_locales, ({ one }) => ({
   _parentID: one(customs, {
-    fields: [customs_locales['_parentID']],
-    references: [customs['id']],
+    fields: [customs_locales._parentID],
+    references: [customs.id],
     relationName: '_locales',
   }),
 }))
 export const relations_customs_rels = relations(customs_rels, ({ one }) => ({
   parent: one(customs, {
-    fields: [customs_rels['parent']],
-    references: [customs['id']],
+    fields: [customs_rels.parent],
+    references: [customs.id],
     relationName: '_rels',
   }),
   'relation-aID': one(relation_a, {
     fields: [customs_rels['relation-aID']],
-    references: [relation_a['id']],
+    references: [relation_a.id],
     relationName: 'relation-a',
   }),
 }))
@@ -1758,23 +1742,23 @@ export const relations___customs_v_version_customSelect_v = relations(
   __customs_v_version_customSelect_v,
   ({ one }) => ({
     parent: one(_customs_v, {
-      fields: [__customs_v_version_customSelect_v['parent']],
-      references: [_customs_v['id']],
+      fields: [__customs_v_version_customSelect_v.parent],
+      references: [_customs_v.id],
       relationName: 'version_select',
     }),
   }),
 )
 export const relations__customArrays_v_locales = relations(_customArrays_v_locales, ({ one }) => ({
   _parentID: one(_customArrays_v, {
-    fields: [_customArrays_v_locales['_parentID']],
-    references: [_customArrays_v['id']],
+    fields: [_customArrays_v_locales._parentID],
+    references: [_customArrays_v.id],
     relationName: '_locales',
   }),
 }))
 export const relations__customArrays_v = relations(_customArrays_v, ({ one, many }) => ({
   _parentID: one(_customs_v, {
-    fields: [_customArrays_v['_parentID']],
-    references: [_customs_v['id']],
+    fields: [_customArrays_v._parentID],
+    references: [_customs_v.id],
     relationName: 'version_array',
   }),
   _locales: many(_customArrays_v_locales, {
@@ -1783,15 +1767,15 @@ export const relations__customArrays_v = relations(_customArrays_v, ({ one, many
 }))
 export const relations__customBlocks_v_locales = relations(_customBlocks_v_locales, ({ one }) => ({
   _parentID: one(_customBlocks_v, {
-    fields: [_customBlocks_v_locales['_parentID']],
-    references: [_customBlocks_v['id']],
+    fields: [_customBlocks_v_locales._parentID],
+    references: [_customBlocks_v.id],
     relationName: '_locales',
   }),
 }))
 export const relations__customBlocks_v = relations(_customBlocks_v, ({ one, many }) => ({
   _parentID: one(_customs_v, {
-    fields: [_customBlocks_v['_parentID']],
-    references: [_customs_v['id']],
+    fields: [_customBlocks_v._parentID],
+    references: [_customs_v.id],
     relationName: '_blocks_block',
   }),
   _locales: many(_customBlocks_v_locales, {
@@ -1800,27 +1784,27 @@ export const relations__customBlocks_v = relations(_customBlocks_v, ({ one, many
 }))
 export const relations__customs_v_locales = relations(_customs_v_locales, ({ one }) => ({
   _parentID: one(_customs_v, {
-    fields: [_customs_v_locales['_parentID']],
-    references: [_customs_v['id']],
+    fields: [_customs_v_locales._parentID],
+    references: [_customs_v.id],
     relationName: '_locales',
   }),
 }))
 export const relations__customs_v_rels = relations(_customs_v_rels, ({ one }) => ({
   parent: one(_customs_v, {
-    fields: [_customs_v_rels['parent']],
-    references: [_customs_v['id']],
+    fields: [_customs_v_rels.parent],
+    references: [_customs_v.id],
     relationName: '_rels',
   }),
   'relation-aID': one(relation_a, {
     fields: [_customs_v_rels['relation-aID']],
-    references: [relation_a['id']],
+    references: [relation_a.id],
     relationName: 'relation-a',
   }),
 }))
 export const relations__customs_v = relations(_customs_v, ({ one, many }) => ({
   parent: one(customs, {
-    fields: [_customs_v['parent']],
-    references: [customs['id']],
+    fields: [_customs_v.parent],
+    references: [customs.id],
     relationName: 'parent',
   }),
   version_select: many(__customs_v_version_customSelect_v, {
@@ -1844,8 +1828,8 @@ export const relations_fields_persistance = relations(fields_persistance, () => 
 export const relations_custom_ids = relations(custom_ids, () => ({}))
 export const relations__custom_ids_v = relations(_custom_ids_v, ({ one }) => ({
   parent: one(custom_ids, {
-    fields: [_custom_ids_v['parent']],
-    references: [custom_ids['id']],
+    fields: [_custom_ids_v.parent],
+    references: [custom_ids.id],
     relationName: 'parent',
   }),
 }))
@@ -1854,13 +1838,13 @@ export const relations_relationships_migration_rels = relations(
   relationships_migration_rels,
   ({ one }) => ({
     parent: one(relationships_migration, {
-      fields: [relationships_migration_rels['parent']],
-      references: [relationships_migration['id']],
+      fields: [relationships_migration_rels.parent],
+      references: [relationships_migration.id],
       relationName: '_rels',
     }),
     'default-valuesID': one(default_values, {
       fields: [relationships_migration_rels['default-valuesID']],
-      references: [default_values['id']],
+      references: [default_values.id],
       relationName: 'default-values',
     }),
   }),
@@ -1869,8 +1853,8 @@ export const relations_relationships_migration = relations(
   relationships_migration,
   ({ one, many }) => ({
     relationship: one(default_values, {
-      fields: [relationships_migration['relationship']],
-      references: [default_values['id']],
+      fields: [relationships_migration.relationship],
+      references: [default_values.id],
       relationName: 'relationship',
     }),
     _rels: many(relationships_migration_rels, {
@@ -1882,13 +1866,13 @@ export const relations__relationships_migration_v_rels = relations(
   _relationships_migration_v_rels,
   ({ one }) => ({
     parent: one(_relationships_migration_v, {
-      fields: [_relationships_migration_v_rels['parent']],
-      references: [_relationships_migration_v['id']],
+      fields: [_relationships_migration_v_rels.parent],
+      references: [_relationships_migration_v.id],
       relationName: '_rels',
     }),
     'default-valuesID': one(default_values, {
       fields: [_relationships_migration_v_rels['default-valuesID']],
-      references: [default_values['id']],
+      references: [default_values.id],
       relationName: 'default-values',
     }),
   }),
@@ -1897,13 +1881,13 @@ export const relations__relationships_migration_v = relations(
   _relationships_migration_v,
   ({ one, many }) => ({
     parent: one(relationships_migration, {
-      fields: [_relationships_migration_v['parent']],
-      references: [relationships_migration['id']],
+      fields: [_relationships_migration_v.parent],
+      references: [relationships_migration.id],
       relationName: 'parent',
     }),
     version_relationship: one(default_values, {
-      fields: [_relationships_migration_v['version_relationship']],
-      references: [default_values['id']],
+      fields: [_relationships_migration_v.version_relationship],
+      references: [default_values.id],
       relationName: 'version_relationship',
     }),
     _rels: many(_relationships_migration_v_rels, {
@@ -1916,68 +1900,68 @@ export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
     parent: one(payload_locked_documents, {
-      fields: [payload_locked_documents_rels['parent']],
-      references: [payload_locked_documents['id']],
+      fields: [payload_locked_documents_rels.parent],
+      references: [payload_locked_documents.id],
       relationName: '_rels',
     }),
     postsID: one(posts, {
-      fields: [payload_locked_documents_rels['postsID']],
-      references: [posts['id']],
+      fields: [payload_locked_documents_rels.postsID],
+      references: [posts.id],
       relationName: 'posts',
     }),
     'default-valuesID': one(default_values, {
       fields: [payload_locked_documents_rels['default-valuesID']],
-      references: [default_values['id']],
+      references: [default_values.id],
       relationName: 'default-values',
     }),
     'relation-aID': one(relation_a, {
       fields: [payload_locked_documents_rels['relation-aID']],
-      references: [relation_a['id']],
+      references: [relation_a.id],
       relationName: 'relation-a',
     }),
     'relation-bID': one(relation_b, {
       fields: [payload_locked_documents_rels['relation-bID']],
-      references: [relation_b['id']],
+      references: [relation_b.id],
       relationName: 'relation-b',
     }),
     'pg-migrationsID': one(pg_migrations, {
       fields: [payload_locked_documents_rels['pg-migrationsID']],
-      references: [pg_migrations['id']],
+      references: [pg_migrations.id],
       relationName: 'pg-migrations',
     }),
     'custom-schemaID': one(customs, {
       fields: [payload_locked_documents_rels['custom-schemaID']],
-      references: [customs['id']],
+      references: [customs.id],
       relationName: 'custom-schema',
     }),
     placesID: one(places, {
-      fields: [payload_locked_documents_rels['placesID']],
-      references: [places['id']],
+      fields: [payload_locked_documents_rels.placesID],
+      references: [places.id],
       relationName: 'places',
     }),
     'fields-persistanceID': one(fields_persistance, {
       fields: [payload_locked_documents_rels['fields-persistanceID']],
-      references: [fields_persistance['id']],
+      references: [fields_persistance.id],
       relationName: 'fields-persistance',
     }),
     'custom-idsID': one(custom_ids, {
       fields: [payload_locked_documents_rels['custom-idsID']],
-      references: [custom_ids['id']],
+      references: [custom_ids.id],
       relationName: 'custom-ids',
     }),
     'fake-custom-idsID': one(fake_custom_ids, {
       fields: [payload_locked_documents_rels['fake-custom-idsID']],
-      references: [fake_custom_ids['id']],
+      references: [fake_custom_ids.id],
       relationName: 'fake-custom-ids',
     }),
     'relationships-migrationID': one(relationships_migration, {
       fields: [payload_locked_documents_rels['relationships-migrationID']],
-      references: [relationships_migration['id']],
+      references: [relationships_migration.id],
       relationName: 'relationships-migration',
     }),
     usersID: one(users, {
-      fields: [payload_locked_documents_rels['usersID']],
-      references: [users['id']],
+      fields: [payload_locked_documents_rels.usersID],
+      references: [users.id],
       relationName: 'users',
     }),
   }),
@@ -1994,13 +1978,13 @@ export const relations_payload_preferences_rels = relations(
   payload_preferences_rels,
   ({ one }) => ({
     parent: one(payload_preferences, {
-      fields: [payload_preferences_rels['parent']],
-      references: [payload_preferences['id']],
+      fields: [payload_preferences_rels.parent],
+      references: [payload_preferences.id],
       relationName: '_rels',
     }),
     usersID: one(users, {
-      fields: [payload_preferences_rels['usersID']],
-      references: [users['id']],
+      fields: [payload_preferences_rels.usersID],
+      references: [users.id],
       relationName: 'users',
     }),
   }),
