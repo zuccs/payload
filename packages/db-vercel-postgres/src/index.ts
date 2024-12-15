@@ -37,6 +37,7 @@ import {
   updateVersion,
 } from '@payloadcms/drizzle'
 import {
+  columnToCodeConverter,
   countDistinct,
   createDatabase,
   createExtensions,
@@ -101,7 +102,12 @@ export function vercelPostgresAdapter(args: Args = {}): DatabaseAdapterObj<Verce
       },
       fieldConstraints: {},
       generateSchema: createSchemaGenerator({
+        columnToCodeConverter,
+        corePackageSuffix: 'pg-core',
         defaultOutputFile: args.generateSchemaOutputFile,
+        enumImport: 'pgEnum',
+        schemaImport: 'pgSchema',
+        tableImport: 'pgTable',
       }),
       idType: postgresIDType,
       indexes: new Set<string>(),

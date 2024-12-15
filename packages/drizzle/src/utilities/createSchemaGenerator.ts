@@ -6,7 +6,7 @@ import { writeFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
 
-import type { DrizzleAdapter, RawColumn } from '../types.js'
+import type { ColumnToCodeConverter, DrizzleAdapter } from '../types.js'
 
 const execAsync = promisify(exec)
 
@@ -27,99 +27,20 @@ const sanitizeObjectKey = (key: string) => {
   return `'${key}'`
 }
 
-const columnConverter = ({
-  adapter,
-  addEnum,
-  addImport,
-  column,
-}: {
-  adapter: DrizzleAdapter
-  addEnum: (name: string, options: string[]) => void
-  addImport: (from: string, name: string) => void
-  column: RawColumn
-}) => {
-  let columnBuilderFn: string = column.type
-
-  if (column.type === 'geometry') {
-    columnBuilderFn = 'geometryColumn'
-    addImport(`@payloadcms/drizzle/postgres`, columnBuilderFn)
-  } else if (column.type === 'enum') {
-    if ('isLocale' in column) {
-      columnBuilderFn = `enum__locales`
-    } else {
-      addEnum(column.enumName, column.options)
-      columnBuilderFn = column.enumName
-    }
-  } else {
-    addImport(`${adapter.packageName}/drizzle/pg-core`, columnBuilderFn)
-  }
-
-  const columnBuilderArgsArray: string[] = []
-
-  if (column.type === 'timestamp') {
-    columnBuilderArgsArray.push(`mode: '${column.mode}'`)
-    if (column.withTimezone) {
-      columnBuilderArgsArray.push('withTimezone: true')
-    }
-
-    if (typeof column.precision === 'number') {
-      columnBuilderArgsArray.push(`precision: ${column.precision}`)
-    }
-  }
-
-  let columnBuilderArgs = ''
-
-  if (columnBuilderArgsArray.length) {
-    columnBuilderArgs = `, {${columnBuilderArgsArray.join(',')}}`
-  }
-
-  let code = `${columnBuilderFn}('${column.name}'${columnBuilderArgs})`
-
-  if (column.type === 'timestamp' && column.defaultNow) {
-    code = `${code}.defaultNow()`
-  }
-
-  if (column.type === 'uuid' && column.defaultRandom) {
-    code = `${code}.defaultRandom()`
-  }
-
-  if (column.notNull) {
-    code = `${code}.notNull()`
-  }
-
-  if (column.primaryKey) {
-    code = `${code}.primaryKey()`
-  }
-
-  if (typeof column.default !== 'undefined') {
-    let sanitizedDefault = column.default
-
-    if (column.type === 'geometry') {
-      sanitizedDefault = `sql\`${column.default}\``
-    } else if (column.type === 'jsonb') {
-      sanitizedDefault = `sql\`'${JSON.stringify(column.default)}'::jsonb\``
-    } else if (column.type === 'numeric') {
-      sanitizedDefault = `sql\`${column.default}\``
-    } else if (typeof column.default === 'string') {
-      sanitizedDefault = `'${column.default}'`
-    }
-
-    code = `${code}.default(${sanitizedDefault})`
-  }
-
-  if (column.reference) {
-    code = `${code}.references(() => ${column.reference.table}.${column.reference.name}, {
-      ${column.reference.onDelete ? `onDelete: '${column.reference.onDelete}'` : ''}
-  })`
-  }
-
-  return code
-}
-
 export const createSchemaGenerator = ({
+  columnToCodeConverter,
+  corePackageSuffix,
   defaultOutputFile,
+  enumImport,
+  schemaImport,
+  tableImport,
 }: {
+  columnToCodeConverter: ColumnToCodeConverter
+  corePackageSuffix: string
   defaultOutputFile?: string
+  enumImport?: string
+  schemaImport?: string
+  tableImport: string
 }): GenerateSchema => {
   return async function generateSchema(
     this: DrizzleAdapter,
@@ -139,14 +60,16 @@ export const createSchemaGenerator = ({
       importDeclarations[from].add(name)
     }
 
+    const corePackage = `${this.packageName}/drizzle/${corePackageSuffix}`
+
     let schemaDeclaration: null | string = null
 
     if (this.schemaName) {
-      addImport(`${this.packageName}/drizzle/pg-core`, 'pgSchema')
-      schemaDeclaration = `export const pg_schema = pgSchema('${this.schemaName}')`
+      addImport(corePackage, schemaImport)
+      schemaDeclaration = `export const db_schema = ${schemaImport}('${this.schemaName}')`
     }
 
-    const enumFn = this.schemaName ? `pg_schema.enum` : 'pgEnum'
+    const enumFn = this.schemaName ? `db_schema.enum` : enumImport
 
     const enumsList: string[] = []
     const addEnum = (name: string, options: string[]) => {
@@ -159,19 +82,19 @@ export const createSchemaGenerator = ({
       )
     }
 
-    if (this.payload.config.localization) {
+    if (this.payload.config.localization && enumImport) {
       addEnum('enum__locales', this.payload.config.localization.localeCodes)
     }
 
-    const tableFn = this.schemaName ? `pg_schema.table` : 'pgTable'
+    const tableFn = this.schemaName ? `db_schema.table` : tableImport
 
     if (!this.schemaName) {
-      addImport(`${this.packageName}/drizzle/pg-core`, 'pgTable')
+      addImport(corePackage, tableImport)
     }
 
-    addImport(`${this.packageName}/drizzle/pg-core`, 'index')
-    addImport(`${this.packageName}/drizzle/pg-core`, 'uniqueIndex')
-    addImport(`${this.packageName}/drizzle/pg-core`, 'foreignKey')
+    addImport(corePackage, 'index')
+    addImport(corePackage, 'uniqueIndex')
+    addImport(corePackage, 'foreignKey')
 
     addImport(`${this.packageName}/drizzle`, 'sql')
     addImport(`${this.packageName}/drizzle`, 'relations')
@@ -218,7 +141,15 @@ export const ${tableName} = ${tableFn}('${tableName}', {
 ${Object.entries(table.columns)
   .map(
     ([key, column]) =>
-      `  ${sanitizeObjectKey(key)}: ${columnConverter({ adapter: this, addEnum, addImport, column })},`,
+      `  ${sanitizeObjectKey(key)}: ${columnToCodeConverter({
+        adapter: this,
+        addEnum,
+        addImport,
+        column,
+        locales: this.payload.config.localization
+          ? this.payload.config.localization.localeCodes
+          : undefined,
+      })},`,
   )
   .join('\n')}
 }${
@@ -258,7 +189,20 @@ ${Object.entries(table.columns)
         properties.push(declaration)
       }
 
-      const declaration = `export const relations_${tableName} = relations(${tableName}, ({ one, many }) => ({
+      // beautify / lintify relations callback output, when no many for example, don't add it
+      const args = []
+
+      if (Object.values(relations).some((rel) => rel.type === 'one')) {
+        args.push('one')
+      }
+
+      if (Object.values(relations).some((rel) => rel.type === 'many')) {
+        args.push('many')
+      }
+
+      const arg = args.length ? `{ ${args.join(', ')} }` : ''
+
+      const declaration = `export const relations_${tableName} = relations(${tableName}, (${arg}) => ({
   ${properties.join('\n    ')}
       }))`
 
@@ -266,7 +210,7 @@ ${Object.entries(table.columns)
     }
 
     if (enumDeclarations.length && !this.schemaName) {
-      addImport(`${this.packageName}/drizzle/pg-core`, 'pgEnum')
+      addImport(corePackage, enumImport)
     }
 
     const importDeclarationsSanitized: string[] = []
@@ -282,7 +226,7 @@ ${Object.entries(table.columns)
     const schemaType = `
 type DatabaseSchema = {
   ${[
-    this.schemaName ? 'pg_schema' : null,
+    this.schemaName ? 'db_schema' : null,
     ...enumsList,
     ...Object.keys(this.rawTables),
     ...Object.keys(this.rawRelations).map((table) => `relations_${table}`),

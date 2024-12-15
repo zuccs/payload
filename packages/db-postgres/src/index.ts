@@ -37,6 +37,7 @@ import {
   updateVersion,
 } from '@payloadcms/drizzle'
 import {
+  columnToCodeConverter,
   countDistinct,
   createDatabase,
   createExtensions,
@@ -108,7 +109,12 @@ export function postgresAdapter(args: Args): DatabaseAdapterObj<PostgresAdapter>
       },
       fieldConstraints: {},
       generateSchema: createSchemaGenerator({
+        columnToCodeConverter,
+        corePackageSuffix: 'pg-core',
         defaultOutputFile: args.generateSchemaOutputFile,
+        enumImport: 'pgEnum',
+        schemaImport: 'pgSchema',
+        tableImport: 'pgTable',
       }),
       idType: postgresIDType,
       initializing,

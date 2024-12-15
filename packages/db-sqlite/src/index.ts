@@ -43,6 +43,7 @@ import { fileURLToPath } from 'url'
 
 import type { Args, SQLiteAdapter } from './types.js'
 
+import { columnToCodeConverter } from './columnToCodeConverter.js'
 import { connect } from './connect.js'
 import { countDistinct } from './countDistinct.js'
 import { convertPathToJSONTraversal } from './createJSONQuery/convertPathToJSONTraversal.js'
@@ -95,7 +96,10 @@ export function sqliteAdapter(args: Args): DatabaseAdapterObj<SQLiteAdapter> {
       },
       fieldConstraints: {},
       generateSchema: createSchemaGenerator({
+        columnToCodeConverter,
+        corePackageSuffix: 'sqlite-core',
         defaultOutputFile: args.generateSchemaOutputFile,
+        tableImport: 'sqliteTable',
       }),
       idType: postgresIDType,
       initializing,

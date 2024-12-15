@@ -1,3 +1,4 @@
+export { columnToCodeConverter } from '../postgres/columnToCodeConverter.js'
 export { countDistinct } from '../postgres/countDistinct.js'
 export { createDatabase } from '../postgres/createDatabase.js'
 export { createExtensions } from '../postgres/createExtensions.js'

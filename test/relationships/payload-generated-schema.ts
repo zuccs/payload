@@ -1,36 +1,25 @@
-import { relations } from '@payloadcms/db-postgres/drizzle'
+import { relations, sql } from '@payloadcms/db-sqlite/drizzle'
 import {
-  boolean,
   foreignKey,
   index,
   integer,
-  jsonb,
   numeric,
-  pgEnum,
-  pgTable,
-  serial,
+  sqliteTable,
   text,
-  timestamp,
   uniqueIndex,
-  varchar,
-} from '@payloadcms/db-postgres/drizzle/pg-core'
-export const enum__locales = pgEnum('enum__locales', ['en', 'de'])
-export const enum_movie_reviews_visibility = pgEnum('enum_movie_reviews_visibility', [
-  'followers',
-  'public',
-])
+} from '@payloadcms/db-sqlite/drizzle/sqlite-core'
 
-export const posts_blocks_block = pgTable(
+export const posts_blocks_block = sqliteTable(
   'posts_blocks_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
+    id: text('id').primaryKey(),
     relationField: integer('relation_field_id').references(() => relation.id, {
       onDelete: 'set null',
     }),
-    blockName: varchar('block_name'),
+    blockName: text('block_name'),
   },
   (columns) => ({
     _orderIdx: index('posts_blocks_block_order_idx').on(columns['_order']),
@@ -47,12 +36,12 @@ export const posts_blocks_block = pgTable(
   }),
 )
 
-export const posts = pgTable(
+export const posts = sqliteTable(
   'posts',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    description: varchar('description'),
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    description: text('description'),
     number: numeric('number'),
     relationField: integer('relation_field_id').references(() => relation.id, {
       onDelete: 'set null',
@@ -69,7 +58,7 @@ export const posts = pgTable(
     maxDepthRelation: integer('max_depth_relation_id').references(() => relation.id, {
       onDelete: 'set null',
     }),
-    customIdRelation: varchar('custom_id_relation_id').references(() => custom_id.id, {
+    customIdRelation: text('custom_id_relation_id').references(() => custom_id.id, {
       onDelete: 'set null',
     }),
     customIdNumberRelation: numeric('custom_id_number_relation_id').references(
@@ -81,12 +70,12 @@ export const posts = pgTable(
     filteredRelation: integer('filtered_relation_id').references(() => relation.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     posts_relation_field_idx: index('posts_relation_field_idx').on(columns['relationField']),
@@ -111,17 +100,17 @@ export const posts = pgTable(
   }),
 )
 
-export const posts_localized = pgTable(
+export const posts_localized = sqliteTable(
   'posts_localized',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     posts_localized_updated_at_idx: index('posts_localized_updated_at_idx').on(
@@ -133,14 +122,14 @@ export const posts_localized = pgTable(
   }),
 )
 
-export const posts_localized_locales = pgTable(
+export const posts_localized_locales = sqliteTable(
   'posts_localized_locales',
   {
     relationField: integer('relation_field_id').references(() => relation.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'de'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -160,18 +149,18 @@ export const posts_localized_locales = pgTable(
   }),
 )
 
-export const relation = pgTable(
+export const relation = sqliteTable(
   'relation',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
-    disableRelation: boolean('disable_relation').notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    name: text('name'),
+    disableRelation: integer('disable_relation', { mode: 'boolean' }).notNull().default(false),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     relation_updated_at_idx: index('relation_updated_at_idx').on(columns['updatedAt']),
@@ -179,18 +168,18 @@ export const relation = pgTable(
   }),
 )
 
-export const strict_access = pgTable(
+export const strict_access = sqliteTable(
   'strict_access',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
-    disableRelation: boolean('disable_relation').notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    name: text('name'),
+    disableRelation: integer('disable_relation', { mode: 'boolean' }).notNull().default(false),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     strict_access_updated_at_idx: index('strict_access_updated_at_idx').on(columns['updatedAt']),
@@ -198,20 +187,20 @@ export const strict_access = pgTable(
   }),
 )
 
-export const chained = pgTable(
+export const chained = sqliteTable(
   'chained',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
+    id: integer('id').primaryKey(),
+    name: text('name'),
     relation: integer('relation_id').references(() => chained.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     chained_relation_idx: index('chained_relation_idx').on(columns['relation']),
@@ -220,17 +209,17 @@ export const chained = pgTable(
   }),
 )
 
-export const custom_id = pgTable(
+export const custom_id = sqliteTable(
   'custom_id',
   {
-    id: varchar('id').primaryKey(),
-    name: varchar('name'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: text('id').primaryKey(),
+    name: text('name'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     custom_id_updated_at_idx: index('custom_id_updated_at_idx').on(columns['updatedAt']),
@@ -238,17 +227,17 @@ export const custom_id = pgTable(
   }),
 )
 
-export const custom_id_number = pgTable(
+export const custom_id_number = sqliteTable(
   'custom_id_number',
   {
     id: numeric('id').primaryKey(),
-    name: varchar('name'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    name: text('name'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     custom_id_number_updated_at_idx: index('custom_id_number_updated_at_idx').on(
@@ -260,20 +249,20 @@ export const custom_id_number = pgTable(
   }),
 )
 
-export const screenings = pgTable(
+export const screenings = sqliteTable(
   'screenings',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
+    id: integer('id').primaryKey(),
+    name: text('name'),
     movie: integer('movie_id').references(() => movies.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     screenings_movie_idx: index('screenings_movie_idx').on(columns['movie']),
@@ -282,20 +271,20 @@ export const screenings = pgTable(
   }),
 )
 
-export const movies = pgTable(
+export const movies = sqliteTable(
   'movies',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
+    id: integer('id').primaryKey(),
+    name: text('name'),
     director: integer('director_id').references(() => directors.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     movies_director_idx: index('movies_director_idx').on(columns['director']),
@@ -304,17 +293,17 @@ export const movies = pgTable(
   }),
 )
 
-export const directors = pgTable(
+export const directors = sqliteTable(
   'directors',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    name: text('name'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     directors_updated_at_idx: index('directors_updated_at_idx').on(columns['updatedAt']),
@@ -322,13 +311,13 @@ export const directors = pgTable(
   }),
 )
 
-export const directors_rels = pgTable(
+export const directors_rels = sqliteTable(
   'directors_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     moviesID: integer('movies_id'),
   },
   (columns) => ({
@@ -349,22 +338,22 @@ export const directors_rels = pgTable(
   }),
 )
 
-export const movie_reviews = pgTable(
+export const movie_reviews = sqliteTable(
   'movie_reviews',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     movieReviewer: integer('movie_reviewer_id')
       .notNull()
       .references(() => users.id, {
         onDelete: 'set null',
       }),
-    visibility: enum_movie_reviews_visibility('visibility').notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    visibility: text('visibility', { enum: ['followers', 'public'] }).notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     movie_reviews_movie_reviewer_idx: index('movie_reviews_movie_reviewer_idx').on(
@@ -375,13 +364,13 @@ export const movie_reviews = pgTable(
   }),
 )
 
-export const movie_reviews_rels = pgTable(
+export const movie_reviews_rels = sqliteTable(
   'movie_reviews_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     usersID: integer('users_id'),
   },
   (columns) => ({
@@ -404,16 +393,16 @@ export const movie_reviews_rels = pgTable(
   }),
 )
 
-export const polymorphic_relationships = pgTable(
+export const polymorphic_relationships = sqliteTable(
   'polymorphic_relationships',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     polymorphic_relationships_updated_at_idx: index('polymorphic_relationships_updated_at_idx').on(
@@ -425,13 +414,13 @@ export const polymorphic_relationships = pgTable(
   }),
 )
 
-export const polymorphic_relationships_rels = pgTable(
+export const polymorphic_relationships_rels = sqliteTable(
   'polymorphic_relationships_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     moviesID: integer('movies_id'),
   },
   (columns) => ({
@@ -454,20 +443,20 @@ export const polymorphic_relationships_rels = pgTable(
   }),
 )
 
-export const tree = pgTable(
+export const tree = sqliteTable(
   'tree',
   {
-    id: serial('id').primaryKey(),
-    text: varchar('text'),
+    id: integer('id').primaryKey(),
+    text: text('text'),
     parent: integer('parent_id').references(() => tree.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     tree_parent_idx: index('tree_parent_idx').on(columns['parent']),
@@ -476,13 +465,13 @@ export const tree = pgTable(
   }),
 )
 
-export const pages_menu = pgTable(
+export const pages_menu = sqliteTable(
   'pages_menu',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    label: varchar('label'),
+    _parentID: integer('_parent_id').notNull(),
+    id: text('id').primaryKey(),
+    label: text('label'),
   },
   (columns) => ({
     _orderIdx: index('pages_menu_order_idx').on(columns['_order']),
@@ -495,16 +484,16 @@ export const pages_menu = pgTable(
   }),
 )
 
-export const pages = pgTable(
+export const pages = sqliteTable(
   'pages',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     pages_updated_at_idx: index('pages_updated_at_idx').on(columns['updatedAt']),
@@ -512,19 +501,19 @@ export const pages = pgTable(
   }),
 )
 
-export const rels_to_pages = pgTable(
+export const rels_to_pages = sqliteTable(
   'rels_to_pages',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     page: integer('page_id').references(() => pages.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     rels_to_pages_page_idx: index('rels_to_pages_page_idx').on(columns['page']),
@@ -533,16 +522,16 @@ export const rels_to_pages = pgTable(
   }),
 )
 
-export const rels_to_pages_and_custom_text_ids = pgTable(
+export const rels_to_pages_and_custom_text_ids = sqliteTable(
   'rels_to_pages_and_custom_text_ids',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     rels_to_pages_and_custom_text_ids_updated_at_idx: index(
@@ -554,15 +543,15 @@ export const rels_to_pages_and_custom_text_ids = pgTable(
   }),
 )
 
-export const rels_to_pages_and_custom_text_ids_rels = pgTable(
+export const rels_to_pages_and_custom_text_ids_rels = sqliteTable(
   'rels_to_pages_and_custom_text_ids_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     pagesID: integer('pages_id'),
-    'custom-idID': varchar('custom_id_id'),
+    'custom-idID': text('custom_id_id'),
     'custom-id-numberID': numeric('custom_id_number_id'),
   },
   (columns) => ({
@@ -601,19 +590,19 @@ export const rels_to_pages_and_custom_text_ids_rels = pgTable(
   }),
 )
 
-export const object_writes = pgTable(
+export const object_writes = sqliteTable(
   'object_writes',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     one: integer('one_id').references(() => movies.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     object_writes_one_idx: index('object_writes_one_idx').on(columns['one']),
@@ -622,13 +611,13 @@ export const object_writes = pgTable(
   }),
 )
 
-export const object_writes_rels = pgTable(
+export const object_writes_rels = sqliteTable(
   'object_writes_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     moviesID: integer('movies_id'),
   },
   (columns) => ({
@@ -651,27 +640,25 @@ export const object_writes_rels = pgTable(
   }),
 )
 
-export const users = pgTable(
+export const users = sqliteTable(
   'users',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    email: varchar('email').notNull(),
-    resetPasswordToken: varchar('reset_password_token'),
-    resetPasswordExpiration: timestamp('reset_password_expiration', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    salt: varchar('salt'),
-    hash: varchar('hash'),
-    loginAttempts: numeric('login_attempts'),
-    lockUntil: timestamp('lock_until', { mode: 'string', withTimezone: true, precision: 3 }),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    email: text('email').notNull(),
+    resetPasswordToken: text('reset_password_token'),
+    resetPasswordExpiration: text('reset_password_expiration').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    salt: text('salt'),
+    hash: text('hash'),
+    loginAttempts: numeric('login_attempts').default('0'),
+    lockUntil: text('lock_until').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     users_updated_at_idx: index('users_updated_at_idx').on(columns['updatedAt']),
@@ -680,17 +667,17 @@ export const users = pgTable(
   }),
 )
 
-export const payload_locked_documents = pgTable(
+export const payload_locked_documents = sqliteTable(
   'payload_locked_documents',
   {
-    id: serial('id').primaryKey(),
-    globalSlug: varchar('global_slug'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    globalSlug: text('global_slug'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_locked_documents_global_slug_idx: index('payload_locked_documents_global_slug_idx').on(
@@ -705,19 +692,19 @@ export const payload_locked_documents = pgTable(
   }),
 )
 
-export const payload_locked_documents_rels = pgTable(
+export const payload_locked_documents_rels = sqliteTable(
   'payload_locked_documents_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     postsID: integer('posts_id'),
     postsLocalizedID: integer('posts_localized_id'),
     relationID: integer('relation_id'),
     'strict-accessID': integer('strict_access_id'),
     chainedID: integer('chained_id'),
-    'custom-idID': varchar('custom_id_id'),
+    'custom-idID': text('custom_id_id'),
     'custom-id-numberID': numeric('custom_id_number_id'),
     screeningsID: integer('screenings_id'),
     moviesID: integer('movies_id'),
@@ -887,18 +874,18 @@ export const payload_locked_documents_rels = pgTable(
   }),
 )
 
-export const payload_preferences = pgTable(
+export const payload_preferences = sqliteTable(
   'payload_preferences',
   {
-    id: serial('id').primaryKey(),
-    key: varchar('key'),
-    value: jsonb('value'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    key: text('key'),
+    value: text('value', { mode: 'json' }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_preferences_key_idx: index('payload_preferences_key_idx').on(columns['key']),
@@ -911,13 +898,13 @@ export const payload_preferences = pgTable(
   }),
 )
 
-export const payload_preferences_rels = pgTable(
+export const payload_preferences_rels = sqliteTable(
   'payload_preferences_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     usersID: integer('users_id'),
   },
   (columns) => ({
@@ -940,18 +927,18 @@ export const payload_preferences_rels = pgTable(
   }),
 )
 
-export const payload_migrations = pgTable(
+export const payload_migrations = sqliteTable(
   'payload_migrations',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
+    id: integer('id').primaryKey(),
+    name: text('name'),
     batch: numeric('batch'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_migrations_updated_at_idx: index('payload_migrations_updated_at_idx').on(
@@ -1340,8 +1327,6 @@ type DatabaseSchema = {
   custom_id_number: typeof custom_id_number
   directors: typeof directors
   directors_rels: typeof directors_rels
-  enum__locales: typeof enum__locales
-  enum_movie_reviews_visibility: typeof enum_movie_reviews_visibility
   movie_reviews: typeof movie_reviews
   movie_reviews_rels: typeof movie_reviews_rels
   movies: typeof movies
@@ -1401,7 +1386,7 @@ type DatabaseSchema = {
   users: typeof users
 }
 
-declare module '@payloadcms/db-postgres/types' {
+declare module '@payloadcms/db-sqlite/types' {
   export interface GeneratedDatabaseSchema {
     schema: DatabaseSchema
   }

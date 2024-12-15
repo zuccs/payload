@@ -1,63 +1,27 @@
-import { relations, sql } from '@payloadcms/db-postgres/drizzle'
+import { relations, sql } from '@payloadcms/db-sqlite/drizzle'
 import {
-  boolean,
   foreignKey,
   index,
   integer,
-  jsonb,
   numeric,
-  pgSchema,
-  serial,
+  sqliteTable,
   text,
-  timestamp,
   uniqueIndex,
-  varchar,
-} from '@payloadcms/db-postgres/drizzle/pg-core'
-import { geometryColumn } from '@payloadcms/drizzle/postgres'
-export const pg_schema = pgSchema('custom')
-export const enum__locales = pg_schema.enum('enum__locales', ['en', 'es'])
-export const enum_default_values_select = pg_schema.enum('enum_default_values_select', [
-  'option0',
-  'option1',
-  'default',
-])
-export const selectEnum = pg_schema.enum('selectEnum', ['a', 'b', 'c'])
-export const radioEnum = pg_schema.enum('radioEnum', ['a', 'b', 'c'])
-export const enum_customs_status = pg_schema.enum('enum_customs_status', ['draft', 'published'])
-export const enum__customs_v_version_status = pg_schema.enum('enum__customs_v_version_status', [
-  'draft',
-  'published',
-])
-export const enum__customs_v_published_locale = pg_schema.enum('enum__customs_v_published_locale', [
-  'en',
-  'es',
-])
-export const enum_custom_ids_status = pg_schema.enum('enum_custom_ids_status', [
-  'draft',
-  'published',
-])
-export const enum__custom_ids_v_version_status = pg_schema.enum(
-  'enum__custom_ids_v_version_status',
-  ['draft', 'published'],
-)
-export const enum__custom_ids_v_published_locale = pg_schema.enum(
-  'enum__custom_ids_v_published_locale',
-  ['en', 'es'],
-)
+} from '@payloadcms/db-sqlite/drizzle/sqlite-core'
 
-export const posts = pg_schema.table(
+export const posts = sqliteTable(
   'posts',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title').notNull(),
-    hasTransaction: boolean('has_transaction'),
-    throwAfterChange: boolean('throw_after_change'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title').notNull(),
+    hasTransaction: integer('has_transaction', { mode: 'boolean' }),
+    throwAfterChange: integer('throw_after_change', { mode: 'boolean' }).default(false),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     posts_updated_at_idx: index('posts_updated_at_idx').on(columns['updatedAt']),
@@ -65,13 +29,13 @@ export const posts = pg_schema.table(
   }),
 )
 
-export const default_values_array = pg_schema.table(
+export const default_values_array = sqliteTable(
   'default_values_array',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    defaultValue: varchar('default_value').default('default value from database'),
+    _parentID: integer('_parent_id').notNull(),
+    id: text('id').primaryKey(),
+    defaultValue: text('default_value').default('default value from database'),
   },
   (columns) => ({
     _orderIdx: index('default_values_array_order_idx').on(columns['_order']),
@@ -84,21 +48,21 @@ export const default_values_array = pg_schema.table(
   }),
 )
 
-export const default_values = pg_schema.table(
+export const default_values = sqliteTable(
   'default_values',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    defaultValue: varchar('default_value').default('default value from database'),
-    group_defaultValue: varchar('group_default_value').default('default value from database'),
-    select: enum_default_values_select('select').default('default'),
-    point: geometryColumn('point').default(sql`SRID=4326;POINT(10 20)`),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    defaultValue: text('default_value').default('default value from database'),
+    group_defaultValue: text('group_default_value').default('default value from database'),
+    select: text('select', { enum: ['option0', 'option1', 'default'] }).default('default'),
+    point: text('point', { mode: 'json' }).default('"SRID=4326;POINT(10 20)"'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     default_values_updated_at_idx: index('default_values_updated_at_idx').on(columns['updatedAt']),
@@ -106,18 +70,18 @@ export const default_values = pg_schema.table(
   }),
 )
 
-export const relation_a = pg_schema.table(
+export const relation_a = sqliteTable(
   'relation_a',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    richText: jsonb('rich_text'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    richText: text('rich_text', { mode: 'json' }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     relation_a_updated_at_idx: index('relation_a_updated_at_idx').on(columns['updatedAt']),
@@ -125,21 +89,21 @@ export const relation_a = pg_schema.table(
   }),
 )
 
-export const relation_b = pg_schema.table(
+export const relation_b = sqliteTable(
   'relation_b',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
+    id: integer('id').primaryKey(),
+    title: text('title'),
     relationship: integer('relationship_id').references(() => relation_a.id, {
       onDelete: 'set null',
     }),
-    richText: jsonb('rich_text'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    richText: text('rich_text', { mode: 'json' }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     relation_b_relationship_idx: index('relation_b_relationship_idx').on(columns['relationship']),
@@ -148,12 +112,12 @@ export const relation_b = pg_schema.table(
   }),
 )
 
-export const pg_migrations_my_array_my_sub_array = pg_schema.table(
+export const pg_migrations_my_array_my_sub_array = sqliteTable(
   'pg_migrations_my_array_my_sub_array',
   {
     _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
+    _parentID: text('_parent_id').notNull(),
+    id: text('id').primaryKey(),
   },
   (columns) => ({
     _orderIdx: index('pg_migrations_my_array_my_sub_array_order_idx').on(columns['_order']),
@@ -168,15 +132,15 @@ export const pg_migrations_my_array_my_sub_array = pg_schema.table(
   }),
 )
 
-export const pg_migrations_my_array_my_sub_array_locales = pg_schema.table(
+export const pg_migrations_my_array_my_sub_array_locales = sqliteTable(
   'pg_migrations_my_array_my_sub_array_locales',
   {
     relation3: integer('relation3_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
+    _parentID: text('_parent_id').notNull(),
   },
   (columns) => ({
     pg_migrations_my_array_my_sub_array_relation3_idx: index(
@@ -193,12 +157,12 @@ export const pg_migrations_my_array_my_sub_array_locales = pg_schema.table(
   }),
 )
 
-export const pg_migrations_my_array = pg_schema.table(
+export const pg_migrations_my_array = sqliteTable(
   'pg_migrations_my_array',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
+    _parentID: integer('_parent_id').notNull(),
+    id: text('id').primaryKey(),
     relation2: integer('relation2_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
@@ -217,17 +181,17 @@ export const pg_migrations_my_array = pg_schema.table(
   }),
 )
 
-export const pg_migrations_blocks_my_block = pg_schema.table(
+export const pg_migrations_blocks_my_block = sqliteTable(
   'pg_migrations_blocks_my_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
+    id: text('id').primaryKey(),
     relation5: integer('relation5_id').references(() => relation_a.id, {
       onDelete: 'set null',
     }),
-    blockName: varchar('block_name'),
+    blockName: text('block_name'),
   },
   (columns) => ({
     _orderIdx: index('pg_migrations_blocks_my_block_order_idx').on(columns['_order']),
@@ -244,15 +208,15 @@ export const pg_migrations_blocks_my_block = pg_schema.table(
   }),
 )
 
-export const pg_migrations_blocks_my_block_locales = pg_schema.table(
+export const pg_migrations_blocks_my_block_locales = sqliteTable(
   'pg_migrations_blocks_my_block_locales',
   {
     relation6: integer('relation6_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
+    _parentID: text('_parent_id').notNull(),
   },
   (columns) => ({
     pg_migrations_blocks_my_block_relation6_idx: index(
@@ -270,19 +234,19 @@ export const pg_migrations_blocks_my_block_locales = pg_schema.table(
   }),
 )
 
-export const pg_migrations = pg_schema.table(
+export const pg_migrations = sqliteTable(
   'pg_migrations',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     relation1: integer('relation1_id').references(() => relation_a.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     pg_migrations_relation1_idx: index('pg_migrations_relation1_idx').on(columns['relation1']),
@@ -291,14 +255,14 @@ export const pg_migrations = pg_schema.table(
   }),
 )
 
-export const pg_migrations_locales = pg_schema.table(
+export const pg_migrations_locales = sqliteTable(
   'pg_migrations_locales',
   {
     myGroup_relation4: integer('my_group_relation4_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -317,13 +281,13 @@ export const pg_migrations_locales = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v_version_my_array_my_sub_array = pg_schema.table(
+export const _pg_migrations_v_version_my_array_my_sub_array = sqliteTable(
   '_pg_migrations_v_version_my_array_my_sub_array',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
-    _uuid: varchar('_uuid'),
+    _parentID: integer('_parent_id').notNull(),
+    id: integer('id').primaryKey(),
+    _uuid: text('_uuid'),
   },
   (columns) => ({
     _orderIdx: index('_pg_migrations_v_version_my_array_my_sub_array_order_idx').on(
@@ -340,14 +304,14 @@ export const _pg_migrations_v_version_my_array_my_sub_array = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v_version_my_array_my_sub_array_locales = pg_schema.table(
+export const _pg_migrations_v_version_my_array_my_sub_array_locales = sqliteTable(
   '_pg_migrations_v_version_my_array_my_sub_array_locales',
   {
     relation3: integer('relation3_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -365,16 +329,16 @@ export const _pg_migrations_v_version_my_array_my_sub_array_locales = pg_schema.
   }),
 )
 
-export const _pg_migrations_v_version_my_array = pg_schema.table(
+export const _pg_migrations_v_version_my_array = sqliteTable(
   '_pg_migrations_v_version_my_array',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
+    _parentID: integer('_parent_id').notNull(),
+    id: integer('id').primaryKey(),
     relation2: integer('relation2_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    _uuid: varchar('_uuid'),
+    _uuid: text('_uuid'),
   },
   (columns) => ({
     _orderIdx: index('_pg_migrations_v_version_my_array_order_idx').on(columns['_order']),
@@ -390,18 +354,18 @@ export const _pg_migrations_v_version_my_array = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v_blocks_my_block = pg_schema.table(
+export const _pg_migrations_v_blocks_my_block = sqliteTable(
   '_pg_migrations_v_blocks_my_block',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     relation5: integer('relation5_id').references(() => relation_a.id, {
       onDelete: 'set null',
     }),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
+    _uuid: text('_uuid'),
+    blockName: text('block_name'),
   },
   (columns) => ({
     _orderIdx: index('_pg_migrations_v_blocks_my_block_order_idx').on(columns['_order']),
@@ -418,14 +382,14 @@ export const _pg_migrations_v_blocks_my_block = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v_blocks_my_block_locales = pg_schema.table(
+export const _pg_migrations_v_blocks_my_block_locales = sqliteTable(
   '_pg_migrations_v_blocks_my_block_locales',
   {
     relation6: integer('relation6_id').references(() => relation_b.id, {
       onDelete: 'set null',
     }),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -443,32 +407,28 @@ export const _pg_migrations_v_blocks_my_block_locales = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v = pg_schema.table(
+export const _pg_migrations_v = sqliteTable(
   '_pg_migrations_v',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     parent: integer('parent_id').references(() => pg_migrations.id, {
       onDelete: 'set null',
     }),
     version_relation1: integer('version_relation1_id').references(() => relation_a.id, {
       onDelete: 'set null',
     }),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     _pg_migrations_v_parent_idx: index('_pg_migrations_v_parent_idx').on(columns['parent']),
@@ -490,7 +450,7 @@ export const _pg_migrations_v = pg_schema.table(
   }),
 )
 
-export const _pg_migrations_v_locales = pg_schema.table(
+export const _pg_migrations_v_locales = sqliteTable(
   '_pg_migrations_v_locales',
   {
     version_myGroup_relation4: integer('version_my_group_relation4_id').references(
@@ -499,8 +459,8 @@ export const _pg_migrations_v_locales = pg_schema.table(
         onDelete: 'set null',
       },
     ),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -519,13 +479,13 @@ export const _pg_migrations_v_locales = pg_schema.table(
   }),
 )
 
-export const customs_customSelect = pg_schema.table(
+export const customs_customSelect = sqliteTable(
   'customs_customSelect',
   {
     order: integer('order').notNull(),
-    parent: serial('parent_id').notNull(),
-    value: selectEnum('value'),
-    id: serial('id').primaryKey(),
+    parent: integer('parent_id').notNull(),
+    value: text('value', { enum: ['a', 'b', 'c'] }),
+    id: integer('id').primaryKey(),
   },
   (columns) => ({
     orderIdx: index('customs_customSelect_order_idx').on(columns['order']),
@@ -538,13 +498,13 @@ export const customs_customSelect = pg_schema.table(
   }),
 )
 
-export const customArrays = pg_schema.table(
+export const customArrays = sqliteTable(
   'customArrays',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    text: varchar('text'),
+    _parentID: integer('_parent_id').notNull(),
+    id: text('id').primaryKey(),
+    text: text('text'),
   },
   (columns) => ({
     _orderIdx: index('customArrays_order_idx').on(columns['_order']),
@@ -557,13 +517,13 @@ export const customArrays = pg_schema.table(
   }),
 )
 
-export const customArrays_locales = pg_schema.table(
+export const customArrays_locales = sqliteTable(
   'customArrays_locales',
   {
-    localizedText: varchar('localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
+    localizedText: text('localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
+    _parentID: text('_parent_id').notNull(),
   },
   (columns) => ({
     _localeParent: uniqueIndex('customArrays_locales_locale_parent_id_unique').on(
@@ -578,15 +538,15 @@ export const customArrays_locales = pg_schema.table(
   }),
 )
 
-export const customBlocks = pg_schema.table(
+export const customBlocks = sqliteTable(
   'customBlocks',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: varchar('id').primaryKey(),
-    text: varchar('text'),
-    blockName: varchar('block_name'),
+    id: text('id').primaryKey(),
+    text: text('text'),
+    blockName: text('block_name'),
   },
   (columns) => ({
     _orderIdx: index('customBlocks_order_idx').on(columns['_order']),
@@ -600,13 +560,13 @@ export const customBlocks = pg_schema.table(
   }),
 )
 
-export const customBlocks_locales = pg_schema.table(
+export const customBlocks_locales = sqliteTable(
   'customBlocks_locales',
   {
-    localizedText: varchar('localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
+    localizedText: text('localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
+    _parentID: text('_parent_id').notNull(),
   },
   (columns) => ({
     _localeParent: uniqueIndex('customBlocks_locales_locale_parent_id_unique').on(
@@ -621,19 +581,19 @@ export const customBlocks_locales = pg_schema.table(
   }),
 )
 
-export const customs = pg_schema.table(
+export const customs = sqliteTable(
   'customs',
   {
-    id: serial('id').primaryKey(),
-    text: varchar('text'),
-    radio: radioEnum('radio'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    _status: enum_customs_status('_status').default('draft'),
+    id: integer('id').primaryKey(),
+    text: text('text'),
+    radio: text('radio', { enum: ['a', 'b', 'c'] }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
   },
   (columns) => ({
     customs_updated_at_idx: index('customs_updated_at_idx').on(columns['updatedAt']),
@@ -642,12 +602,12 @@ export const customs = pg_schema.table(
   }),
 )
 
-export const customs_locales = pg_schema.table(
+export const customs_locales = sqliteTable(
   'customs_locales',
   {
-    localizedText: varchar('localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    localizedText: text('localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -663,13 +623,13 @@ export const customs_locales = pg_schema.table(
   }),
 )
 
-export const customs_rels = pg_schema.table(
+export const customs_rels = sqliteTable(
   'customs_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     'relation-aID': integer('relation_a_id'),
   },
   (columns) => ({
@@ -692,13 +652,13 @@ export const customs_rels = pg_schema.table(
   }),
 )
 
-export const __customs_v_version_customSelect_v = pg_schema.table(
+export const __customs_v_version_customSelect_v = sqliteTable(
   '__customs_v_version_customSelect_v',
   {
     order: integer('order').notNull(),
-    parent: serial('parent_id').notNull(),
-    value: selectEnum('value'),
-    id: serial('id').primaryKey(),
+    parent: integer('parent_id').notNull(),
+    value: text('value', { enum: ['a', 'b', 'c'] }),
+    id: integer('id').primaryKey(),
   },
   (columns) => ({
     orderIdx: index('__customs_v_version_customSelect_v_order_idx').on(columns['order']),
@@ -711,14 +671,14 @@ export const __customs_v_version_customSelect_v = pg_schema.table(
   }),
 )
 
-export const _customArrays_v = pg_schema.table(
+export const _customArrays_v = sqliteTable(
   '_customArrays_v',
   {
     _order: integer('_order').notNull(),
-    _parentID: serial('_parent_id').notNull(),
-    id: serial('id').primaryKey(),
-    text: varchar('text'),
-    _uuid: varchar('_uuid'),
+    _parentID: integer('_parent_id').notNull(),
+    id: integer('id').primaryKey(),
+    text: text('text'),
+    _uuid: text('_uuid'),
   },
   (columns) => ({
     _orderIdx: index('_customArrays_v_order_idx').on(columns['_order']),
@@ -731,12 +691,12 @@ export const _customArrays_v = pg_schema.table(
   }),
 )
 
-export const _customArrays_v_locales = pg_schema.table(
+export const _customArrays_v_locales = sqliteTable(
   '_customArrays_v_locales',
   {
-    localizedText: varchar('localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    localizedText: text('localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -752,16 +712,16 @@ export const _customArrays_v_locales = pg_schema.table(
   }),
 )
 
-export const _customBlocks_v = pg_schema.table(
+export const _customBlocks_v = sqliteTable(
   '_customBlocks_v',
   {
     _order: integer('_order').notNull(),
     _parentID: integer('_parent_id').notNull(),
     _path: text('_path').notNull(),
-    id: serial('id').primaryKey(),
-    text: varchar('text'),
-    _uuid: varchar('_uuid'),
-    blockName: varchar('block_name'),
+    id: integer('id').primaryKey(),
+    text: text('text'),
+    _uuid: text('_uuid'),
+    blockName: text('block_name'),
   },
   (columns) => ({
     _orderIdx: index('_customBlocks_v_order_idx').on(columns['_order']),
@@ -775,12 +735,12 @@ export const _customBlocks_v = pg_schema.table(
   }),
 )
 
-export const _customBlocks_v_locales = pg_schema.table(
+export const _customBlocks_v_locales = sqliteTable(
   '_customBlocks_v_locales',
   {
-    localizedText: varchar('localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    localizedText: text('localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -796,35 +756,31 @@ export const _customBlocks_v_locales = pg_schema.table(
   }),
 )
 
-export const _customs_v = pg_schema.table(
+export const _customs_v = sqliteTable(
   '_customs_v',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     parent: integer('parent_id').references(() => customs.id, {
       onDelete: 'set null',
     }),
-    version_text: varchar('version_text'),
-    version_radio: radioEnum('version_radio'),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version__status: enum__customs_v_version_status('version__status').default('draft'),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    snapshot: boolean('snapshot'),
-    publishedLocale: enum__customs_v_published_locale('published_locale'),
-    latest: boolean('latest'),
+    version_text: text('version_text'),
+    version_radio: text('version_radio', { enum: ['a', 'b', 'c'] }),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    snapshot: integer('snapshot', { mode: 'boolean' }),
+    publishedLocale: text('published_locale', { enum: ['en', 'es'] }),
+    latest: integer('latest', { mode: 'boolean' }),
   },
   (columns) => ({
     _customs_v_parent_idx: index('_customs_v_parent_idx').on(columns['parent']),
@@ -847,12 +803,12 @@ export const _customs_v = pg_schema.table(
   }),
 )
 
-export const _customs_v_locales = pg_schema.table(
+export const _customs_v_locales = sqliteTable(
   '_customs_v_locales',
   {
-    version_localizedText: varchar('version_localized_text'),
-    id: serial('id').primaryKey(),
-    _locale: enum__locales('_locale').notNull(),
+    version_localizedText: text('version_localized_text'),
+    id: integer('id').primaryKey(),
+    _locale: text('_locale', { enum: ['en', 'es'] }).notNull(),
     _parentID: integer('_parent_id').notNull(),
   },
   (columns) => ({
@@ -868,13 +824,13 @@ export const _customs_v_locales = pg_schema.table(
   }),
 )
 
-export const _customs_v_rels = pg_schema.table(
+export const _customs_v_rels = sqliteTable(
   '_customs_v_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     'relation-aID': integer('relation_a_id'),
   },
   (columns) => ({
@@ -897,18 +853,18 @@ export const _customs_v_rels = pg_schema.table(
   }),
 )
 
-export const places = pg_schema.table(
+export const places = sqliteTable(
   'places',
   {
-    id: serial('id').primaryKey(),
-    country: varchar('country'),
-    city: varchar('city'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    country: text('country'),
+    city: text('city'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     places_updated_at_idx: index('places_updated_at_idx').on(columns['updatedAt']),
@@ -916,16 +872,16 @@ export const places = pg_schema.table(
   }),
 )
 
-export const fields_persistance = pg_schema.table(
+export const fields_persistance = sqliteTable(
   'fields_persistance',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     fields_persistance_updated_at_idx: index('fields_persistance_updated_at_idx').on(
@@ -937,18 +893,18 @@ export const fields_persistance = pg_schema.table(
   }),
 )
 
-export const custom_ids = pg_schema.table(
+export const custom_ids = sqliteTable(
   'custom_ids',
   {
-    id: varchar('id').primaryKey(),
-    title: varchar('title'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    _status: enum_custom_ids_status('_status').default('draft'),
+    id: text('id').primaryKey(),
+    title: text('title'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
   },
   (columns) => ({
     custom_ids_updated_at_idx: index('custom_ids_updated_at_idx').on(columns['updatedAt']),
@@ -957,34 +913,30 @@ export const custom_ids = pg_schema.table(
   }),
 )
 
-export const _custom_ids_v = pg_schema.table(
+export const _custom_ids_v = sqliteTable(
   '_custom_ids_v',
   {
-    id: serial('id').primaryKey(),
-    parent: varchar('parent_id').references(() => custom_ids.id, {
+    id: integer('id').primaryKey(),
+    parent: text('parent_id').references(() => custom_ids.id, {
       onDelete: 'set null',
     }),
-    version_title: varchar('version_title'),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version__status: enum__custom_ids_v_version_status('version__status').default('draft'),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    snapshot: boolean('snapshot'),
-    publishedLocale: enum__custom_ids_v_published_locale('published_locale'),
-    latest: boolean('latest'),
+    version_title: text('version_title'),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    snapshot: integer('snapshot', { mode: 'boolean' }),
+    publishedLocale: text('published_locale', { enum: ['en', 'es'] }),
+    latest: integer('latest', { mode: 'boolean' }),
   },
   (columns) => ({
     _custom_ids_v_parent_idx: index('_custom_ids_v_parent_idx').on(columns['parent']),
@@ -1007,17 +959,17 @@ export const _custom_ids_v = pg_schema.table(
   }),
 )
 
-export const fake_custom_ids = pg_schema.table(
+export const fake_custom_ids = sqliteTable(
   'fake_custom_ids',
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     fake_custom_ids_updated_at_idx: index('fake_custom_ids_updated_at_idx').on(
@@ -1029,19 +981,19 @@ export const fake_custom_ids = pg_schema.table(
   }),
 )
 
-export const relationships_migration = pg_schema.table(
+export const relationships_migration = sqliteTable(
   'relationships_migration',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     relationship: integer('relationship_id').references(() => default_values.id, {
       onDelete: 'set null',
     }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     relationships_migration_relationship_idx: index('relationships_migration_relationship_idx').on(
@@ -1056,13 +1008,13 @@ export const relationships_migration = pg_schema.table(
   }),
 )
 
-export const relationships_migration_rels = pg_schema.table(
+export const relationships_migration_rels = sqliteTable(
   'relationships_migration_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     'default-valuesID': integer('default_values_id'),
   },
   (columns) => ({
@@ -1085,32 +1037,28 @@ export const relationships_migration_rels = pg_schema.table(
   }),
 )
 
-export const _relationships_migration_v = pg_schema.table(
+export const _relationships_migration_v = sqliteTable(
   '_relationships_migration_v',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     parent: integer('parent_id').references(() => relationships_migration.id, {
       onDelete: 'set null',
     }),
     version_relationship: integer('version_relationship_id').references(() => default_values.id, {
       onDelete: 'set null',
     }),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     _relationships_migration_v_parent_idx: index('_relationships_migration_v_parent_idx').on(
@@ -1134,13 +1082,13 @@ export const _relationships_migration_v = pg_schema.table(
   }),
 )
 
-export const _relationships_migration_v_rels = pg_schema.table(
+export const _relationships_migration_v_rels = sqliteTable(
   '_relationships_migration_v_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     'default-valuesID': integer('default_values_id'),
   },
   (columns) => ({
@@ -1163,27 +1111,25 @@ export const _relationships_migration_v_rels = pg_schema.table(
   }),
 )
 
-export const users = pg_schema.table(
+export const users = sqliteTable(
   'users',
   {
-    id: serial('id').primaryKey(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    email: varchar('email').notNull(),
-    resetPasswordToken: varchar('reset_password_token'),
-    resetPasswordExpiration: timestamp('reset_password_expiration', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    salt: varchar('salt'),
-    hash: varchar('hash'),
-    loginAttempts: numeric('login_attempts'),
-    lockUntil: timestamp('lock_until', { mode: 'string', withTimezone: true, precision: 3 }),
+    id: integer('id').primaryKey(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    email: text('email').notNull(),
+    resetPasswordToken: text('reset_password_token'),
+    resetPasswordExpiration: text('reset_password_expiration').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    salt: text('salt'),
+    hash: text('hash'),
+    loginAttempts: numeric('login_attempts').default('0'),
+    lockUntil: text('lock_until').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     users_updated_at_idx: index('users_updated_at_idx').on(columns['updatedAt']),
@@ -1192,17 +1138,17 @@ export const users = pg_schema.table(
   }),
 )
 
-export const payload_locked_documents = pg_schema.table(
+export const payload_locked_documents = sqliteTable(
   'payload_locked_documents',
   {
-    id: serial('id').primaryKey(),
-    globalSlug: varchar('global_slug'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    globalSlug: text('global_slug'),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_locked_documents_global_slug_idx: index('payload_locked_documents_global_slug_idx').on(
@@ -1217,13 +1163,13 @@ export const payload_locked_documents = pg_schema.table(
   }),
 )
 
-export const payload_locked_documents_rels = pg_schema.table(
+export const payload_locked_documents_rels = sqliteTable(
   'payload_locked_documents_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     postsID: integer('posts_id'),
     'default-valuesID': integer('default_values_id'),
     'relation-aID': integer('relation_a_id'),
@@ -1232,7 +1178,7 @@ export const payload_locked_documents_rels = pg_schema.table(
     'custom-schemaID': integer('customs_id'),
     placesID: integer('places_id'),
     'fields-persistanceID': integer('fields_persistance_id'),
-    'custom-idsID': varchar('custom_ids_id'),
+    'custom-idsID': text('custom_ids_id'),
     'fake-custom-idsID': integer('fake_custom_ids_id'),
     'relationships-migrationID': integer('relationships_migration_id'),
     usersID: integer('users_id'),
@@ -1345,18 +1291,18 @@ export const payload_locked_documents_rels = pg_schema.table(
   }),
 )
 
-export const payload_preferences = pg_schema.table(
+export const payload_preferences = sqliteTable(
   'payload_preferences',
   {
-    id: serial('id').primaryKey(),
-    key: varchar('key'),
-    value: jsonb('value'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    key: text('key'),
+    value: text('value', { mode: 'json' }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_preferences_key_idx: index('payload_preferences_key_idx').on(columns['key']),
@@ -1369,13 +1315,13 @@ export const payload_preferences = pg_schema.table(
   }),
 )
 
-export const payload_preferences_rels = pg_schema.table(
+export const payload_preferences_rels = sqliteTable(
   'payload_preferences_rels',
   {
-    id: serial('id').primaryKey(),
+    id: integer('id').primaryKey(),
     order: integer('order'),
     parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
+    path: text('path').notNull(),
     usersID: integer('users_id'),
   },
   (columns) => ({
@@ -1398,18 +1344,18 @@ export const payload_preferences_rels = pg_schema.table(
   }),
 )
 
-export const payload_migrations = pg_schema.table(
+export const payload_migrations = sqliteTable(
   'payload_migrations',
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
+    id: integer('id').primaryKey(),
+    name: text('name'),
     batch: numeric('batch'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     payload_migrations_updated_at_idx: index('payload_migrations_updated_at_idx').on(
@@ -1421,34 +1367,30 @@ export const payload_migrations = pg_schema.table(
   }),
 )
 
-export const customGlobal = pg_schema.table('customGlobal', {
-  id: serial('id').primaryKey(),
-  text: varchar('text'),
-  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 }),
-  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 }),
+export const customGlobal = sqliteTable('customGlobal', {
+  id: integer('id').primaryKey(),
+  text: text('text'),
+  updatedAt: text('updated_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  createdAt: text('created_at').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
 })
 
-export const _customGlobal_v = pg_schema.table(
+export const _customGlobal_v = sqliteTable(
   '_customGlobal_v',
   {
-    id: serial('id').primaryKey(),
-    version_text: varchar('version_text'),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
+    id: integer('id').primaryKey(),
+    version_text: text('version_text'),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
   },
   (columns) => ({
     _customGlobal_v_created_at_idx: index('_customGlobal_v_created_at_idx').on(
@@ -1460,21 +1402,21 @@ export const _customGlobal_v = pg_schema.table(
   }),
 )
 
-export const relations_posts = relations(posts, ({ one, many }) => ({}))
-export const relations_default_values_array = relations(default_values_array, ({ one, many }) => ({
+export const relations_posts = relations(posts, () => ({}))
+export const relations_default_values_array = relations(default_values_array, ({ one }) => ({
   _parentID: one(default_values, {
     fields: [default_values_array['_parentID']],
     references: [default_values['id']],
     relationName: 'array',
   }),
 }))
-export const relations_default_values = relations(default_values, ({ one, many }) => ({
+export const relations_default_values = relations(default_values, ({ many }) => ({
   array: many(default_values_array, {
     relationName: 'array',
   }),
 }))
-export const relations_relation_a = relations(relation_a, ({ one, many }) => ({}))
-export const relations_relation_b = relations(relation_b, ({ one, many }) => ({
+export const relations_relation_a = relations(relation_a, () => ({}))
+export const relations_relation_b = relations(relation_b, ({ one }) => ({
   relationship: one(relation_a, {
     fields: [relation_b['relationship']],
     references: [relation_a['id']],
@@ -1483,7 +1425,7 @@ export const relations_relation_b = relations(relation_b, ({ one, many }) => ({
 }))
 export const relations_pg_migrations_my_array_my_sub_array_locales = relations(
   pg_migrations_my_array_my_sub_array_locales,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(pg_migrations_my_array_my_sub_array, {
       fields: [pg_migrations_my_array_my_sub_array_locales['_parentID']],
       references: [pg_migrations_my_array_my_sub_array['id']],
@@ -1535,7 +1477,7 @@ export const relations_pg_migrations_my_array = relations(
 )
 export const relations_pg_migrations_blocks_my_block_locales = relations(
   pg_migrations_blocks_my_block_locales,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(pg_migrations_blocks_my_block, {
       fields: [pg_migrations_blocks_my_block_locales['_parentID']],
       references: [pg_migrations_blocks_my_block['id']],
@@ -1572,21 +1514,18 @@ export const relations_pg_migrations_blocks_my_block = relations(
     }),
   }),
 )
-export const relations_pg_migrations_locales = relations(
-  pg_migrations_locales,
-  ({ one, many }) => ({
-    _parentID: one(pg_migrations, {
-      fields: [pg_migrations_locales['_parentID']],
-      references: [pg_migrations['id']],
-      relationName: '_locales',
-    }),
-    myGroup_relation4: one(relation_b, {
-      fields: [pg_migrations_locales['myGroup_relation4']],
-      references: [relation_b['id']],
-      relationName: 'myGroup_relation4',
-    }),
+export const relations_pg_migrations_locales = relations(pg_migrations_locales, ({ one }) => ({
+  _parentID: one(pg_migrations, {
+    fields: [pg_migrations_locales['_parentID']],
+    references: [pg_migrations['id']],
+    relationName: '_locales',
   }),
-)
+  myGroup_relation4: one(relation_b, {
+    fields: [pg_migrations_locales['myGroup_relation4']],
+    references: [relation_b['id']],
+    relationName: 'myGroup_relation4',
+  }),
+}))
 export const relations_pg_migrations = relations(pg_migrations, ({ one, many }) => ({
   relation1: one(relation_a, {
     fields: [pg_migrations['relation1']],
@@ -1605,7 +1544,7 @@ export const relations_pg_migrations = relations(pg_migrations, ({ one, many }) 
 }))
 export const relations__pg_migrations_v_version_my_array_my_sub_array_locales = relations(
   _pg_migrations_v_version_my_array_my_sub_array_locales,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(_pg_migrations_v_version_my_array_my_sub_array, {
       fields: [_pg_migrations_v_version_my_array_my_sub_array_locales['_parentID']],
       references: [_pg_migrations_v_version_my_array_my_sub_array['id']],
@@ -1657,7 +1596,7 @@ export const relations__pg_migrations_v_version_my_array = relations(
 )
 export const relations__pg_migrations_v_blocks_my_block_locales = relations(
   _pg_migrations_v_blocks_my_block_locales,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(_pg_migrations_v_blocks_my_block, {
       fields: [_pg_migrations_v_blocks_my_block_locales['_parentID']],
       references: [_pg_migrations_v_blocks_my_block['id']],
@@ -1696,7 +1635,7 @@ export const relations__pg_migrations_v_blocks_my_block = relations(
 )
 export const relations__pg_migrations_v_locales = relations(
   _pg_migrations_v_locales,
-  ({ one, many }) => ({
+  ({ one }) => ({
     _parentID: one(_pg_migrations_v, {
       fields: [_pg_migrations_v_locales['_parentID']],
       references: [_pg_migrations_v['id']],
@@ -1730,14 +1669,14 @@ export const relations__pg_migrations_v = relations(_pg_migrations_v, ({ one, ma
     relationName: '_locales',
   }),
 }))
-export const relations_customs_customSelect = relations(customs_customSelect, ({ one, many }) => ({
+export const relations_customs_customSelect = relations(customs_customSelect, ({ one }) => ({
   parent: one(customs, {
     fields: [customs_customSelect['parent']],
     references: [customs['id']],
     relationName: 'select',
   }),
 }))
-export const relations_customArrays_locales = relations(customArrays_locales, ({ one, many }) => ({
+export const relations_customArrays_locales = relations(customArrays_locales, ({ one }) => ({
   _parentID: one(customArrays, {
     fields: [customArrays_locales['_parentID']],
     references: [customArrays['id']],
@@ -1754,7 +1693,7 @@ export const relations_customArrays = relations(customArrays, ({ one, many }) =>
     relationName: '_locales',
   }),
 }))
-export const relations_customBlocks_locales = relations(customBlocks_locales, ({ one, many }) => ({
+export const relations_customBlocks_locales = relations(customBlocks_locales, ({ one }) => ({
   _parentID: one(customBlocks, {
     fields: [customBlocks_locales['_parentID']],
     references: [customBlocks['id']],
@@ -1771,14 +1710,14 @@ export const relations_customBlocks = relations(customBlocks, ({ one, many }) =>
     relationName: '_locales',
   }),
 }))
-export const relations_customs_locales = relations(customs_locales, ({ one, many }) => ({
+export const relations_customs_locales = relations(customs_locales, ({ one }) => ({
   _parentID: one(customs, {
     fields: [customs_locales['_parentID']],
     references: [customs['id']],
     relationName: '_locales',
   }),
 }))
-export const relations_customs_rels = relations(customs_rels, ({ one, many }) => ({
+export const relations_customs_rels = relations(customs_rels, ({ one }) => ({
   parent: one(customs, {
     fields: [customs_rels['parent']],
     references: [customs['id']],
@@ -1790,7 +1729,7 @@ export const relations_customs_rels = relations(customs_rels, ({ one, many }) =>
     relationName: 'relation-a',
   }),
 }))
-export const relations_customs = relations(customs, ({ one, many }) => ({
+export const relations_customs = relations(customs, ({ many }) => ({
   select: many(customs_customSelect, {
     relationName: 'select',
   }),
@@ -1809,7 +1748,7 @@ export const relations_customs = relations(customs, ({ one, many }) => ({
 }))
 export const relations___customs_v_version_customSelect_v = relations(
   __customs_v_version_customSelect_v,
-  ({ one, many }) => ({
+  ({ one }) => ({
     parent: one(_customs_v, {
       fields: [__customs_v_version_customSelect_v['parent']],
       references: [_customs_v['id']],
@@ -1817,16 +1756,13 @@ export const relations___customs_v_version_customSelect_v = relations(
     }),
   }),
 )
-export const relations__customArrays_v_locales = relations(
-  _customArrays_v_locales,
-  ({ one, many }) => ({
-    _parentID: one(_customArrays_v, {
-      fields: [_customArrays_v_locales['_parentID']],
-      references: [_customArrays_v['id']],
-      relationName: '_locales',
-    }),
+export const relations__customArrays_v_locales = relations(_customArrays_v_locales, ({ one }) => ({
+  _parentID: one(_customArrays_v, {
+    fields: [_customArrays_v_locales['_parentID']],
+    references: [_customArrays_v['id']],
+    relationName: '_locales',
   }),
-)
+}))
 export const relations__customArrays_v = relations(_customArrays_v, ({ one, many }) => ({
   _parentID: one(_customs_v, {
     fields: [_customArrays_v['_parentID']],
@@ -1837,16 +1773,13 @@ export const relations__customArrays_v = relations(_customArrays_v, ({ one, many
     relationName: '_locales',
   }),
 }))
-export const relations__customBlocks_v_locales = relations(
-  _customBlocks_v_locales,
-  ({ one, many }) => ({
-    _parentID: one(_customBlocks_v, {
-      fields: [_customBlocks_v_locales['_parentID']],
-      references: [_customBlocks_v['id']],
-      relationName: '_locales',
-    }),
+export const relations__customBlocks_v_locales = relations(_customBlocks_v_locales, ({ one }) => ({
+  _parentID: one(_customBlocks_v, {
+    fields: [_customBlocks_v_locales['_parentID']],
+    references: [_customBlocks_v['id']],
+    relationName: '_locales',
   }),
-)
+}))
 export const relations__customBlocks_v = relations(_customBlocks_v, ({ one, many }) => ({
   _parentID: one(_customs_v, {
     fields: [_customBlocks_v['_parentID']],
@@ -1857,14 +1790,14 @@ export const relations__customBlocks_v = relations(_customBlocks_v, ({ one, many
     relationName: '_locales',
   }),
 }))
-export const relations__customs_v_locales = relations(_customs_v_locales, ({ one, many }) => ({
+export const relations__customs_v_locales = relations(_customs_v_locales, ({ one }) => ({
   _parentID: one(_customs_v, {
     fields: [_customs_v_locales['_parentID']],
     references: [_customs_v['id']],
     relationName: '_locales',
   }),
 }))
-export const relations__customs_v_rels = relations(_customs_v_rels, ({ one, many }) => ({
+export const relations__customs_v_rels = relations(_customs_v_rels, ({ one }) => ({
   parent: one(_customs_v, {
     fields: [_customs_v_rels['parent']],
     references: [_customs_v['id']],
@@ -1898,20 +1831,20 @@ export const relations__customs_v = relations(_customs_v, ({ one, many }) => ({
     relationName: '_rels',
   }),
 }))
-export const relations_places = relations(places, ({ one, many }) => ({}))
-export const relations_fields_persistance = relations(fields_persistance, ({ one, many }) => ({}))
-export const relations_custom_ids = relations(custom_ids, ({ one, many }) => ({}))
-export const relations__custom_ids_v = relations(_custom_ids_v, ({ one, many }) => ({
+export const relations_places = relations(places, () => ({}))
+export const relations_fields_persistance = relations(fields_persistance, () => ({}))
+export const relations_custom_ids = relations(custom_ids, () => ({}))
+export const relations__custom_ids_v = relations(_custom_ids_v, ({ one }) => ({
   parent: one(custom_ids, {
     fields: [_custom_ids_v['parent']],
     references: [custom_ids['id']],
     relationName: 'parent',
   }),
 }))
-export const relations_fake_custom_ids = relations(fake_custom_ids, ({ one, many }) => ({}))
+export const relations_fake_custom_ids = relations(fake_custom_ids, () => ({}))
 export const relations_relationships_migration_rels = relations(
   relationships_migration_rels,
-  ({ one, many }) => ({
+  ({ one }) => ({
     parent: one(relationships_migration, {
       fields: [relationships_migration_rels['parent']],
       references: [relationships_migration['id']],
@@ -1939,7 +1872,7 @@ export const relations_relationships_migration = relations(
 )
 export const relations__relationships_migration_v_rels = relations(
   _relationships_migration_v_rels,
-  ({ one, many }) => ({
+  ({ one }) => ({
     parent: one(_relationships_migration_v, {
       fields: [_relationships_migration_v_rels['parent']],
       references: [_relationships_migration_v['id']],
@@ -1970,10 +1903,10 @@ export const relations__relationships_migration_v = relations(
     }),
   }),
 )
-export const relations_users = relations(users, ({ one, many }) => ({}))
+export const relations_users = relations(users, () => ({}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
-  ({ one, many }) => ({
+  ({ one }) => ({
     parent: one(payload_locked_documents, {
       fields: [payload_locked_documents_rels['parent']],
       references: [payload_locked_documents['id']],
@@ -2043,7 +1976,7 @@ export const relations_payload_locked_documents_rels = relations(
 )
 export const relations_payload_locked_documents = relations(
   payload_locked_documents,
-  ({ one, many }) => ({
+  ({ many }) => ({
     _rels: many(payload_locked_documents_rels, {
       relationName: '_rels',
     }),
@@ -2051,7 +1984,7 @@ export const relations_payload_locked_documents = relations(
 )
 export const relations_payload_preferences_rels = relations(
   payload_preferences_rels,
-  ({ one, many }) => ({
+  ({ one }) => ({
     parent: one(payload_preferences, {
       fields: [payload_preferences_rels['parent']],
       references: [payload_preferences['id']],
@@ -2064,14 +1997,14 @@ export const relations_payload_preferences_rels = relations(
     }),
   }),
 )
-export const relations_payload_preferences = relations(payload_preferences, ({ one, many }) => ({
+export const relations_payload_preferences = relations(payload_preferences, ({ many }) => ({
   _rels: many(payload_preferences_rels, {
     relationName: '_rels',
   }),
 }))
-export const relations_payload_migrations = relations(payload_migrations, ({ one, many }) => ({}))
-export const relations_customGlobal = relations(customGlobal, ({ one, many }) => ({}))
-export const relations__customGlobal_v = relations(_customGlobal_v, ({ one, many }) => ({}))
+export const relations_payload_migrations = relations(payload_migrations, () => ({}))
+export const relations_customGlobal = relations(customGlobal, () => ({}))
+export const relations__customGlobal_v = relations(_customGlobal_v, () => ({}))
 
 type DatabaseSchema = {
   __customs_v_version_customSelect_v: typeof __customs_v_version_customSelect_v
@@ -2105,14 +2038,6 @@ type DatabaseSchema = {
   customs_rels: typeof customs_rels
   default_values: typeof default_values
   default_values_array: typeof default_values_array
-  enum__custom_ids_v_published_locale: typeof enum__custom_ids_v_published_locale
-  enum__custom_ids_v_version_status: typeof enum__custom_ids_v_version_status
-  enum__customs_v_published_locale: typeof enum__customs_v_published_locale
-  enum__customs_v_version_status: typeof enum__customs_v_version_status
-  enum__locales: typeof enum__locales
-  enum_custom_ids_status: typeof enum_custom_ids_status
-  enum_customs_status: typeof enum_customs_status
-  enum_default_values_select: typeof enum_default_values_select
   fake_custom_ids: typeof fake_custom_ids
   fields_persistance: typeof fields_persistance
   payload_locked_documents: typeof payload_locked_documents
@@ -2127,10 +2052,8 @@ type DatabaseSchema = {
   pg_migrations_my_array: typeof pg_migrations_my_array
   pg_migrations_my_array_my_sub_array: typeof pg_migrations_my_array_my_sub_array
   pg_migrations_my_array_my_sub_array_locales: typeof pg_migrations_my_array_my_sub_array_locales
-  pg_schema: typeof pg_schema
   places: typeof places
   posts: typeof posts
-  radioEnum: typeof radioEnum
   relation_a: typeof relation_a
   relation_b: typeof relation_b
   relations___customs_v_version_customSelect_v: typeof relations___customs_v_version_customSelect_v
@@ -2187,11 +2110,10 @@ type DatabaseSchema = {
   relations_users: typeof relations_users
   relationships_migration: typeof relationships_migration
   relationships_migration_rels: typeof relationships_migration_rels
-  selectEnum: typeof selectEnum
   users: typeof users
 }
 
-declare module '@payloadcms/db-postgres/types' {
+declare module '@payloadcms/db-sqlite/types' {
   export interface GeneratedDatabaseSchema {
     schema: DatabaseSchema
   }
