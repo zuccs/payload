@@ -91,11 +91,14 @@ const columnConverter = ({
     code = `${code}.primaryKey()`
   }
 
-  if (column.default) {
+  if (typeof column.default !== 'undefined') {
     let sanitizedDefault = column.default
 
     if (column.type === 'geometry') {
-      addImport(`${adapter.packageName}/drizzle`, 'sql')
+      sanitizedDefault = `sql\`${column.default}\``
+    } else if (column.type === 'jsonb') {
+      sanitizedDefault = `sql\`'${JSON.stringify(column.default)}'::jsonb\``
+    } else if (column.type === 'numeric') {
       sanitizedDefault = `sql\`${column.default}\``
     } else if (typeof column.default === 'string') {
       sanitizedDefault = `'${column.default}'`
@@ -170,12 +173,11 @@ export const createSchemaGenerator = ({
     addImport(`${this.packageName}/drizzle/pg-core`, 'uniqueIndex')
     addImport(`${this.packageName}/drizzle/pg-core`, 'foreignKey')
 
+    addImport(`${this.packageName}/drizzle`, 'sql')
     addImport(`${this.packageName}/drizzle`, 'relations')
 
     for (const tableName in this.rawTables) {
       const table = this.rawTables[tableName]
-
-      const extras = ``
 
       const extrasDeclarations: string[] = []
 
