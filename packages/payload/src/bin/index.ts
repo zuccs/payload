@@ -120,7 +120,10 @@ export const bin = async () => {
       process.exit(1)
     }
 
-    await payload.db.generateSchema()
+    await payload.db.generateSchema({
+      log: args.log === 'false' ? false : true,
+      prettify: args.prettify === 'false' ? false : true,
+    })
   }
 
   console.error(`Unknown script: "${script}".`)

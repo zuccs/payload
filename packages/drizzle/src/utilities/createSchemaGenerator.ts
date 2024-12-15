@@ -44,7 +44,7 @@ export const createSchemaGenerator = ({
 }): GenerateSchema => {
   return async function generateSchema(
     this: DrizzleAdapter,
-    { outputFile = defaultOutputFile } = {},
+    { log = true, outputFile = defaultOutputFile, prettify = true } = {},
   ) {
     const importDeclarations: Record<string, Set<string>> = {}
 
@@ -269,11 +269,15 @@ declare module '${this.packageName}/types' {
 
     await writeFile(outputFile, code, 'utf-8')
 
-    try {
-      await execAsync(`npx prettier ${outputFile} --write`)
-      // eslint-disable-next-line no-empty
-    } catch {}
+    if (prettify) {
+      try {
+        await execAsync(`npx prettier ${outputFile} --write`)
+        // eslint-disable-next-line no-empty
+      } catch {}
+    }
 
-    this.payload.logger.info(`Written ${outputFile}`)
+    if (log) {
+      this.payload.logger.info(`Written ${outputFile}`)
+    }
   }
 }

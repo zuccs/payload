@@ -525,7 +525,9 @@ export type MigrationTemplateArgs = {
 }
 
 export type GenerateSchemaArgs = {
+  log?: boolean
   outputFile?: string
+  prettify?: boolean
 }
 
 export type GenerateSchema = (args?: GenerateSchemaArgs) => Promise<void>
