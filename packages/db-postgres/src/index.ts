@@ -10,6 +10,7 @@ import {
   create,
   createGlobal,
   createGlobalVersion,
+  createSchemaGenerator,
   createVersion,
   deleteMany,
   deleteOne,
@@ -106,6 +107,9 @@ export function postgresAdapter(args: Args): DatabaseAdapterObj<PostgresAdapter>
         json: true,
       },
       fieldConstraints: {},
+      generateSchema: createSchemaGenerator({
+        defaultOutputFile: args.generateSchemaOutputFile,
+      }),
       idType: postgresIDType,
       initializing,
       localesSuffix: args.localesSuffix || '_locales',

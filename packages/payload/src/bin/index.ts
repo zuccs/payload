@@ -109,6 +109,20 @@ export const bin = async () => {
     }
   }
 
+  if (script === 'generate:db-schema') {
+    const payload = await getPayload({ config })
+
+    if (typeof payload.db.generateSchema !== 'function') {
+      payload.logger.error({
+        msg: `${payload.db.packageName} does not support database schema generation`,
+      })
+
+      process.exit(1)
+    }
+
+    await payload.db.generateSchema()
+  }
+
   console.error(`Unknown script: "${script}".`)
   process.exit(1)
 }

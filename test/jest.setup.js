@@ -25,6 +25,6 @@ jest.spyOn(nodemailer, 'createTestAccount').mockImplementation(() => {
   })
 })
 
-const dbAdapter = process.env.PAYLOAD_DATABASE || 'mongodb'
+const dbAdapter = process.env.PAYLOAD_DATABASE || 'postgres'
 
 generateDatabaseAdapter(dbAdapter)
