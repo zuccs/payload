@@ -56,7 +56,7 @@ export const columnToCodeConverter: ColumnToCodeConverter = ({
 
       if (column.defaultRandom) {
         addImport('crypto', 'randomUUID')
-        defaultStatement = `defaultFn(() => randomUUID())`
+        defaultStatement = `$defaultFn(() => randomUUID())`
       }
 
       break
