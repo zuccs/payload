@@ -970,6 +970,25 @@ export interface ConditionalLogic {
   text: string;
   toggleField?: boolean | null;
   fieldWithCondition?: string | null;
+  customFieldWithField?: string | null;
+  customFieldWithHOC?: string | null;
+  customClientFieldWithCondition?: string | null;
+  customServerFieldWithCondition?: string | null;
+  conditionalRichText?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   userConditional?: string | null;
   parentGroup?: {
     enableParentGroupFields?: boolean | null;
@@ -2657,6 +2676,11 @@ export interface ConditionalLogicSelect<T extends boolean = true> {
   text?: T;
   toggleField?: T;
   fieldWithCondition?: T;
+  customFieldWithField?: T;
+  customFieldWithHOC?: T;
+  customClientFieldWithCondition?: T;
+  customServerFieldWithCondition?: T;
+  conditionalRichText?: T;
   userConditional?: T;
   parentGroup?:
     | T
