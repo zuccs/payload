@@ -99,7 +99,7 @@ export const traverseFields = ({
 
   const idColumn = columns.id
 
-  if (idColumn) {
+  if (idColumn && ['numeric', 'text', 'uuid', 'varchar'].includes(idColumn.type)) {
     parentIDColType = idColumn.type as IDType
   }
 

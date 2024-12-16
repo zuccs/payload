@@ -100,7 +100,7 @@ export const buildDrizzleTable = ({
       columns[key].notNull()
     }
 
-    if (column.default) {
+    if (typeof column.default !== 'undefined') {
       columns[key].default(column.default)
     }
 
