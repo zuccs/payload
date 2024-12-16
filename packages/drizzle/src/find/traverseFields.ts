@@ -408,28 +408,64 @@ export const traverseFields = ({
           if (field.localized) {
             joinLocalesCollectionTableName = `${joinCollectionTableName}${adapter.localesSuffix}`
 
-            joins.push({
-              type: 'innerJoin',
-              condition: and(
-                eq(
-                  adapter.tables[joinLocalesCollectionTableName]._parentID,
-                  adapter.tables[joinCollectionTableName].id,
+            if (!adapter.tables[joinLocalesCollectionTableName][foreignColumn]) {
+              // if the table name and column do not exist, query the rels table instead
+              const joinRelsCollectionTableName = `${joinCollectionTableName}${adapter.relationshipsSuffix}`
+              joinLocalesCollectionTableName = joinRelsCollectionTableName
+
+              joins.push({
+                type: 'innerJoin',
+                condition: and(
+                  eq(
+                    adapter.tables[joinRelsCollectionTableName].parent,
+                    adapter.tables[joinCollectionTableName].id,
+                  ),
+                  eq(adapter.tables[joinRelsCollectionTableName].path, field.on),
                 ),
-                eq(adapter.tables[joinLocalesCollectionTableName][foreignColumn], currentIDColumn),
-              ),
-              table: adapter.tables[joinLocalesCollectionTableName],
-            })
+                table: adapter.tables[joinRelsCollectionTableName],
+              })
+            } else {
+              joins.push({
+                type: 'innerJoin',
+                condition: and(
+                  eq(
+                    adapter.tables[joinLocalesCollectionTableName]._parentID,
+                    adapter.tables[joinCollectionTableName].id,
+                  ),
+                  eq(
+                    adapter.tables[joinLocalesCollectionTableName][foreignColumn],
+                    currentIDColumn,
+                  ),
+                ),
+                table: adapter.tables[joinLocalesCollectionTableName],
+              })
+            }
             // Handle without localized and without hasMany, just a condition append to where. With localized the inner join handles eq.
           } else {
-            const constraint = eq(
-              adapter.tables[joinCollectionTableName][foreignColumn],
-              currentIDColumn,
-            )
+            // if the table name and column do not exist, query the rels table instead
+            if (!adapter.tables[joinCollectionTableName][foreignColumn]) {
+              const joinRelsCollectionTableName = `${joinCollectionTableName}${adapter.relationshipsSuffix}`
 
-            if (subQueryWhere) {
-              subQueryWhere = and(subQueryWhere, constraint)
+              if (field.localized) {
+                joinLocalesCollectionTableName = joinRelsCollectionTableName
+              }
+
+              joins.push({
+                type: 'innerJoin',
+                condition: and(
+                  eq(
+                    adapter.tables[joinRelsCollectionTableName].parent,
+                    adapter.tables[joinCollectionTableName].id,
+                  ),
+                  eq(adapter.tables[joinRelsCollectionTableName].path, field.on),
+                ),
+                table: adapter.tables[joinRelsCollectionTableName],
+              })
             } else {
-              subQueryWhere = constraint
+              subQueryWhere = and(
+                subQueryWhere,
+                eq(adapter.tables[joinCollectionTableName][foreignColumn], currentIDColumn),
+              )
             }
           }
         }
